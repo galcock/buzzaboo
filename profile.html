@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Streamer Profile | Buzzaboo</title>
+  <meta name="description" content="View streamer profile, past broadcasts, clips, and more on Buzzaboo.">
+  
+  <meta property="og:type" content="profile">
+  <meta property="og:title" content="Streamer Profile | Buzzaboo">
+  
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#8B5CF6">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="profile">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">🐝</span>
+        <span>Buzzaboo</span>
+      </a>
+      
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="browse.html" class="nav-link">Browse</a>
+        <a href="shorts.html" class="nav-link">Shorts</a>
+        <a href="multiview.html" class="nav-link">Multiview</a>
+      </nav>
+      
+      <div class="search-container">
+        <div class="search-bar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <input type="text" placeholder="Search..." aria-label="Search">
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <button class="btn btn-secondary btn-sm theme-toggle"><span class="theme-toggle-icon">🌙</span></button>
+        <a href="dashboard.html" class="btn btn-primary btn-sm">Go Live</a>
+        <div class="user-menu">
+          <img src="https://i.pravatar.cc/150?img=68" alt="Profile" class="user-avatar">
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Main Content -->
+  <main class="main-content full-width">
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="profile-banner">
+        <img src="https://picsum.photos/seed/banner1/1200/400" alt="Banner">
+        <div class="profile-banner-overlay"></div>
+      </div>
+      
+      <div class="profile-info">
+        <div class="profile-avatar-wrapper">
+          <img src="https://i.pravatar.cc/150?img=1" alt="Avatar" class="profile-avatar">
+          <span class="profile-live-indicator" style="display: none;">LIVE</span>
+        </div>
+        
+        <div class="profile-details">
+          <h1 class="profile-name">
+            <span class="profile-name-text">NinjaVortex</span>
+            <svg class="profile-verified" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+          </h1>
+          <p class="profile-bio">Professional esports player & content creator. 10x Tournament Champion. Living the dream one stream at a time! 🎮</p>
+          
+          <div class="profile-stats">
+            <div class="profile-stat">
+              <div class="profile-stat-value">2.8M</div>
+              <div class="profile-stat-label">Followers</div>
+            </div>
+            <div class="profile-stat">
+              <div class="profile-stat-value">425K</div>
+              <div class="profile-stat-label">Subscribers</div>
+            </div>
+            <div class="profile-stat">
+              <div class="profile-stat-value">85K</div>
+              <div class="profile-stat-label">Avg Viewers</div>
+            </div>
+          </div>
+          
+          <div class="profile-actions">
+            <button class="btn btn-primary">Follow</button>
+            <button class="btn btn-secondary">Subscribe ⭐</button>
+            <button class="btn btn-ghost btn-icon">🔔</button>
+            <button class="btn btn-ghost btn-icon">↗️</button>
+          </div>
+          
+          <div class="profile-social">
+            <a href="#" class="social-link" aria-label="Twitter">𝕏</a>
+            <a href="#" class="social-link" aria-label="Instagram">📷</a>
+            <a href="#" class="social-link" aria-label="YouTube">▶️</a>
+            <a href="#" class="social-link" aria-label="Discord">💬</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Profile Tabs -->
+    <div class="profile-tabs">
+      <div class="profile-tab active" data-tab="home">Home</div>
+      <div class="profile-tab" data-tab="vods">Videos</div>
+      <div class="profile-tab" data-tab="clips">Clips</div>
+      <div class="profile-tab" data-tab="schedule">Schedule</div>
+      <div class="profile-tab" data-tab="about">About</div>
+    </div>
+    
+    <!-- Tab Content -->
+    <div id="profile-content">
+      <!-- Current Stream (if live) -->
+      <section class="section glass-card" style="padding: 1.5rem; margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+          <span class="badge badge-live">🔴 LIVE NOW</span>
+          <span style="color: var(--text-secondary);">Started 2 hours ago</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 350px 1fr; gap: 1.5rem;">
+          <a href="stream.html?channel=NinjaVortex" style="aspect-ratio: 16/9; border-radius: var(--radius-md); overflow: hidden;">
+            <img src="https://picsum.photos/seed/stream1/640/360" alt="Stream" style="width: 100%; height: 100%; object-fit: cover;">
+          </a>
+          <div>
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem;">🔴 ROAD TO GLOBAL! CSGO RANKED GRIND | !giveaway !discord</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">Counter-Strike 2 • 45.6K viewers</p>
+            <a href="stream.html?channel=NinjaVortex" class="btn btn-primary">Watch Stream</a>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Recent VODs -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">📹 Recent Videos</h2>
+          <a href="#" class="section-link">See all →</a>
+        </div>
+        <div class="grid grid-auto" id="profile-vods"></div>
+      </section>
+      
+      <!-- Popular Clips -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">🎬 Popular Clips</h2>
+          <a href="#" class="section-link">See all →</a>
+        </div>
+        <div class="grid grid-auto" id="profile-clips"></div>
+      </section>
+      
+      <!-- Schedule -->
+      <section class="section glass-card" style="padding: 1.5rem;">
+        <h2 class="section-title" style="margin-bottom: 1rem;">📅 Stream Schedule</h2>
+        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; text-align: center;">
+          <div style="padding: 1rem; background: var(--bg-glass); border-radius: var(--radius-md);">
+            <div style="font-weight: 700; margin-bottom: 0.25rem;">Mon</div>
+            <div style="color: var(--accent-green); font-size: 0.85rem;">6 PM</div>
+          </div>
+          <div style="padding: 1rem; background: var(--bg-glass); border-radius: var(--radius-md);">
+            <div style="font-weight: 700; margin-bottom: 0.25rem;">Tue</div>
+            <div style="color: var(--accent-green); font-size: 0.85rem;">6 PM</div>
+          </div>
+          <div style="padding: 1rem; background: var(--bg-glass); border-radius: var(--radius-md);">
+            <div style="font-weight: 700; margin-bottom: 0.25rem;">Wed</div>
+            <div style="color: var(--text-muted); font-size: 0.85rem;">Off</div>
+          </div>
+          <div style="padding: 1rem; background: var(--bg-glass); border-radius: var(--radius-md);">
+            <div style="font-weight: 700; margin-bottom: 0.25rem;">Thu</div>
+            <div style="color: var(--accent-green); font-size: 0.85rem;">6 PM</div>
+          </div>
+          <div style="padding: 1rem; background: var(--bg-glass); border-radius: var(--radius-md);">
+            <div style="font-weight: 700; margin-bottom: 0.25rem;">Fri</div>
+            <div style="color: var(--accent-green); font-size: 0.85rem;">8 PM</div>
+          </div>
+          <div style="padding: 1rem; background: var(--bg-glass); border-radius: var(--radius-md);">
+            <div style="font-weight: 700; margin-bottom: 0.25rem;">Sat</div>
+            <div style="color: var(--accent-green); font-size: 0.85rem;">2 PM</div>
+          </div>
+          <div style="padding: 1rem; background: var(--bg-glass); border-radius: var(--radius-md);">
+            <div style="font-weight: 700; margin-bottom: 0.25rem;">Sun</div>
+            <div style="color: var(--accent-green); font-size: 0.85rem;">2 PM</div>
+          </div>
+        </div>
+        <p style="text-align: center; margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary);">All times in PST</p>
+      </section>
+    </div>
+  </main>
+  
+  <script src="app.js"></script>
+  
+  <style>
+    .profile-tabs {
+      cursor: pointer;
+    }
+    .profile-tab:hover {
+      color: var(--text-primary);
+    }
+  </style>
+</body>
+</html>

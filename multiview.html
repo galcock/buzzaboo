@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multiview - Watch Multiple Streams | Buzzaboo</title>
+  <meta name="description" content="Watch up to 4 streams simultaneously with Buzzaboo Multiview. The ultimate multi-stream experience.">
+  
+  <meta property="og:title" content="Multiview | Buzzaboo">
+  <meta property="og:description" content="Watch multiple streams at once">
+  
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#8B5CF6">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="multiview">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">🐝</span>
+        <span>Buzzaboo</span>
+      </a>
+      
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="browse.html" class="nav-link">Browse</a>
+        <a href="shorts.html" class="nav-link">Shorts</a>
+        <a href="multiview.html" class="nav-link active">Multiview</a>
+      </nav>
+      
+      <div class="header-actions">
+        <div style="display: flex; gap: 0.5rem; margin-right: 1rem;">
+          <button class="btn btn-ghost btn-sm multiview-layout-btn" data-layout="2x2">2×2</button>
+          <button class="btn btn-ghost btn-sm multiview-layout-btn" data-layout="1-2">1+2</button>
+          <button class="btn btn-ghost btn-sm multiview-layout-btn" data-layout="3-1">3+1</button>
+        </div>
+        <button class="btn btn-secondary btn-sm theme-toggle"><span class="theme-toggle-icon">🌙</span></button>
+        <a href="dashboard.html" class="btn btn-primary btn-sm">Go Live</a>
+        <div class="user-menu">
+          <img src="https://i.pravatar.cc/150?img=68" alt="Profile" class="user-avatar">
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Multiview Container -->
+  <main class="main-content full-width" style="padding: 1rem; height: calc(100vh - 64px);">
+    <div id="multiview-container" class="multiview-container grid-2x2"></div>
+  </main>
+  
+  <!-- Stream Picker Modal Style -->
+  <style>
+    .stream-picker-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .stream-picker-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--bg-glass);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    
+    .stream-picker-item:hover {
+      background: var(--bg-glass-hover);
+    }
+    
+    .stream-picker-item img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+    }
+    
+    .multiview-layout-btn.active {
+      background: var(--primary) !important;
+      color: white !important;
+    }
+    
+    .multiview-item {
+      position: relative;
+    }
+    
+    .multiview-item .multiview-player {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .multiview-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    }
+    
+    .multiview-streamer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: white;
+      font-weight: 600;
+    }
+    
+    .multiview-streamer img {
+      border-radius: 50%;
+    }
+  </style>
+  
+  <script src="app.js"></script>
+  
+  <script>
+    // Layout switching
+    document.querySelectorAll('.multiview-layout-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const layout = btn.dataset.layout;
+        const container = document.getElementById('multiview-container');
+        
+        document.querySelectorAll('.multiview-layout-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        container.className = 'multiview-container';
+        if (layout === '2x2') container.classList.add('grid-2x2');
+        else if (layout === '1-2') container.classList.add('grid-1-2');
+        // Add more layouts as needed
+      });
+    });
+    
+    // Set default active
+    document.querySelector('.multiview-layout-btn').classList.add('active');
+  </script>
+</body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Creator Dashboard | Buzzaboo</title>
+  <meta name="description" content="Buzzaboo Creator Dashboard. Manage your streams, view analytics, and grow your channel.">
+  
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#8B5CF6">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="dashboard">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">🐝</span>
+        <span>Buzzaboo</span>
+      </a>
+      
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="browse.html" class="nav-link">Browse</a>
+        <a href="dashboard.html" class="nav-link active">Dashboard</a>
+      </nav>
+      
+      <div class="header-actions">
+        <button class="btn btn-secondary btn-sm theme-toggle"><span class="theme-toggle-icon">🌙</span></button>
+        <button class="btn btn-primary">🔴 Go Live</button>
+        <div class="user-menu">
+          <img src="https://i.pravatar.cc/150?img=68" alt="Profile" class="user-avatar">
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Dashboard Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">Dashboard</div>
+      <a href="#" class="sidebar-item active">
+        <span>📊</span>
+        <span class="sidebar-item-name">Overview</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <span>📈</span>
+        <span class="sidebar-item-name">Analytics</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <span>💰</span>
+        <span class="sidebar-item-name">Revenue</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <span>🎬</span>
+        <span class="sidebar-item-name">Content</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <span>👥</span>
+        <span class="sidebar-item-name">Community</span>
+      </a>
+    </div>
+    
+    <div class="sidebar-section">
+      <div class="sidebar-title">Stream</div>
+      <a href="#" class="sidebar-item">
+        <span>⚙️</span>
+        <span class="sidebar-item-name">Stream Settings</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <span>🎯</span>
+        <span class="sidebar-item-name">Predictions</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <span>🎁</span>
+        <span class="sidebar-item-name">Rewards</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <span>🤖</span>
+        <span class="sidebar-item-name">AI Tools</span>
+      </a>
+    </div>
+    
+    <div class="sidebar-section">
+      <div class="sidebar-title">Settings</div>
+      <a href="#" class="sidebar-item">
+        <span>👤</span>
+        <span class="sidebar-item-name">Profile</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <span>🔔</span>
+        <span class="sidebar-item-name">Notifications</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <span>🛡️</span>
+        <span class="sidebar-item-name">Moderation</span>
+      </a>
+    </div>
+  </aside>
+  
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Page Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <div>
+        <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.25rem;">Creator Dashboard</h1>
+        <p style="color: var(--text-secondary);">Welcome back! Here's how your channel is performing.</p>
+      </div>
+      <button class="btn btn-primary btn-lg">🔴 Start Streaming</button>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="dashboard-grid" id="dashboard-stats"></div>
+    
+    <!-- Main Dashboard Content -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-top: 2rem;">
+      <!-- Charts -->
+      <div class="chart-container" id="dashboard-chart"></div>
+      
+      <!-- Activity -->
+      <div class="glass-card" style="padding: 1.5rem;" id="dashboard-activity"></div>
+    </div>
+    
+    <!-- Revenue Transparency -->
+    <section class="section" style="margin-top: 2rem;">
+      <div class="section-header">
+        <h2 class="section-title">💰 Revenue Breakdown (This Month)</h2>
+      </div>
+      <div class="revenue-card">
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+          <div style="flex: 1;">
+            <p style="color: var(--text-secondary); margin-bottom: 0.25rem;">Total Earnings</p>
+            <div style="font-size: 2.5rem; font-weight: 800; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">$12,450.00</div>
+          </div>
+          <button class="btn btn-secondary">Payout Settings</button>
+        </div>
+        
+        <div class="revenue-breakdown">
+          <div class="revenue-row">
+            <span class="revenue-label">⭐ Subscriptions</span>
+            <span class="revenue-value">$7,230.00</span>
+          </div>
+          <div class="revenue-row">
+            <span class="revenue-label">💎 Bits & Tips</span>
+            <span class="revenue-value">$2,845.00</span>
+          </div>
+          <div class="revenue-row">
+            <span class="revenue-label">🎯 Ad Revenue</span>
+            <span class="revenue-value">$1,560.00</span>
+          </div>
+          <div class="revenue-row">
+            <span class="revenue-label">🎁 Sponsorships</span>
+            <span class="revenue-value">$815.00</span>
+          </div>
+        </div>
+        
+        <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--glass-border);">
+          <p style="font-size: 0.85rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.5rem;">
+            <span style="color: var(--accent-green);">✓</span>
+            Buzzaboo takes 0% cut for the first year. After that, only 5% - the lowest in the industry.
+          </p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Stream Key & Quick Settings -->
+    <section class="section" style="margin-top: 2rem;">
+      <div class="section-header">
+        <h2 class="section-title">⚙️ Stream Settings</h2>
+      </div>
+      <div class="glass-card" style="padding: 1.5rem;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+          <div class="form-group">
+            <label class="form-label">Stream Title</label>
+            <input type="text" class="form-input" value="🔴 LIVE - Let's go! | !discord !socials" placeholder="Enter stream title">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select class="form-input form-select">
+              <option>Just Chatting</option>
+              <option>Gaming</option>
+              <option>Music</option>
+              <option>Art</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Stream Key</label>
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="password" class="form-input" value="live_xxxxxxxxxxxx" readonly>
+              <button class="btn btn-secondary">Copy</button>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Latency Mode</label>
+            <select class="form-input form-select">
+              <option>⚡ Zero Latency (~1s delay)</option>
+              <option>Low Latency (~3s delay)</option>
+              <option>Normal (~10s delay)</option>
+            </select>
+          </div>
+        </div>
+        
+        <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+          <label class="form-checkbox">
+            <input type="checkbox" checked>
+            <span>Enable Chat</span>
+          </label>
+          <label class="form-checkbox">
+            <input type="checkbox" checked>
+            <span>AI Highlights</span>
+          </label>
+          <label class="form-checkbox">
+            <input type="checkbox" checked>
+            <span>Allow Clips</span>
+          </label>
+          <label class="form-checkbox">
+            <input type="checkbox">
+            <span>Subscriber Only Mode</span>
+          </label>
+        </div>
+      </div>
+    </section>
+    
+    <!-- AI Tools -->
+    <section class="section" style="margin-top: 2rem;">
+      <div class="section-header">
+        <h2 class="section-title">🤖 AI Tools</h2>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+        <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+          <div style="font-size: 2.5rem; margin-bottom: 1rem;">✂️</div>
+          <h3 style="font-weight: 700; margin-bottom: 0.5rem;">Auto Clips</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">AI detects exciting moments and creates clips automatically</p>
+          <button class="btn btn-secondary btn-sm">Configure</button>
+        </div>
+        
+        <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+          <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎬</div>
+          <h3 style="font-weight: 700; margin-bottom: 0.5rem;">Highlight Reels</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">Generate highlight compilations from your streams</p>
+          <button class="btn btn-secondary btn-sm">Generate</button>
+        </div>
+        
+        <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+          <div style="font-size: 2.5rem; margin-bottom: 1rem;">📝</div>
+          <h3 style="font-weight: 700; margin-bottom: 0.5rem;">Title Generator</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">AI suggests engaging titles for your clips</p>
+          <button class="btn btn-secondary btn-sm">Try It</button>
+        </div>
+        
+        <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+          <div style="font-size: 2.5rem; margin-bottom: 1rem;">🛡️</div>
+          <h3 style="font-weight: 700; margin-bottom: 0.5rem;">Smart Moderation</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">AI-powered chat moderation and spam detection</p>
+          <button class="btn btn-secondary btn-sm">Settings</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <script src="app.js"></script>
+  
+  <style>
+    @media (max-width: 1024px) {
+      .sidebar { transform: translateX(-100%); }
+      .main-content { margin-left: 0 !important; }
+      .dashboard-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+    @media (max-width: 768px) {
+      .dashboard-grid { grid-template-columns: 1fr !important; }
+      .main-content > div[style*="grid-template-columns: 2fr 1fr"] {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+</body>
+</html>

@@ -1,0 +1,60 @@
+# Buzzaboo Robots.txt
+# https://buzzaboo.tv
+
+User-agent: *
+Allow: /
+
+# Main pages
+Allow: /index.html
+Allow: /browse.html
+Allow: /shorts.html
+Allow: /multiview.html
+Allow: /profile.html
+Allow: /stream.html
+
+# Assets
+Allow: /styles.css
+Allow: /app.js
+Allow: /manifest.json
+Allow: /assets/
+
+# Disallow admin/private areas
+Disallow: /dashboard.html
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_internal/
+Disallow: /private/
+
+# Disallow query strings that create duplicate content
+Disallow: /*?sort=
+Disallow: /*?filter=
+Disallow: /*?ref=
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://buzzaboo.tv/sitemap.xml
+
+# Google specific
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Bing specific
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Block bad bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /

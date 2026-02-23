@@ -173,6 +173,11 @@
                 <span>Allow Clips</span>
               </label>
             </div>
+            
+            <!-- Sub-Only Chat Toggle -->
+            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--glass-border);">
+              <div id="subOnlyChatToggle"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -275,7 +280,17 @@
   <!-- Buzzaboo Scripts -->
   <script src="js/livekit-service.js"></script>
   <script src="js/stream-components.js"></script>
+  <script src="js/stripe-service.js"></script>
+  <script src="js/subscription-components.js"></script>
   <script src="js/app.js"></script>
+  
+  <script>
+    // Initialize sub-only chat toggle
+    const subOnlyToggle = document.getElementById('subOnlyChatToggle');
+    if (subOnlyToggle) {
+      subOnlyToggle.innerHTML = SubscriptionComponents.createSubOnlyChatToggle(false);
+    }
+  </script>
   
   <style>
     @media (max-width: 1024px) {

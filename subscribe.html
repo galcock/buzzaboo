@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subscribe to Buzzaboo | Platform Subscriptions</title>
+  <meta name="description" content="Subscribe to Buzzaboo+ or Buzzaboo Pro for ad-free viewing, custom emotes, and exclusive features.">
+  
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#8B5CF6">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  
+  <style>
+    /* Subscription Page Styles */
+    .subscribe-hero {
+      background: var(--gradient-primary);
+      padding: 4rem 2rem;
+      text-align: center;
+      border-radius: var(--radius-lg);
+      margin-bottom: 3rem;
+    }
+
+    .subscribe-hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      color: white;
+    }
+
+    .subscribe-hero p {
+      font-size: 1.25rem;
+      color: rgba(255, 255, 255, 0.9);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .tiers-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin: 3rem 0;
+    }
+
+    .subscription-tier-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      position: relative;
+      transition: all var(--transition-normal);
+      backdrop-filter: blur(10px);
+    }
+
+    .subscription-tier-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--primary);
+      box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
+    }
+
+    .subscription-tier-card.popular {
+      border: 2px solid var(--primary);
+      transform: scale(1.05);
+    }
+
+    .subscription-tier-card.current {
+      border-color: var(--accent-green);
+      opacity: 0.7;
+    }
+
+    .tier-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gradient-primary);
+      color: white;
+      padding: 0.5rem 1.5rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .tier-badge.current-badge {
+      background: var(--accent-green);
+    }
+
+    .tier-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .tier-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .tier-price {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 0.25rem;
+    }
+
+    .price-amount {
+      font-size: 3rem;
+      font-weight: 800;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .price-period {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    .tier-features {
+      list-style: none;
+      margin-bottom: 2rem;
+    }
+
+    .tier-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem 0;
+    }
+
+    .feature-icon {
+      color: var(--primary);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .feature-text {
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    .comparison-table {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      margin: 4rem 0;
+      overflow-x: auto;
+    }
+
+    .comparison-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .comparison-table th {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .comparison-table td {
+      color: var(--text-secondary);
+    }
+
+    .comparison-table .check {
+      color: var(--accent-green);
+      font-weight: 700;
+    }
+
+    .comparison-table .cross {
+      color: var(--text-muted);
+    }
+
+    .faq-section {
+      margin: 4rem 0;
+    }
+
+    .faq-item {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .faq-question {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .faq-answer {
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .subscribe-hero h1 {
+        font-size: 2rem;
+      }
+      
+      .tiers-container {
+        grid-template-columns: 1fr;
+      }
+
+      .subscription-tier-card.popular {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body data-page="subscribe">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">🐝</span>
+        <span>Buzzaboo</span>
+      </a>
+      
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="browse.html" class="nav-link">Browse</a>
+        <a href="subscribe.html" class="nav-link active">Subscribe</a>
+      </nav>
+      
+      <div class="header-actions">
+        <button class="btn btn-secondary btn-sm theme-toggle"><span class="theme-toggle-icon">🌙</span></button>
+        <a href="billing.html" class="btn btn-ghost btn-sm">My Subscriptions</a>
+        <div class="user-menu dropdown">
+          <div class="dropdown-trigger">
+            <img src="https://i.pravatar.cc/150?img=68" alt="Profile" class="user-avatar">
+          </div>
+          <div class="dropdown-menu">
+            <a href="profile.html" class="dropdown-item">👤 Your Profile</a>
+            <a href="dashboard.html" class="dropdown-item">📊 Dashboard</a>
+            <a href="billing.html" class="dropdown-item">💳 Billing</a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">⚙️ Settings</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content" style="max-width: 1400px; margin: 0 auto; padding: 2rem;">
+    <!-- Hero Section -->
+    <div class="subscribe-hero">
+      <h1>Upgrade Your Buzzaboo Experience</h1>
+      <p>Choose a plan that works for you. Support the platform and unlock exclusive features.</p>
+    </div>
+
+    <!-- Success/Cancel Messages -->
+    <div id="subscriptionMessage"></div>
+
+    <!-- Subscription Tiers -->
+    <div class="tiers-container" id="subscriptionTiers">
+      <!-- Populated by JavaScript -->
+    </div>
+
+    <!-- Feature Comparison Table -->
+    <div class="comparison-table">
+      <h2 style="margin-bottom: 2rem; text-align: center;">Feature Comparison</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Free</th>
+            <th>Buzzaboo+</th>
+            <th>Buzzaboo Pro</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Watch live streams</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Chat participation</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Follow creators</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Ad-free viewing</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Custom emotes</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Subscriber badge</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+            <td class="check">✓ (Pro badge)</td>
+          </tr>
+          <tr>
+            <td>Priority support</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Exclusive Pro streams</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>4K video quality</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Download VODs</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Custom profile themes</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+      <h2 style="text-align: center; margin-bottom: 2rem;">Frequently Asked Questions</h2>
+      
+      <div class="faq-item">
+        <div class="faq-question">Can I cancel my subscription anytime?</div>
+        <div class="faq-answer">
+          Yes! You can cancel your subscription at any time from the billing page. You'll retain access until the end of your current billing period.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">What payment methods do you accept?</div>
+        <div class="faq-answer">
+          We accept all major credit cards (Visa, Mastercard, American Express, Discover), debit cards, and various digital wallets through Stripe.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">Do subscriptions auto-renew?</div>
+        <div class="faq-answer">
+          Yes, subscriptions automatically renew monthly unless you cancel. You'll receive an email reminder before each renewal.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">Can I upgrade or downgrade my plan?</div>
+        <div class="faq-answer">
+          Absolutely! You can change your subscription tier at any time. When upgrading, you'll be charged the prorated difference immediately. When downgrading, the change takes effect at your next billing cycle.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">Is there a free trial?</div>
+        <div class="faq-answer">
+          We currently don't offer free trials, but you can always use Buzzaboo for free! Paid subscriptions unlock additional features but aren't required to enjoy the platform.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">What happens if my payment fails?</div>
+        <div class="faq-answer">
+          If a payment fails, we'll retry a few times over the next few days and send you email notifications. If payment continues to fail, your subscription will be paused until you update your payment method.
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <div style="text-align: center; margin: 4rem 0;">
+      <h2 style="margin-bottom: 1rem;">Ready to upgrade?</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+        Join thousands of subscribers enjoying an ad-free, premium Buzzaboo experience.
+      </p>
+      <a href="#subscriptionTiers" class="btn btn-primary btn-lg">
+        Choose Your Plan
+      </a>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/stripe-service.js"></script>
+  <script src="js/subscription-components.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    // Check for success/cancel parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const messageEl = document.getElementById('subscriptionMessage');
+
+    if (urlParams.get('success')) {
+      messageEl.innerHTML = `
+        <div class="glass-card" style="padding: 1.5rem; margin-bottom: 2rem; border: 2px solid var(--accent-green);">
+          <h3 style="color: var(--accent-green); margin-bottom: 0.5rem;">✓ Subscription Successful!</h3>
+          <p style="color: var(--text-secondary);">
+            Thank you for subscribing to Buzzaboo! Your benefits are now active.
+          </p>
+          <a href="billing.html" class="btn btn-primary" style="margin-top: 1rem;">
+            View My Subscriptions
+          </a>
+        </div>
+      `;
+    } else if (urlParams.get('canceled')) {
+      messageEl.innerHTML = `
+        <div class="glass-card" style="padding: 1.5rem; margin-bottom: 2rem; border: 2px solid var(--accent-yellow);">
+          <h3 style="color: var(--accent-yellow); margin-bottom: 0.5rem;">Subscription Canceled</h3>
+          <p style="color: var(--text-secondary);">
+            No worries! You can subscribe anytime you're ready.
+          </p>
+        </div>
+      `;
+    }
+
+    // Load subscription tiers
+    const tiersContainer = document.getElementById('subscriptionTiers');
+    const currentPlan = 'FREE'; // In production, get from user session
+
+    tiersContainer.innerHTML = 
+      SubscriptionComponents.createSubscriptionTierCard('FREE', currentPlan === 'FREE') +
+      SubscriptionComponents.createSubscriptionTierCard('BUZZABOO_PLUS', currentPlan === 'BUZZABOO_PLUS') +
+      SubscriptionComponents.createSubscriptionTierCard('BUZZABOO_PRO', currentPlan === 'BUZZABOO_PRO');
+  </script>
+</body>
+</html>

@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billing & Subscriptions | Buzzaboo</title>
+  <meta name="description" content="Manage your Buzzaboo subscriptions, payment methods, and billing history.">
+  
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#8B5CF6">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  
+  <style>
+    /* Billing Page Styles */
+    .billing-sidebar {
+      position: fixed;
+      left: 0;
+      top: 60px;
+      width: 260px;
+      height: calc(100vh - 60px);
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--glass-border);
+      padding: 2rem 1rem;
+      overflow-y: auto;
+      z-index: 50;
+    }
+
+    .billing-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all var(--transition-fast);
+      margin-bottom: 0.5rem;
+    }
+
+    .billing-nav-item:hover {
+      background: var(--glass-bg);
+      color: var(--text-primary);
+    }
+
+    .billing-nav-item.active {
+      background: var(--glass-bg);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .billing-content {
+      margin-left: 260px;
+      padding: 2rem;
+    }
+
+    .subscription-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: all var(--transition-normal);
+    }
+
+    .subscription-card:hover {
+      border-color: var(--primary);
+    }
+
+    .subscription-card.inactive {
+      opacity: 0.6;
+      border-color: var(--text-muted);
+    }
+
+    .sub-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .sub-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .sub-description {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .status-badge {
+      padding: 0.375rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .status-badge.active {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--accent-green);
+    }
+
+    .status-badge.inactive {
+      background: rgba(107, 107, 107, 0.2);
+      color: var(--text-muted);
+    }
+
+    .sub-card-body {
+      margin-bottom: 1rem;
+    }
+
+    .sub-detail {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    .sub-detail.warning {
+      color: var(--accent-yellow);
+    }
+
+    .detail-label {
+      color: var(--text-secondary);
+    }
+
+    .detail-value {
+      font-weight: 600;
+    }
+
+    .sub-card-footer {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .payment-methods-section {
+      margin-top: 2rem;
+    }
+
+    .payment-method-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .payment-method-card.primary {
+      border-color: var(--primary);
+    }
+
+    .payment-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .card-icon {
+      font-size: 2rem;
+    }
+
+    .card-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-number {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .card-expiry {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .payment-history-item {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .payment-date {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .payment-description {
+      font-weight: 600;
+    }
+
+    .payment-details {
+      text-align: right;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .payment-amount {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .payment-status {
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .payment-status.success {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--accent-green);
+    }
+
+    .payment-status.pending {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--accent-yellow);
+    }
+
+    .payment-status.error {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--accent-red);
+    }
+
+    .billing-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .summary-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .summary-value {
+      font-size: 2rem;
+      font-weight: 800;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .summary-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .tab-navigation {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .tab-btn {
+      padding: 1rem 1.5rem;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all var(--transition-fast);
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @media (max-width: 1024px) {
+      .billing-sidebar {
+        transform: translateX(-100%);
+      }
+      
+      .billing-content {
+        margin-left: 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .billing-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .payment-history-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      .payment-details {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .sub-card-footer {
+        flex-direction: column;
+      }
+
+      .sub-card-footer .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body data-page="billing">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">🐝</span>
+        <span>Buzzaboo</span>
+      </a>
+      
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="browse.html" class="nav-link">Browse</a>
+      </nav>
+      
+      <div class="header-actions">
+        <button class="btn btn-secondary btn-sm theme-toggle"><span class="theme-toggle-icon">🌙</span></button>
+        <a href="subscribe.html" class="btn btn-primary btn-sm">Upgrade Plan</a>
+        <div class="user-menu dropdown">
+          <div class="dropdown-trigger">
+            <img src="https://i.pravatar.cc/150?img=68" alt="Profile" class="user-avatar">
+          </div>
+          <div class="dropdown-menu">
+            <a href="profile.html" class="dropdown-item">👤 Your Profile</a>
+            <a href="dashboard.html" class="dropdown-item">📊 Dashboard</a>
+            <a href="billing.html" class="dropdown-item active">💳 Billing</a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">⚙️ Settings</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Billing Sidebar -->
+  <aside class="billing-sidebar">
+    <div class="sidebar-title" style="margin-bottom: 1rem; font-weight: 700;">Billing & Subscriptions</div>
+    <a href="#" class="billing-nav-item active" data-tab="subscriptions">
+      <span>📋</span>
+      <span>My Subscriptions</span>
+    </a>
+    <a href="#" class="billing-nav-item" data-tab="payment-methods">
+      <span>💳</span>
+      <span>Payment Methods</span>
+    </a>
+    <a href="#" class="billing-nav-item" data-tab="history">
+      <span>📄</span>
+      <span>Payment History</span>
+    </a>
+    <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--glass-border);">
+      <a href="subscribe.html" class="btn btn-primary btn-sm" style="width: 100%;">
+        ⭐ Upgrade Plan
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="billing-content">
+    <!-- Page Header -->
+    <div style="margin-bottom: 2rem;">
+      <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">Billing & Subscriptions</h1>
+      <p style="color: var(--text-secondary);">Manage your subscriptions, payment methods, and billing history.</p>
+    </div>
+
+    <!-- Billing Summary -->
+    <div class="billing-summary">
+      <div class="summary-card">
+        <div class="summary-value" id="activeSubsCount">-</div>
+        <div class="summary-label">Active Subscriptions</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-value" id="monthlyTotal">-</div>
+        <div class="summary-label">Monthly Total</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-value" id="nextBilling">-</div>
+        <div class="summary-label">Next Billing</div>
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+      <button class="tab-btn active" data-tab="subscriptions">Subscriptions</button>
+      <button class="tab-btn" data-tab="payment-methods">Payment Methods</button>
+      <button class="tab-btn" data-tab="history">Payment History</button>
+    </div>
+
+    <!-- Subscriptions Tab -->
+    <div class="tab-content active" id="subscriptions-tab">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2 class="section-title">Your Subscriptions</h2>
+        <a href="subscribe.html" class="btn btn-secondary">Browse Plans</a>
+      </div>
+      <div id="subscriptionsList">
+        <!-- Populated by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Payment Methods Tab -->
+    <div class="tab-content" id="payment-methods-tab">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2 class="section-title">Payment Methods</h2>
+        <button class="btn btn-secondary" id="addPaymentMethod">Add Payment Method</button>
+      </div>
+      <div id="paymentMethodsList">
+        <!-- Populated by JavaScript -->
+        <div class="payment-method-card primary">
+          <div class="payment-info">
+            <div class="card-icon">💳</div>
+            <div class="card-details">
+              <div class="card-number">•••• •••• •••• 4242</div>
+              <div class="card-expiry">Expires 12/25 • Primary</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-ghost btn-sm">Edit</button>
+            <button class="btn btn-ghost btn-sm">Remove</button>
+          </div>
+        </div>
+
+        <div class="payment-method-card">
+          <div class="payment-info">
+            <div class="card-icon">💳</div>
+            <div class="card-details">
+              <div class="card-number">•••• •••• •••• 5555</div>
+              <div class="card-expiry">Expires 08/26</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-ghost btn-sm">Set as Primary</button>
+            <button class="btn btn-ghost btn-sm">Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment History Tab -->
+    <div class="tab-content" id="history-tab">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2 class="section-title">Payment History</h2>
+        <button class="btn btn-secondary btn-sm">Export as PDF</button>
+      </div>
+      <div id="paymentHistoryList">
+        <!-- Populated by JavaScript -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/stripe-service.js"></script>
+  <script src="js/subscription-components.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    // Tab Navigation
+    const tabBtns = document.querySelectorAll('.tab-btn, .billing-nav-item');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const tabName = btn.dataset.tab;
+        
+        // Update active states
+        tabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // Show correct tab content
+        tabContents.forEach(content => {
+          content.classList.remove('active');
+          if (content.id === tabName + '-tab') {
+            content.classList.add('active');
+          }
+        });
+      });
+    });
+
+    // Load user data
+    async function loadBillingData() {
+      try {
+        // Get subscriptions
+        const subscriptions = await stripeService.getSubscriptions();
+        
+        // Update summary
+        const activeSubs = subscriptions.filter(s => s.status === 'active');
+        document.getElementById('activeSubsCount').textContent = activeSubs.length;
+        
+        const monthlyTotal = activeSubs.reduce((sum, sub) => sum + sub.price, 0);
+        document.getElementById('monthlyTotal').textContent = stripeService.formatCurrency(monthlyTotal);
+        
+        if (activeSubs.length > 0) {
+          const nextBilling = new Date(Math.min(...activeSubs.map(s => new Date(s.currentPeriodEnd))));
+          document.getElementById('nextBilling').textContent = 
+            nextBilling.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        } else {
+          document.getElementById('nextBilling').textContent = '-';
+        }
+        
+        // Populate subscriptions list
+        const subsList = document.getElementById('subscriptionsList');
+        if (subscriptions.length === 0) {
+          subsList.innerHTML = `
+            <div class="glass-card" style="padding: 3rem; text-align: center;">
+              <h3 style="margin-bottom: 1rem;">No Active Subscriptions</h3>
+              <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                Support creators and unlock exclusive features by subscribing!
+              </p>
+              <a href="subscribe.html" class="btn btn-primary">Browse Subscription Plans</a>
+            </div>
+          `;
+        } else {
+          subsList.innerHTML = subscriptions
+            .map(sub => SubscriptionComponents.createSubscriptionManagementCard(sub))
+            .join('');
+        }
+
+        // Load payment history
+        const paymentHistory = await stripeService.getPaymentHistory();
+        const historyList = document.getElementById('paymentHistoryList');
+        if (paymentHistory.length === 0) {
+          historyList.innerHTML = `
+            <div class="glass-card" style="padding: 2rem; text-align: center;">
+              <p style="color: var(--text-secondary);">No payment history yet</p>
+            </div>
+          `;
+        } else {
+          historyList.innerHTML = paymentHistory
+            .map(payment => SubscriptionComponents.createPaymentHistoryItem(payment))
+            .join('');
+        }
+
+      } catch (error) {
+        console.error('Failed to load billing data:', error);
+      }
+    }
+
+    // Add payment method
+    document.getElementById('addPaymentMethod')?.addEventListener('click', async () => {
+      alert('Add payment method functionality - integrate with Stripe Elements');
+      // In production, this would open a modal with Stripe Elements
+    });
+
+    // Initialize
+    loadBillingData();
+  </script>
+</body>
+</html>

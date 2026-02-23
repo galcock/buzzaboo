@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report Content | Buzzaboo</title>
+  <meta name="description" content="Report violations on Buzzaboo live streaming platform.">
+  <meta name="robots" content="noindex, nofollow">
+  
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#8B5CF6">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  
+  <script src="js/analytics-service.js" defer></script>
+</head>
+<body data-page="report">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">🐝</span>
+        <span>Buzzaboo</span>
+      </a>
+      
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="browse.html" class="nav-link">Browse</a>
+        <a href="shorts.html" class="nav-link">Shorts</a>
+      </nav>
+      
+      <div class="header-actions">
+        <button class="btn btn-secondary btn-sm theme-toggle"><span class="theme-toggle-icon">🌙</span></button>
+        <a href="dashboard.html" class="btn btn-primary btn-sm">Go Live</a>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Main Content -->
+  <main class="main-content full-width" style="max-width: 700px; margin: 0 auto; padding: 3rem 2rem;">
+    <div class="glass-card" style="padding: 2.5rem;">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">🚨</div>
+        <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">Report Content</h1>
+        <p class="text-secondary">Help us keep Buzzaboo safe by reporting violations of our Community Guidelines</p>
+      </div>
+      
+      <form id="report-form" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <!-- Content Type -->
+        <div class="form-group">
+          <label for="content-type" class="form-label">What are you reporting?</label>
+          <select id="content-type" name="content-type" class="form-input" required>
+            <option value="">Select content type...</option>
+            <option value="stream">Live Stream</option>
+            <option value="clip">Clip / Video</option>
+            <option value="short">Short</option>
+            <option value="user">User Profile</option>
+            <option value="chat">Chat Message</option>
+            <option value="comment">Comment</option>
+          </select>
+        </div>
+        
+        <!-- Content URL/ID -->
+        <div class="form-group">
+          <label for="content-url" class="form-label">Content URL or ID</label>
+          <input 
+            type="text" 
+            id="content-url" 
+            name="content-url" 
+            class="form-input" 
+            placeholder="https://buzzaboo.tv/stream/..." 
+            required
+          >
+          <small class="form-help">Paste the URL or provide the ID of the content you're reporting</small>
+        </div>
+        
+        <!-- Username (if applicable) -->
+        <div class="form-group">
+          <label for="username" class="form-label">Username (if applicable)</label>
+          <input 
+            type="text" 
+            id="username" 
+            name="username" 
+            class="form-input" 
+            placeholder="@username"
+          >
+        </div>
+        
+        <!-- Reason -->
+        <div class="form-group">
+          <label for="reason" class="form-label">Reason for report *</label>
+          <select id="reason" name="reason" class="form-input" required>
+            <option value="">Select a reason...</option>
+            <optgroup label="Safety & Harm">
+              <option value="violence">Violence or threats</option>
+              <option value="self-harm">Self-harm or suicide</option>
+              <option value="dangerous">Dangerous activities</option>
+              <option value="exploitation">Child exploitation or abuse</option>
+            </optgroup>
+            <optgroup label="Harassment & Hate">
+              <option value="harassment">Harassment or bullying</option>
+              <option value="hate-speech">Hate speech</option>
+              <option value="doxxing">Doxxing / Privacy violation</option>
+            </optgroup>
+            <optgroup label="Sexual Content">
+              <option value="sexual-content">Sexual content</option>
+              <option value="nudity">Nudity</option>
+              <option value="sexual-harassment">Sexual harassment</option>
+            </optgroup>
+            <optgroup label="Illegal & Fraud">
+              <option value="illegal">Illegal activity</option>
+              <option value="drugs">Drug promotion</option>
+              <option value="scam">Scam or fraud</option>
+              <option value="weapons">Weapons sale</option>
+            </optgroup>
+            <optgroup label="Intellectual Property">
+              <option value="copyright">Copyright infringement</option>
+              <option value="trademark">Trademark violation</option>
+            </optgroup>
+            <optgroup label="Spam & Manipulation">
+              <option value="spam">Spam</option>
+              <option value="impersonation">Impersonation</option>
+              <option value="botting">View/follower botting</option>
+            </optgroup>
+            <optgroup label="Other">
+              <option value="misinformation">Misinformation</option>
+              <option value="other">Other (please describe)</option>
+            </optgroup>
+          </select>
+        </div>
+        
+        <!-- Timestamp (for videos/streams) -->
+        <div class="form-group" id="timestamp-group" style="display: none;">
+          <label for="timestamp" class="form-label">Timestamp (optional)</label>
+          <input 
+            type="text" 
+            id="timestamp" 
+            name="timestamp" 
+            class="form-input" 
+            placeholder="1:23:45"
+          >
+          <small class="form-help">When in the video/stream does the violation occur?</small>
+        </div>
+        
+        <!-- Description -->
+        <div class="form-group">
+          <label for="description" class="form-label">Detailed description *</label>
+          <textarea 
+            id="description" 
+            name="description" 
+            class="form-input" 
+            rows="6" 
+            placeholder="Please provide as much detail as possible about the violation..."
+            required
+          ></textarea>
+          <small class="form-help">Character count: <span id="char-count">0</span>/2000</small>
+        </div>
+        
+        <!-- Reporter Email (optional) -->
+        <div class="form-group">
+          <label for="reporter-email" class="form-label">Your email (optional)</label>
+          <input 
+            type="email" 
+            id="reporter-email" 
+            name="reporter-email" 
+            class="form-input" 
+            placeholder="email@example.com"
+          >
+          <small class="form-help">We may contact you for more information. This is kept confidential.</small>
+        </div>
+        
+        <!-- Anonymous -->
+        <div class="form-group">
+          <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+            <input type="checkbox" id="anonymous" name="anonymous" style="width: 18px; height: 18px;">
+            <span>Submit this report anonymously</span>
+          </label>
+        </div>
+        
+        <!-- Guidelines Link -->
+        <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); font-size: 0.9rem;">
+          <p>📖 Please review our <a href="community-guidelines.html" target="_blank">Community Guidelines</a> before submitting a report.</p>
+        </div>
+        
+        <!-- Submit -->
+        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+          <button type="submit" class="btn btn-primary" style="flex: 1;">
+            Submit Report
+          </button>
+          <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+            Cancel
+          </button>
+        </div>
+      </form>
+      
+      <!-- Success Message (hidden by default) -->
+      <div id="success-message" style="display: none; text-align: center;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
+        <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">Report Submitted</h2>
+        <p class="text-secondary" style="margin-bottom: 2rem;">Thank you for helping keep Buzzaboo safe. Our moderation team will review this report as soon as possible.</p>
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+          <a href="index.html" class="btn btn-primary">Back to Home</a>
+          <button class="btn btn-secondary" onclick="location.reload()">Submit Another Report</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Information Cards -->
+    <div style="margin-top: 2rem; display: grid; gap: 1rem;">
+      <div class="glass-card" style="padding: 1.5rem;">
+        <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem;">🕒 What happens next?</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary);">Our moderation team reviews reports 24/7. Most reports are reviewed within 24 hours. We take action based on the severity of the violation and the user's history.</p>
+      </div>
+      
+      <div class="glass-card" style="padding: 1.5rem;">
+        <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem;">⚖️ False reports</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary);">Submitting false or malicious reports may result in action against your account. Please only report genuine violations of our Community Guidelines.</p>
+      </div>
+      
+      <div class="glass-card" style="padding: 1.5rem;">
+        <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem;">🆘 Emergencies</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary);">If someone is in immediate danger, please contact local emergency services (911 in the US) before submitting a report.</p>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Footer -->
+  <footer style="padding: 2rem; border-top: 1px solid var(--glass-border); background: var(--bg-secondary); margin-top: 3rem;">
+    <div style="text-align: center;">
+      <p style="font-size: 0.8rem; color: var(--text-muted);">© 2026 Buzzaboo. All rights reserved.</p>
+    </div>
+  </footer>
+  
+  <script src="js/app.js"></script>
+  <script>
+    // Form handling
+    const form = document.getElementById('report-form');
+    const contentType = document.getElementById('content-type');
+    const timestampGroup = document.getElementById('timestamp-group');
+    const description = document.getElementById('description');
+    const charCount = document.getElementById('char-count');
+    const successMessage = document.getElementById('success-message');
+    
+    // Show timestamp field for streams/clips
+    contentType.addEventListener('change', (e) => {
+      if (['stream', 'clip', 'short'].includes(e.target.value)) {
+        timestampGroup.style.display = 'block';
+      } else {
+        timestampGroup.style.display = 'none';
+      }
+    });
+    
+    // Character count
+    description.addEventListener('input', (e) => {
+      const count = e.target.value.length;
+      charCount.textContent = count;
+      if (count > 2000) {
+        charCount.style.color = 'var(--accent-red)';
+        e.target.value = e.target.value.substring(0, 2000);
+      } else {
+        charCount.style.color = 'inherit';
+      }
+    });
+    
+    // Form submission
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      // Collect form data
+      const formData = {
+        contentType: document.getElementById('content-type').value,
+        contentUrl: document.getElementById('content-url').value,
+        username: document.getElementById('username').value,
+        reason: document.getElementById('reason').value,
+        timestamp: document.getElementById('timestamp').value,
+        description: document.getElementById('description').value,
+        reporterEmail: document.getElementById('reporter-email').value,
+        anonymous: document.getElementById('anonymous').checked,
+        reportedAt: new Date().toISOString()
+      };
+      
+      // Track analytics
+      if (window.AnalyticsService) {
+        window.AnalyticsService.trackReport(formData.contentType, formData.reason);
+      }
+      
+      // In production, send to backend
+      console.log('Report submitted:', formData);
+      
+      // Show success message
+      form.style.display = 'none';
+      successMessage.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    
+    // Pre-fill from URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('type')) {
+      document.getElementById('content-type').value = urlParams.get('type');
+      contentType.dispatchEvent(new Event('change'));
+    }
+    if (urlParams.has('url')) {
+      document.getElementById('content-url').value = urlParams.get('url');
+    }
+    if (urlParams.has('user')) {
+      document.getElementById('username').value = urlParams.get('user');
+    }
+  </script>
+  
+  <style>
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .form-label {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    
+    .form-help {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    
+    select.form-input {
+      cursor: pointer;
+    }
+    
+    textarea.form-input {
+      resize: vertical;
+      min-height: 120px;
+    }
+  </style>
+</body>
+</html>

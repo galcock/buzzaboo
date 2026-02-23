@@ -2675,3 +2675,419 @@ h6 { font-size: 0.875rem; }
 .revenue-total .revenue-value {
   font-size: 1.5rem;
 }
+
+/* ============================================
+   SUBSCRIPTION & PAYMENT STYLES
+   ============================================ */
+
+/* Subscription Badges */
+.sub-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-left: 0.25rem;
+  vertical-align: middle;
+}
+
+.sub-badge.small {
+  font-size: 0.65rem;
+  padding: 0.1rem 0.3rem;
+}
+
+.sub-badge.badge-plus {
+  background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+  color: white;
+}
+
+.sub-badge.badge-pro {
+  background: linear-gradient(135deg, #EC4899, #F472B6);
+  color: white;
+}
+
+.sub-badge.badge-creator {
+  background: var(--glass-bg);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+}
+
+/* Revenue Widget */
+.revenue-widget .revenue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.revenue-widget .revenue-total {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: var(--glass-bg);
+  border-radius: var(--radius-md);
+}
+
+.revenue-widget .revenue-label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.revenue-widget .revenue-amount {
+  font-size: 3rem;
+  font-weight: 800;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+.revenue-widget .revenue-sublabel {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.revenue-widget .revenue-breakdown {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.revenue-widget .breakdown-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--glass-bg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  transition: all var(--transition-fast);
+}
+
+.revenue-widget .breakdown-item:hover {
+  border-color: var(--primary);
+}
+
+.revenue-widget .breakdown-icon {
+  font-size: 2rem;
+  width: 50px;
+  text-align: center;
+}
+
+.revenue-widget .breakdown-info {
+  flex: 1;
+}
+
+.revenue-widget .breakdown-label {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+}
+
+.revenue-widget .breakdown-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.revenue-widget .breakdown-detail {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.revenue-widget .revenue-subs-breakdown {
+  padding: 1.5rem;
+  background: var(--glass-bg);
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+}
+
+.revenue-widget .revenue-subs-breakdown h4 {
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.revenue-widget .subs-tiers {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.revenue-widget .sub-tier-stat {
+  text-align: center;
+}
+
+.revenue-widget .tier-count {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.revenue-widget .tier-label {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.revenue-widget .revenue-footer {
+  padding-top: 1rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.revenue-widget .revenue-note {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.revenue-widget .note-icon {
+  color: var(--accent-green);
+}
+
+/* Payout Table */
+.payout-table {
+  overflow-x: auto;
+}
+
+.payout-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.payout-table th,
+.payout-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.payout-table th {
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.payout-table td {
+  color: var(--text-primary);
+}
+
+.payout-table td.amount {
+  font-weight: 700;
+}
+
+/* Stream Settings - Sub-Only Chat Toggle */
+.stream-setting {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+}
+
+.setting-info {
+  flex: 1;
+}
+
+.setting-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.setting-description {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bg-tertiary);
+  transition: var(--transition-fast);
+  border-radius: var(--radius-full);
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: var(--transition-fast);
+  border-radius: 50%;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background: var(--gradient-primary);
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+  transform: translateX(22px);
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+}
+
+.modal.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  position: relative;
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  transform: scale(0.9);
+  transition: transform var(--transition-normal);
+}
+
+.modal.active .modal-content {
+  transform: scale(1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.modal-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.modal-close:hover {
+  background: var(--glass-bg);
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+/* Gift Sub Modal Specific */
+.gift-preview {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--glass-bg);
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+}
+
+.gift-creator-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.gift-details h3 {
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.gift-details p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Chat Badges in Messages */
+.chat-message .user-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: 0.25rem;
+}
+
+.chat-message .user-badges .sub-badge {
+  margin: 0;
+}

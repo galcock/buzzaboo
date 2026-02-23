@@ -97,7 +97,7 @@
           <div style="display: flex; align-items: center; gap: 1rem;">
             <div class="stream-viewer-count" style="display: flex; align-items: center; gap: 0.5rem; color: var(--accent-red); font-weight: 600;"></div>
             <button class="btn btn-primary">Follow</button>
-            <button class="btn btn-secondary">Subscribe ⭐</button>
+            <a href="#" class="btn btn-secondary" id="subscribeBtn">Subscribe ⭐</a>
           </div>
         </div>
         
@@ -149,7 +149,19 @@
   <!-- Buzzaboo Scripts -->
   <script src="js/livekit-service.js"></script>
   <script src="js/stream-components.js"></script>
+  <script src="js/stripe-service.js"></script>
+  <script src="js/subscription-components.js"></script>
   <script src="js/app.js"></script>
+  
+  <script>
+    // Get streamer ID from URL and update subscribe button
+    const urlParams = new URLSearchParams(window.location.search);
+    const streamerId = urlParams.get('id') || '1';
+    const subscribeBtn = document.getElementById('subscribeBtn');
+    if (subscribeBtn) {
+      subscribeBtn.href = `creator-sub.html?creator=${streamerId}`;
+    }
+  </script>
   
   <style>
     @media (max-width: 1024px) {

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subscribe to Creator | Buzzaboo</title>
+  <meta name="description" content="Subscribe to your favorite Buzzaboo creator and support them directly.">
+  
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#8B5CF6">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  
+  <style>
+    /* Creator Subscription Page Styles */
+    .creator-header {
+      position: relative;
+      margin-bottom: 3rem;
+    }
+
+    .creator-banner {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: var(--radius-lg);
+      margin-bottom: -80px;
+    }
+
+    .creator-info-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      position: relative;
+      z-index: 10;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .creator-profile {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .creator-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid var(--bg-primary);
+      object-fit: cover;
+    }
+
+    .creator-details h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .creator-stats {
+      display: flex;
+      gap: 2rem;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .creator-bio {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .creator-sub-benefits {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+    }
+
+    .benefit-icon {
+      font-size: 1.25rem;
+    }
+
+    .tiers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin: 3rem 0;
+    }
+
+    .creator-sub-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      transition: all var(--transition-normal);
+    }
+
+    .creator-sub-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--primary);
+      box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
+    }
+
+    .creator-sub-card .tier-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .creator-sub-card .tier-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .creator-sub-card .tier-price {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 0.25rem;
+    }
+
+    .creator-sub-card .price-amount {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .creator-sub-card .price-period {
+      color: var(--text-secondary);
+    }
+
+    .creator-sub-card .tier-features {
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+
+    .creator-sub-card .tier-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+    }
+
+    .creator-sub-card .feature-icon {
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .creator-sub-card .sub-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .perks-showcase {
+      margin: 3rem 0;
+    }
+
+    .perks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .perk-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .perk-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .perk-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .perk-description {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .creator-profile {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .creator-stats {
+        justify-content: center;
+      }
+
+      .tiers-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body data-page="creator-sub">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">🐝</span>
+        <span>Buzzaboo</span>
+      </a>
+      
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="browse.html" class="nav-link">Browse</a>
+      </nav>
+      
+      <div class="header-actions">
+        <button class="btn btn-secondary btn-sm theme-toggle"><span class="theme-toggle-icon">🌙</span></button>
+        <a href="billing.html" class="btn btn-ghost btn-sm">My Subscriptions</a>
+        <div class="user-menu dropdown">
+          <div class="dropdown-trigger">
+            <img src="https://i.pravatar.cc/150?img=68" alt="Profile" class="user-avatar">
+          </div>
+          <div class="dropdown-menu">
+            <a href="profile.html" class="dropdown-item">👤 Your Profile</a>
+            <a href="dashboard.html" class="dropdown-item">📊 Dashboard</a>
+            <a href="billing.html" class="dropdown-item">💳 Billing</a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">⚙️ Settings</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content" style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+    <!-- Creator Header -->
+    <div class="creator-header" id="creatorHeader">
+      <!-- Populated by JavaScript -->
+    </div>
+
+    <!-- Success/Cancel Messages -->
+    <div id="subscriptionMessage"></div>
+
+    <!-- Subscription Tiers -->
+    <section>
+      <h2 style="text-align: center; margin-bottom: 1rem;">Choose Your Tier</h2>
+      <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
+        Support your favorite creator and unlock exclusive perks!
+      </p>
+      
+      <div class="tiers-grid" id="subscriptionTiers">
+        <!-- Populated by JavaScript -->
+      </div>
+    </section>
+
+    <!-- Perks Showcase -->
+    <section class="perks-showcase">
+      <h2 style="text-align: center; margin-bottom: 1rem;">Subscriber Perks</h2>
+      <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
+        Here's what you get when you subscribe
+      </p>
+
+      <div class="perks-grid">
+        <div class="perk-card">
+          <div class="perk-icon">💬</div>
+          <div class="perk-title">Sub-Only Chat</div>
+          <div class="perk-description">Access exclusive subscriber-only chat during streams</div>
+        </div>
+
+        <div class="perk-card">
+          <div class="perk-icon">🎨</div>
+          <div class="perk-title">Custom Emotes</div>
+          <div class="perk-description">Use special subscriber emotes in chat</div>
+        </div>
+
+        <div class="perk-card">
+          <div class="perk-icon">⭐</div>
+          <div class="perk-title">Subscriber Badge</div>
+          <div class="perk-description">Show off your support with a unique badge</div>
+        </div>
+
+        <div class="perk-card">
+          <div class="perk-icon">🎁</div>
+          <div class="perk-title">Exclusive Content</div>
+          <div class="perk-description">Behind-the-scenes and subscriber-only streams</div>
+        </div>
+
+        <div class="perk-card">
+          <div class="perk-icon">💜</div>
+          <div class="perk-title">Direct Support</div>
+          <div class="perk-description">Your subscription directly supports the creator</div>
+        </div>
+
+        <div class="perk-card">
+          <div class="perk-icon">🎯</div>
+          <div class="perk-title">Priority Status</div>
+          <div class="perk-description">Higher tiers get priority in chat and Q&A</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section style="margin: 4rem 0;">
+      <h2 style="text-align: center; margin-bottom: 2rem;">Subscription FAQ</h2>
+      
+      <div class="glass-card" style="padding: 2rem;">
+        <details style="margin-bottom: 1rem;">
+          <summary style="cursor: pointer; font-weight: 600; margin-bottom: 0.5rem;">
+            How does creator revenue work?
+          </summary>
+          <p style="color: var(--text-secondary); padding-left: 1rem; line-height: 1.6;">
+            Creators receive the majority of subscription revenue. Buzzaboo takes only a 5% platform fee after the first year (0% in year one), which is the lowest in the industry. The rest goes directly to the creator.
+          </p>
+        </details>
+
+        <details style="margin-bottom: 1rem;">
+          <summary style="cursor: pointer; font-weight: 600; margin-bottom: 0.5rem;">
+            Can I gift subscriptions to friends?
+          </summary>
+          <p style="color: var(--text-secondary); padding-left: 1rem; line-height: 1.6;">
+            Yes! Click the "Gift Sub" button on any tier to send a subscription to another user. You can gift from 1 to 12 months at a time.
+          </p>
+        </details>
+
+        <details style="margin-bottom: 1rem;">
+          <summary style="cursor: pointer; font-weight: 600; margin-bottom: 0.5rem;">
+            What if I want to change tiers?
+          </summary>
+          <p style="color: var(--text-secondary); padding-left: 1rem; line-height: 1.6;">
+            You can upgrade or downgrade your subscription tier at any time from the billing page. Upgrades take effect immediately, while downgrades take effect at your next billing cycle.
+          </p>
+        </details>
+
+        <details>
+          <summary style="cursor: pointer; font-weight: 600; margin-bottom: 0.5rem;">
+            Do subscriptions auto-renew?
+          </summary>
+          <p style="color: var(--text-secondary); padding-left: 1rem; line-height: 1.6;">
+            Yes, subscriptions automatically renew monthly unless you cancel. You can cancel anytime from the billing page.
+          </p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/stripe-service.js"></script>
+  <script src="js/subscription-components.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    // Get creator ID from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const creatorId = parseInt(urlParams.get('creator')) || 1;
+
+    // Find creator
+    const creator = STREAMERS.find(s => s.id === creatorId) || STREAMERS[0];
+
+    // Check for success/cancel messages
+    const messageEl = document.getElementById('subscriptionMessage');
+    if (urlParams.get('success')) {
+      messageEl.innerHTML = `
+        <div class="glass-card" style="padding: 1.5rem; margin-bottom: 2rem; border: 2px solid var(--accent-green);">
+          <h3 style="color: var(--accent-green); margin-bottom: 0.5rem;">✓ Subscription Successful!</h3>
+          <p style="color: var(--text-secondary);">
+            You're now a subscriber to ${creator.displayName}! Thank you for your support.
+          </p>
+          <a href="billing.html" class="btn btn-primary" style="margin-top: 1rem;">
+            View My Subscriptions
+          </a>
+        </div>
+      `;
+    } else if (urlParams.get('canceled')) {
+      messageEl.innerHTML = `
+        <div class="glass-card" style="padding: 1.5rem; margin-bottom: 2rem; border: 2px solid var(--accent-yellow);">
+          <h3 style="color: var(--accent-yellow); margin-bottom: 0.5rem;">Subscription Canceled</h3>
+          <p style="color: var(--text-secondary);">
+            No worries! You can subscribe anytime you're ready.
+          </p>
+        </div>
+      `;
+    }
+
+    // Populate creator header
+    const headerEl = document.getElementById('creatorHeader');
+    headerEl.innerHTML = `
+      <img src="${creator.banner}" alt="${creator.displayName} banner" class="creator-banner">
+      <div class="creator-info-card">
+        <div class="creator-profile">
+          <img src="${creator.avatar}" alt="${creator.displayName}" class="creator-avatar">
+          <div class="creator-details">
+            <h1>
+              ${creator.displayName}
+              ${creator.verified ? '<span style="color: var(--primary);">✓</span>' : ''}
+              ${creator.partner ? '<span style="color: var(--secondary);">⭐</span>' : ''}
+            </h1>
+            <div class="creator-stats">
+              <span>👥 ${creator.followers.toLocaleString()} followers</span>
+              <span>@${creator.username}</span>
+            </div>
+          </div>
+        </div>
+        <div class="creator-bio">
+          ${creator.bio}
+        </div>
+        <div class="creator-sub-benefits">
+          <strong style="display: block; margin-bottom: 1rem;">Why subscribe?</strong>
+          <div class="benefit-item">
+            <span class="benefit-icon">💜</span>
+            <span>Directly support ${creator.displayName}</span>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">⭐</span>
+            <span>Unlock exclusive emotes and badges</span>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">🎁</span>
+            <span>Access subscriber-only streams and content</span>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">💬</span>
+            <span>Join a community of supporters</span>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Populate subscription tiers
+    const tiersEl = document.getElementById('subscriptionTiers');
+    tiersEl.innerHTML = 
+      SubscriptionComponents.createCreatorSubCard(creator, 'TIER_1') +
+      SubscriptionComponents.createCreatorSubCard(creator, 'TIER_2') +
+      SubscriptionComponents.createCreatorSubCard(creator, 'TIER_3');
+  </script>
+</body>
+</html>

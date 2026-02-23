@@ -15,6 +15,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="css/livekit.css">
+  <link rel="stylesheet" href="css/auth.css">
 </head>
 <body data-page="dashboard">
   <!-- Header -->
@@ -35,14 +36,16 @@
         <button class="btn btn-secondary btn-sm theme-toggle"><span class="theme-toggle-icon">🌙</span></button>
         <div class="user-menu dropdown">
           <div class="dropdown-trigger">
-            <img src="https://i.pravatar.cc/150?img=68" alt="Profile" class="user-avatar">
+            <img src="https://i.pravatar.cc/150?img=68" alt="Profile" class="user-avatar auth-avatar">
+            <span class="user-name auth-display-name">You</span>
           </div>
           <div class="dropdown-menu">
             <a href="profile.html" class="dropdown-item">👤 Your Profile</a>
             <a href="dashboard.html" class="dropdown-item active">📊 Dashboard</a>
             <a href="call.html" class="dropdown-item">📹 Video Call</a>
+            <a href="settings.html" class="dropdown-item">⚙️ Settings</a>
             <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item">⚙️ Settings</a>
+            <button class="dropdown-item logout-btn">🚪 Log Out</button>
           </div>
         </div>
       </div>
@@ -277,12 +280,51 @@
   <!-- LiveKit SDK -->
   <script src="https://unpkg.com/livekit-client@2.0.7/dist/livekit-client.umd.js"></script>
   
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  
   <!-- Buzzaboo Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth-service.js"></script>
   <script src="js/livekit-service.js"></script>
   <script src="js/stream-components.js"></script>
   <script src="js/stripe-service.js"></script>
   <script src="js/subscription-components.js"></script>
   <script src="js/app.js"></script>
+  
+  <!-- Auth Protection -->
+  <script>
+    // Require auth for dashboard
+    window.addEventListener('buzzaboo-auth-ready', () => {
+      if (!buzzabooAuth.isAuthenticated()) {
+        window.location.href = '/login.html?redirect=/dashboard.html';
+        return;
+      }
+      
+      // Update UI with user info
+      const profile = buzzabooAuth.getProfile();
+      if (profile) {
+        document.querySelectorAll('.auth-avatar').forEach(el => {
+          if (el.tagName === 'IMG') {
+            el.src = profile.avatar || buzzabooAuth.getAvatarUrl();
+          }
+        });
+        document.querySelectorAll('.auth-display-name').forEach(el => {
+          el.textContent = profile.displayName || 'You';
+        });
+      }
+    });
+    
+    // Logout handler
+    document.querySelectorAll('.logout-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        await buzzabooAuth.signOut();
+        window.location.href = '/login.html';
+      });
+    });
+  </script>
   
   <script>
     // Initialize sub-only chat toggle

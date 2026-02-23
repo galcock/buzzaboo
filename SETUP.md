@@ -281,6 +281,157 @@ Before going to production:
 
 ---
 
+## Step 10: Email Service Setup
+
+Buzzaboo has email notification templates for transactional and marketing emails. To enable email functionality, you'll need an email service provider.
+
+### Recommended Providers
+
+**SendGrid** (Recommended)
+- Free tier: 100 emails/day
+- Good deliverability
+- Simple API
+- [Sign up at SendGrid](https://sendgrid.com/)
+
+**Mailgun**
+- Free tier: 5,000 emails/month (first 3 months)
+- Developer-friendly
+- [Sign up at Mailgun](https://mailgun.com/)
+
+### Email Templates Included
+
+Buzzaboo includes conceptual templates for:
+- **Welcome Email**: Sent when users sign up
+- **Stream Live Notification**: When followed channels go live
+- **Weekly Digest**: Summary of missed streams and highlights
+- **Subscription Confirmation**: When users subscribe to a channel
+- **Security Alerts**: Login notifications and security changes
+
+### Integration Steps
+
+1. **Sign up** for SendGrid or Mailgun
+2. **Get your API key** from the service dashboard
+3. **Create a backend service** (Firebase Functions, Node.js server, etc.) to send emails
+4. **Set up email templates** using the provider's template editor
+5. **Test email delivery** with a personal email address
+
+### Environment Variables
+
+Store your email API key securely:
+
+```bash
+# .env file (DO NOT commit to git!)
+EMAIL_SERVICE=sendgrid
+SENDGRID_API_KEY=your_sendgrid_key_here
+# or
+MAILGUN_API_KEY=your_mailgun_key_here
+MAILGUN_DOMAIN=your_domain.com
+```
+
+### Firebase Functions Example
+
+```javascript
+const functions = require('firebase-functions');
+const sgMail = require('@sendgrid/mail');
+
+sgMail.setApiKey(functions.config().sendgrid.key);
+
+exports.sendWelcomeEmail = functions.auth.user().onCreate(async (user) => {
+  const msg = {
+    to: user.email,
+    from: 'noreply@buzzaboo.tv',
+    templateId: 'd-welcometemplate123', // Your SendGrid template ID
+    dynamic_template_data: {
+      username: user.displayName,
+      email: user.email
+    }
+  };
+  
+  await sgMail.send(msg);
+});
+```
+
+### Email Preferences
+
+Users can manage their email preferences at `/email-preferences.html`.
+
+---
+
+## Step 11: Google Analytics 4 Setup
+
+Buzzaboo includes Google Analytics 4 integration for tracking user behavior and stream performance.
+
+### Setup Steps
+
+1. **Create a GA4 Property**:
+   - Go to [Google Analytics](https://analytics.google.com/)
+   - Click **Admin** → **Create Property**
+   - Enter property name: "Buzzaboo"
+   - Select timezone and currency
+   - Click **Create**
+
+2. **Get Your Measurement ID**:
+   - Go to **Admin** → **Data Streams**
+   - Click **Add stream** → **Web**
+   - Enter your website URL
+   - Copy the **Measurement ID** (starts with `G-`)
+
+3. **Add to Your Site**:
+   
+   Add this meta tag to the `<head>` of all HTML pages:
+   
+   ```html
+   <meta name="ga-measurement-id" content="G-XXXXXXXXXX">
+   ```
+   
+   Replace `G-XXXXXXXXXX` with your actual Measurement ID.
+
+4. **Include Analytics Script**:
+   
+   The analytics service auto-initializes when it finds the meta tag:
+   
+   ```html
+   <script src="js/analytics-service.js" defer></script>
+   ```
+
+### Events Tracked
+
+Buzzaboo automatically tracks:
+- **Page Views**: All page navigation
+- **Stream Views**: When users watch streams
+- **Stream Watch Time**: Duration of stream viewing
+- **Sign Ups**: New user registrations
+- **Subscriptions**: Channel subscriptions
+- **Follows**: Channel follows
+- **Clips Created**: When users create clips
+- **Predictions**: Prediction participation
+- **Chat Messages**: Chat activity (count only, not content)
+- **Multiview Usage**: Multiview feature usage
+- **Search**: Search queries and results
+- **Reports**: Content reports submitted
+
+### Custom Events
+
+You can track custom events:
+
+```javascript
+// Example: Track custom event
+window.AnalyticsService.trackEvent('custom_event', {
+  category: 'engagement',
+  action: 'button_click',
+  label: 'subscribe_button'
+});
+```
+
+### Privacy Compliance
+
+- Analytics respects user consent settings
+- No personally identifiable information (PII) is sent
+- Users can opt out via browser settings
+- See `privacy.html` and `cookies.html` for full details
+
+---
+
 ## LiveKit Integration
 
 Buzzaboo uses Firebase UID as the LiveKit identity for authenticated users. This ensures:

@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   
+  <!-- Google Analytics 4 (Replace with your Measurement ID) -->
+  <meta name="ga-measurement-id" content="G-XXXXXXXXXX">
+  
   <!-- Primary Meta Tags -->
   <title>Buzzaboo - Next-Gen Live Streaming Platform | Kick Alternative</title>
   <meta name="title" content="Buzzaboo - Next-Gen Live Streaming Platform | Kick Alternative">
@@ -51,6 +54,7 @@
   <!-- Styles -->
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="css/livekit.css">
+  <link rel="stylesheet" href="css/auth.css">
   
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -129,20 +133,28 @@
         <button class="btn btn-secondary btn-sm theme-toggle" aria-label="Toggle theme">
           <span class="theme-toggle-icon">🌙</span>
         </button>
-        <a href="dashboard.html" class="btn btn-primary btn-sm">
+        
+        <!-- Auth Buttons (shown when logged out) -->
+        <div class="auth-buttons" id="authButtons">
+          <button class="btn btn-secondary btn-sm" onclick="authModal.open('login')">Log In</button>
+          <button class="btn btn-primary btn-sm" onclick="authModal.open('signup')">Sign Up</button>
+        </div>
+        
+        <!-- User Menu (shown when logged in) -->
+        <a href="dashboard.html" class="btn btn-primary btn-sm user-only" style="display: none;">
           Go Live
         </a>
-        <div class="user-menu dropdown">
+        <div class="user-menu dropdown user-only" style="display: none;">
           <div class="dropdown-trigger">
-            <img src="https://i.pravatar.cc/150?img=68" alt="Profile" class="user-avatar">
-            <span class="user-name">You</span>
+            <img src="https://i.pravatar.cc/150?img=68" alt="Profile" class="user-avatar auth-avatar">
+            <span class="user-name auth-display-name">You</span>
           </div>
           <div class="dropdown-menu">
             <a href="profile.html" class="dropdown-item">👤 Your Profile</a>
             <a href="dashboard.html" class="dropdown-item">📊 Dashboard</a>
+            <a href="settings.html" class="dropdown-item">⚙️ Settings</a>
             <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item">⚙️ Settings</a>
-            <a href="#" class="dropdown-item">🚪 Log Out</a>
+            <button class="dropdown-item logout-btn">🚪 Log Out</button>
           </div>
         </div>
       </div>
@@ -296,10 +308,11 @@
         <div>
           <h4 style="font-size: 0.85rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-secondary);">Legal</h4>
           <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <a href="#" style="font-size: 0.9rem; color: var(--text-primary);">Terms of Service</a>
-            <a href="#" style="font-size: 0.9rem; color: var(--text-primary);">Privacy Policy</a>
-            <a href="#" style="font-size: 0.9rem; color: var(--text-primary);">Cookie Policy</a>
-            <a href="#" style="font-size: 0.9rem; color: var(--text-primary);">DMCA</a>
+            <a href="terms.html" style="font-size: 0.9rem; color: var(--text-primary);">Terms of Service</a>
+            <a href="privacy.html" style="font-size: 0.9rem; color: var(--text-primary);">Privacy Policy</a>
+            <a href="community-guidelines.html" style="font-size: 0.9rem; color: var(--text-primary);">Community Guidelines</a>
+            <a href="dmca.html" style="font-size: 0.9rem; color: var(--text-primary);">DMCA</a>
+            <a href="cookies.html" style="font-size: 0.9rem; color: var(--text-primary);">Cookie Policy</a>
           </nav>
         </div>
       </div>
@@ -318,10 +331,65 @@
   <!-- LiveKit SDK -->
   <script src="https://unpkg.com/livekit-client@2.0.7/dist/livekit-client.umd.js"></script>
   
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  
   <!-- Buzzaboo Scripts -->
+  <script src="js/analytics-service.js"></script>
+  <script src="js/moderation-service.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth-service.js"></script>
+  <script src="js/auth-modal.js"></script>
   <script src="js/livekit-service.js"></script>
   <script src="js/stream-components.js"></script>
   <script src="js/app.js"></script>
+  
+  <!-- Auth UI Integration -->
+  <script>
+    // Update UI based on auth state
+    window.addEventListener('buzzaboo-auth-ready', () => {
+      updateAuthUI();
+    });
+    
+    buzzabooAuth.on('authStateChanged', () => {
+      updateAuthUI();
+    });
+    
+    function updateAuthUI() {
+      const isLoggedIn = buzzabooAuth.isAuthenticated();
+      const profile = buzzabooAuth.getProfile();
+      
+      // Toggle visibility
+      document.querySelectorAll('.auth-buttons').forEach(el => {
+        el.style.display = isLoggedIn ? 'none' : 'flex';
+      });
+      document.querySelectorAll('.user-only').forEach(el => {
+        el.style.display = isLoggedIn ? 'flex' : 'none';
+      });
+      
+      if (isLoggedIn && profile) {
+        // Update avatars and names
+        document.querySelectorAll('.auth-avatar').forEach(el => {
+          if (el.tagName === 'IMG') {
+            el.src = profile.avatar || buzzabooAuth.getAvatarUrl();
+          }
+        });
+        document.querySelectorAll('.auth-display-name').forEach(el => {
+          el.textContent = profile.displayName || 'You';
+        });
+      }
+    }
+    
+    // Logout handler
+    document.querySelectorAll('.logout-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        await buzzabooAuth.signOut();
+        window.location.reload();
+      });
+    });
+  </script>
   
   <!-- Mobile nav styles -->
   <style>

@@ -50,10 +50,26 @@
       
       <div class="header-actions">
         <button class="btn btn-secondary btn-sm theme-toggle"><span class="theme-toggle-icon">🌙</span></button>
-        <a href="dashboard.html" class="btn btn-primary btn-sm">Go Live</a>
-        <div class="user-menu dropdown">
+        
+        <!-- Auth Buttons -->
+        <div class="auth-buttons" id="authButtons">
+          <button class="btn btn-secondary btn-sm" onclick="authModal.open('login')">Log In</button>
+          <button class="btn btn-primary btn-sm" onclick="authModal.open('signup')">Sign Up</button>
+        </div>
+        
+        <!-- User Menu -->
+        <a href="dashboard.html" class="btn btn-primary btn-sm user-only" style="display: none;">Go Live</a>
+        <div class="user-menu dropdown user-only" style="display: none;">
           <div class="dropdown-trigger">
-            <img src="https://i.pravatar.cc/150?img=68" alt="Profile" class="user-avatar">
+            <img src="https://i.pravatar.cc/150?img=68" alt="Profile" class="user-avatar auth-avatar">
+            <span class="user-name auth-display-name">You</span>
+          </div>
+          <div class="dropdown-menu">
+            <a href="profile.html" class="dropdown-item">👤 Your Profile</a>
+            <a href="dashboard.html" class="dropdown-item">📊 Dashboard</a>
+            <a href="settings.html" class="dropdown-item">⚙️ Settings</a>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item logout-btn">🚪 Log Out</button>
           </div>
         </div>
       </div>
@@ -109,10 +125,41 @@
   <!-- LiveKit SDK -->
   <script src="https://unpkg.com/livekit-client@2.0.7/dist/livekit-client.umd.js"></script>
   
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  
   <!-- Buzzaboo Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth-service.js"></script>
+  <script src="js/auth-modal.js"></script>
   <script src="js/livekit-service.js"></script>
   <script src="js/stream-components.js"></script>
   <script src="js/app.js"></script>
+  
+  <!-- Auth UI -->
+  <script>
+    window.addEventListener('buzzaboo-auth-ready', updateAuthUI);
+    buzzabooAuth.on('authStateChanged', updateAuthUI);
+    
+    function updateAuthUI() {
+      const isLoggedIn = buzzabooAuth.isAuthenticated();
+      const profile = buzzabooAuth.getProfile();
+      
+      document.querySelectorAll('.auth-buttons').forEach(el => el.style.display = isLoggedIn ? 'none' : 'flex');
+      document.querySelectorAll('.user-only').forEach(el => el.style.display = isLoggedIn ? 'flex' : 'none');
+      
+      if (isLoggedIn && profile) {
+        document.querySelectorAll('.auth-avatar').forEach(el => { if (el.tagName === 'IMG') el.src = profile.avatar; });
+        document.querySelectorAll('.auth-display-name').forEach(el => el.textContent = profile.displayName);
+      }
+    }
+    
+    document.querySelectorAll('.logout-btn').forEach(btn => {
+      btn.addEventListener('click', async () => { await buzzabooAuth.signOut(); window.location.reload(); });
+    });
+  </script>
   
   <style>
     @media (max-width: 1024px) {

@@ -109,23 +109,42 @@ self.addEventListener('fetch', (event) => {
 
 // Handle push notifications
 self.addEventListener('push', (event) => {
-  const options = {
-    body: event.data ? event.data.text() : 'New notification from Buzzaboo',
+  let data = {
+    title: 'Buzzaboo',
+    body: 'New notification',
     icon: '/assets/icons/icon-192x192.png',
     badge: '/assets/icons/badge-72x72.png',
-    vibrate: [100, 50, 100],
+    url: '/'
+  };
+
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch (e) {
+      data.body = event.data.text();
+    }
+  }
+
+  const options = {
+    body: data.body,
+    icon: data.icon || '/assets/icons/icon-192x192.png',
+    badge: data.badge || '/assets/icons/badge-72x72.png',
+    vibrate: [200, 100, 200],
+    tag: data.type || 'default',
     data: {
       dateOfArrival: Date.now(),
-      primaryKey: '1'
+      url: data.url || '/',
+      type: data.type || 'default'
     },
-    actions: [
-      { action: 'watch', title: 'Watch Now' },
-      { action: 'close', title: 'Close' }
-    ]
+    requireInteraction: data.type === 'stream_live',
+    actions: data.type === 'stream_live' ? [
+      { action: 'watch', title: 'Watch Now', icon: '/assets/icons/play.png' },
+      { action: 'dismiss', title: 'Dismiss' }
+    ] : []
   };
 
   event.waitUntil(
-    self.registration.showNotification('Buzzaboo', options)
+    self.registration.showNotification(data.title || 'Buzzaboo', options)
   );
 });
 
@@ -133,11 +152,34 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  if (event.action === 'watch') {
-    event.waitUntil(
-      clients.openWindow('/')
-    );
-  }
+  const url = event.notification.data.url || '/';
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clientList) => {
+        // Check if there's already a window open
+        for (let client of clientList) {
+          if (client.url === url && 'focus' in client) {
+            return client.focus();
+          }
+        }
+        // Open new window if none found
+        if (clients.openWindow) {
+          return clients.openWindow(url);
+        }
+      })
+  );
+
+  // Send message to all clients about the notification click
+  clients.matchAll().then((clients) => {
+    clients.forEach((client) => {
+      client.postMessage({
+        type: 'notification-click',
+        url: url,
+        data: event.notification.data
+      });
+    });
+  });
 });
 
 // Background sync for offline actions

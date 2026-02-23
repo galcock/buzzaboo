@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity Feed - Buzzaboo</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#8B5CF6">
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/livekit.css">
+  
+  <style>
+    .activity-feed {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .activity-tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid var(--glass-border);
+    }
+
+    .activity-tab {
+      padding: 0.75rem 1.5rem;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-weight: 600;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+    }
+
+    .activity-tab.active {
+      color: var(--primary);
+    }
+
+    .activity-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--primary);
+    }
+
+    .activity-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .activity-card {
+      background: var(--bg-glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      transition: all 0.3s;
+    }
+
+    .activity-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+    }
+
+    .activity-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .activity-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid var(--primary);
+    }
+
+    .activity-meta {
+      flex: 1;
+    }
+
+    .activity-user {
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .activity-action {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .activity-time {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .activity-content {
+      margin-top: 1rem;
+    }
+
+    .activity-thumbnail {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: var(--radius-md);
+      margin-bottom: 1rem;
+    }
+
+    .activity-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .activity-stats {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .activity-stat {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .following-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .following-card {
+      background: var(--bg-glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .following-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .following-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 0 auto 1rem;
+      border: 3px solid var(--primary);
+    }
+
+    .following-name {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .following-followers {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-secondary);
+    }
+
+    .empty-state-icon {
+      font-size: 4rem;
+      opacity: 0.3;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body data-page="activity">
+  <!-- Skip Link -->
+  <a href="#main-content" class="sr-only">Skip to main content</a>
+  
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">🐝</span>
+        <span>Buzzaboo</span>
+      </a>
+      
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          Home
+        </a>
+        <a href="browse.html" class="nav-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+          Browse
+        </a>
+        <a href="activity.html" class="nav-link active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          Activity
+        </a>
+      </nav>
+      
+      <div class="search-container">
+        <div class="search-bar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <input type="text" placeholder="Search..." aria-label="Search">
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <button class="btn btn-secondary btn-sm theme-toggle">
+          <span class="theme-toggle-icon">🌙</span>
+        </button>
+        <div id="notification-bell-container"></div>
+        <a href="dashboard.html" class="btn btn-primary btn-sm">Go Live</a>
+        <div class="user-menu dropdown">
+          <div class="dropdown-trigger">
+            <img src="https://i.pravatar.cc/150?img=68" alt="Profile" class="user-avatar">
+          </div>
+          <div class="dropdown-menu">
+            <a href="profile.html" class="dropdown-item">👤 Your Profile</a>
+            <a href="dashboard.html" class="dropdown-item">📊 Dashboard</a>
+            <a href="settings.html" class="dropdown-item">⚙️ Settings</a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">🚪 Log Out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">Followed Channels</div>
+      <div id="sidebar-followed"></div>
+    </div>
+  </aside>
+  
+  <!-- Main Content -->
+  <main class="main-content" id="main-content">
+    <div class="activity-feed">
+      <h1 class="page-title">Activity Feed</h1>
+      
+      <div class="activity-tabs">
+        <button class="activity-tab active" data-tab="all">All Activity</button>
+        <button class="activity-tab" data-tab="clips">Clips</button>
+        <button class="activity-tab" data-tab="streams">Live Streams</button>
+        <button class="activity-tab" data-tab="following">Following</button>
+      </div>
+      
+      <!-- All Activity -->
+      <div class="activity-content" data-content="all">
+        <div class="activity-grid" id="activity-all"></div>
+      </div>
+      
+      <!-- Clips -->
+      <div class="activity-content" data-content="clips" style="display: none;">
+        <div class="activity-grid" id="activity-clips"></div>
+      </div>
+      
+      <!-- Streams -->
+      <div class="activity-content" data-content="streams" style="display: none;">
+        <div class="activity-grid" id="activity-streams"></div>
+      </div>
+      
+      <!-- Following -->
+      <div class="activity-content" data-content="following" style="display: none;">
+        <div class="following-grid" id="activity-following"></div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  
+  <!-- Buzzaboo Scripts -->
+  <script src="js/database-service.js"></script>
+  <script src="js/notifications-service.js"></script>
+  <script src="js/social-features.js"></script>
+  <script src="js/app.js"></script>
+  
+  <script>
+    // Activity Page Logic
+    class ActivityPage {
+      constructor() {
+        this.currentTab = 'all';
+        this.activities = [];
+      }
+
+      async init() {
+        // Initialize Firebase (use your config)
+        const firebaseConfig = {
+          // Add your Firebase config here
+          apiKey: "YOUR_API_KEY",
+          authDomain: "YOUR_AUTH_DOMAIN",
+          projectId: "YOUR_PROJECT_ID",
+          storageBucket: "YOUR_STORAGE_BUCKET",
+          messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+          appId: "YOUR_APP_ID"
+        };
+
+        await window.databaseService.init(firebaseConfig);
+        await window.notificationsService.init();
+
+        // Render notification bell
+        const bell = new NotificationBell('notification-bell-container');
+        await bell.refresh();
+
+        this.bindTabs();
+        await this.loadActivity();
+      }
+
+      bindTabs() {
+        document.querySelectorAll('.activity-tab').forEach(tab => {
+          tab.addEventListener('click', () => {
+            const tabName = tab.dataset.tab;
+            this.switchTab(tabName);
+          });
+        });
+      }
+
+      switchTab(tabName) {
+        this.currentTab = tabName;
+        
+        // Update active tab
+        document.querySelectorAll('.activity-tab').forEach(t => {
+          t.classList.toggle('active', t.dataset.tab === tabName);
+        });
+        
+        // Show/hide content
+        document.querySelectorAll('.activity-content').forEach(c => {
+          c.style.display = c.dataset.content === tabName ? 'block' : 'none';
+        });
+      }
+
+      async loadActivity() {
+        const user = firebase.auth().currentUser;
+        if (!user) {
+          this.showEmptyState('Please log in to see your activity feed');
+          return;
+        }
+
+        // Load different activity types
+        this.activities = await window.databaseService.getActivityFeed(user.uid);
+        this.renderAllActivity();
+        this.renderClips();
+        this.renderStreams();
+        await this.renderFollowing();
+      }
+
+      renderAllActivity() {
+        const container = document.getElementById('activity-all');
+        
+        if (this.activities.length === 0) {
+          container.innerHTML = this.getEmptyState('No recent activity from channels you follow');
+          return;
+        }
+
+        container.innerHTML = this.activities.map(activity => {
+          if (activity.type === 'clip') {
+            return this.renderClipActivity(activity);
+          }
+          return '';
+        }).join('');
+      }
+
+      renderClipActivity(clip) {
+        return `
+          <div class="activity-card">
+            <div class="activity-header">
+              <img src="${clip.userAvatar || 'https://i.pravatar.cc/150'}" alt="" class="activity-avatar">
+              <div class="activity-meta">
+                <div class="activity-user">${clip.userName || 'User'}</div>
+                <div class="activity-action">created a clip</div>
+                <div class="activity-time">${this.formatTimeAgo(clip.createdAt)}</div>
+              </div>
+            </div>
+            <div class="activity-content">
+              <img src="${clip.thumbnail}" alt="${clip.title}" class="activity-thumbnail">
+              <div class="activity-title">${clip.title}</div>
+              <div class="activity-stats">
+                <div class="activity-stat">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5z"/></svg>
+                  ${this.formatNumber(clip.views)} views
+                </div>
+                <div class="activity-stat">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                  ${this.formatNumber(clip.likes)}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      renderClips() {
+        const container = document.getElementById('activity-clips');
+        const clips = this.activities.filter(a => a.type === 'clip');
+        
+        if (clips.length === 0) {
+          container.innerHTML = this.getEmptyState('No clips yet');
+          return;
+        }
+
+        container.innerHTML = clips.map(clip => this.renderClipActivity(clip)).join('');
+      }
+
+      renderStreams() {
+        const container = document.getElementById('activity-streams');
+        container.innerHTML = this.getEmptyState('No recent streams');
+      }
+
+      async renderFollowing() {
+        const container = document.getElementById('activity-following');
+        const user = firebase.auth().currentUser;
+        
+        if (!user) {
+          container.innerHTML = this.getEmptyState('Please log in');
+          return;
+        }
+
+        const following = await window.databaseService.getFollowing(user.uid);
+        
+        if (following.length === 0) {
+          container.innerHTML = this.getEmptyState('You are not following anyone yet');
+          return;
+        }
+
+        container.innerHTML = following.map(user => `
+          <div class="following-card">
+            <img src="${user.avatar}" alt="${user.displayName}" class="following-avatar">
+            <div class="following-name">${user.displayName}</div>
+            <div class="following-followers">${this.formatNumber(user.followers)} followers</div>
+            <a href="profile.html?user=${user.username}" class="btn btn-secondary btn-sm">View Profile</a>
+          </div>
+        `).join('');
+      }
+
+      getEmptyState(message) {
+        return `
+          <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <p>${message}</p>
+          </div>
+        `;
+      }
+
+      formatTimeAgo(timestamp) {
+        if (!timestamp) return 'Just now';
+        const seconds = Math.floor((Date.now() - timestamp.toMillis()) / 1000);
+        if (seconds < 60) return 'Just now';
+        if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+        if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+        return `${Math.floor(seconds / 86400)}d ago`;
+      }
+
+      formatNumber(num) {
+        if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+        if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+        return num;
+      }
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+      const page = new ActivityPage();
+      page.init();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings | Buzzaboo</title>
+  <meta name="description" content="Manage your Buzzaboo account settings">
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#8B5CF6">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/settings.css">
+</head>
+<body data-page="settings">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">🐝</span>
+        <span>Buzzaboo</span>
+      </a>
+      
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="browse.html" class="nav-link">Browse</a>
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+      </nav>
+      
+      <div class="header-actions">
+        <button class="btn btn-secondary btn-sm theme-toggle"><span class="theme-toggle-icon">🌙</span></button>
+        <div class="user-menu dropdown">
+          <div class="dropdown-trigger">
+            <img src="https://i.pravatar.cc/150?img=68" alt="Profile" class="user-avatar auth-avatar">
+            <span class="user-name auth-display-name">You</span>
+          </div>
+          <div class="dropdown-menu">
+            <a href="profile.html" class="dropdown-item">👤 Your Profile</a>
+            <a href="dashboard.html" class="dropdown-item">📊 Dashboard</a>
+            <a href="settings.html" class="dropdown-item active">⚙️ Settings</a>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item logout-btn">🚪 Log Out</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="settings-container">
+    <div class="settings-wrapper">
+      <!-- Sidebar Navigation -->
+      <aside class="settings-sidebar glass-card">
+        <nav class="settings-nav">
+          <a href="#profile" class="settings-nav-item active" data-section="profile">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            <span>Profile</span>
+          </a>
+          <a href="#account" class="settings-nav-item" data-section="account">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            <span>Account</span>
+          </a>
+          <a href="#security" class="settings-nav-item" data-section="security">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+            <span>Security</span>
+          </a>
+          <a href="#notifications" class="settings-nav-item" data-section="notifications">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+            <span>Notifications</span>
+          </a>
+          <a href="#appearance" class="settings-nav-item" data-section="appearance">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+            <span>Appearance</span>
+          </a>
+          <a href="#privacy" class="settings-nav-item" data-section="privacy">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+            <span>Privacy</span>
+          </a>
+          <div class="settings-nav-divider"></div>
+          <a href="#danger" class="settings-nav-item danger" data-section="danger">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            <span>Danger Zone</span>
+          </a>
+        </nav>
+      </aside>
+
+      <!-- Settings Content -->
+      <div class="settings-content">
+        <!-- Toast Messages -->
+        <div class="settings-toast" id="settingsToast" style="display: none;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          <span id="toastMessage">Changes saved!</span>
+        </div>
+
+        <!-- Profile Section -->
+        <section class="settings-section glass-card" id="profile">
+          <div class="settings-section-header">
+            <h2>Profile Settings</h2>
+            <p>Manage your public profile information</p>
+          </div>
+          
+          <form id="profileForm" class="settings-form">
+            <!-- Avatar Upload -->
+            <div class="avatar-upload">
+              <div class="avatar-preview">
+                <img src="https://i.pravatar.cc/150?img=68" alt="Avatar" id="avatarPreview" class="auth-avatar">
+                <div class="avatar-overlay">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3 4V1h2v3h3v2H5v3H3V6H0V4h3zm3 6V7h3V4h7l1.83 2H21c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V10h3zm7 9c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-3.2-5c0 1.77 1.43 3.2 3.2 3.2s3.2-1.43 3.2-3.2-1.43-3.2-3.2-3.2-3.2 1.43-3.2 3.2z"/></svg>
+                </div>
+              </div>
+              <div class="avatar-actions">
+                <input type="file" id="avatarInput" accept="image/*" hidden>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('avatarInput').click()">
+                  Upload new photo
+                </button>
+                <p class="avatar-hint">JPG, PNG, GIF up to 2MB</p>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="displayName" class="form-label">Display Name</label>
+                <input type="text" id="displayName" class="form-input" placeholder="Your display name" maxlength="50">
+              </div>
+              <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <div class="input-wrapper">
+                  <span class="input-prefix">@</span>
+                  <input type="text" id="username" class="form-input" placeholder="username" maxlength="30">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="bio" class="form-label">Bio</label>
+              <textarea id="bio" class="form-input form-textarea" placeholder="Tell viewers about yourself..." maxlength="300" rows="3"></textarea>
+              <span class="form-hint"><span id="bioCount">0</span>/300 characters</span>
+            </div>
+
+            <div class="settings-section-header" style="margin-top: 2rem;">
+              <h3>Social Links</h3>
+            </div>
+
+            <div class="social-links">
+              <div class="form-group">
+                <label class="form-label">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                  Twitter / X
+                </label>
+                <input type="text" id="socialTwitter" class="form-input" placeholder="username">
+              </div>
+              <div class="form-group">
+                <label class="form-label">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                  Instagram
+                </label>
+                <input type="text" id="socialInstagram" class="form-input" placeholder="username">
+              </div>
+              <div class="form-group">
+                <label class="form-label">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                  YouTube
+                </label>
+                <input type="text" id="socialYoutube" class="form-input" placeholder="channel name">
+              </div>
+              <div class="form-group">
+                <label class="form-label">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+                  TikTok
+                </label>
+                <input type="text" id="socialTiktok" class="form-input" placeholder="username">
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Account Section -->
+        <section class="settings-section glass-card" id="account" style="display: none;">
+          <div class="settings-section-header">
+            <h2>Account Settings</h2>
+            <p>Manage your account details and email</p>
+          </div>
+          
+          <form id="accountForm" class="settings-form">
+            <div class="form-group">
+              <label for="email" class="form-label">Email Address</label>
+              <input type="email" id="accountEmail" class="form-input" placeholder="your@email.com" readonly>
+              <span class="form-hint" id="emailVerified">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                Email verified
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Change Email</label>
+              <button type="button" class="btn btn-secondary" id="changeEmailBtn">
+                Change Email Address
+              </button>
+            </div>
+          </form>
+
+          <!-- Change Email Modal -->
+          <div class="settings-modal" id="changeEmailModal" style="display: none;">
+            <div class="settings-modal-content glass-card">
+              <h3>Change Email Address</h3>
+              <form id="changeEmailForm">
+                <div class="form-group">
+                  <label for="newEmail" class="form-label">New Email</label>
+                  <input type="email" id="newEmail" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label for="currentPasswordEmail" class="form-label">Current Password</label>
+                  <input type="password" id="currentPasswordEmail" class="form-input" required>
+                </div>
+                <div class="form-actions">
+                  <button type="button" class="btn btn-secondary" onclick="closeModal('changeEmailModal')">Cancel</button>
+                  <button type="submit" class="btn btn-primary">Update Email</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- Security Section -->
+        <section class="settings-section glass-card" id="security" style="display: none;">
+          <div class="settings-section-header">
+            <h2>Security</h2>
+            <p>Manage your password and security settings</p>
+          </div>
+          
+          <div class="settings-form">
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <button type="button" class="btn btn-secondary" id="changePasswordBtn">
+                Change Password
+              </button>
+            </div>
+
+            <div class="settings-info">
+              <h4>Connected Accounts</h4>
+              <div class="connected-accounts">
+                <div class="connected-account" id="googleConnected" style="display: none;">
+                  <div class="connected-account-info">
+                    <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                    <span>Google</span>
+                  </div>
+                  <span class="badge badge-success">Connected</span>
+                </div>
+                <div class="connected-account" id="appleConnected" style="display: none;">
+                  <div class="connected-account-info">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+                    <span>Apple</span>
+                  </div>
+                  <span class="badge badge-success">Connected</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Change Password Modal -->
+          <div class="settings-modal" id="changePasswordModal" style="display: none;">
+            <div class="settings-modal-content glass-card">
+              <h3>Change Password</h3>
+              <form id="changePasswordForm">
+                <div class="form-group">
+                  <label for="currentPassword" class="form-label">Current Password</label>
+                  <input type="password" id="currentPassword" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label for="newPassword" class="form-label">New Password</label>
+                  <input type="password" id="newPassword" class="form-input" required minlength="6">
+                </div>
+                <div class="form-group">
+                  <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
+                  <input type="password" id="confirmNewPassword" class="form-input" required minlength="6">
+                </div>
+                <div class="form-actions">
+                  <button type="button" class="btn btn-secondary" onclick="closeModal('changePasswordModal')">Cancel</button>
+                  <button type="submit" class="btn btn-primary">Update Password</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- Notifications Section -->
+        <section class="settings-section glass-card" id="notifications" style="display: none;">
+          <div class="settings-section-header">
+            <h2>Notifications</h2>
+            <p>Choose how you want to be notified</p>
+          </div>
+          
+          <form id="notificationsForm" class="settings-form">
+            <div class="settings-toggle-group">
+              <div class="settings-toggle">
+                <div class="settings-toggle-info">
+                  <h4>Email Notifications</h4>
+                  <p>Receive email updates about your account</p>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="notifyEmail" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="settings-toggle">
+                <div class="settings-toggle-info">
+                  <h4>Push Notifications</h4>
+                  <p>Receive push notifications in your browser</p>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="notifyPush" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="settings-toggle">
+                <div class="settings-toggle-info">
+                  <h4>New Followers</h4>
+                  <p>Get notified when someone follows you</p>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="notifyFollower" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="settings-toggle">
+                <div class="settings-toggle-info">
+                  <h4>Live Notifications</h4>
+                  <p>Get notified when channels you follow go live</p>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="notifyLive" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="settings-toggle">
+                <div class="settings-toggle-info">
+                  <h4>Mentions</h4>
+                  <p>Get notified when someone mentions you</p>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="notifyMentions" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Save Preferences</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Appearance Section -->
+        <section class="settings-section glass-card" id="appearance" style="display: none;">
+          <div class="settings-section-header">
+            <h2>Appearance</h2>
+            <p>Customize how Buzzaboo looks for you</p>
+          </div>
+          
+          <form id="appearanceForm" class="settings-form">
+            <div class="form-group">
+              <label class="form-label">Theme</label>
+              <div class="theme-options">
+                <label class="theme-option">
+                  <input type="radio" name="theme" value="dark" checked>
+                  <div class="theme-preview dark">
+                    <span>🌙</span>
+                    <span>Dark</span>
+                  </div>
+                </label>
+                <label class="theme-option">
+                  <input type="radio" name="theme" value="light">
+                  <div class="theme-preview light">
+                    <span>☀️</span>
+                    <span>Light</span>
+                  </div>
+                </label>
+                <label class="theme-option">
+                  <input type="radio" name="theme" value="system">
+                  <div class="theme-preview system">
+                    <span>💻</span>
+                    <span>System</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Default Video Quality</label>
+              <select id="defaultQuality" class="form-input form-select">
+                <option value="auto">Auto</option>
+                <option value="1080p">1080p</option>
+                <option value="720p" selected>720p</option>
+                <option value="480p">480p</option>
+                <option value="360p">360p</option>
+              </select>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Save Preferences</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Privacy Section -->
+        <section class="settings-section glass-card" id="privacy" style="display: none;">
+          <div class="settings-section-header">
+            <h2>Privacy</h2>
+            <p>Control your privacy settings</p>
+          </div>
+          
+          <form id="privacyForm" class="settings-form">
+            <div class="settings-toggle-group">
+              <div class="settings-toggle">
+                <div class="settings-toggle-info">
+                  <h4>Show Online Status</h4>
+                  <p>Let others see when you're online</p>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="showOnline" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="settings-toggle">
+                <div class="settings-toggle-info">
+                  <h4>Allow Direct Messages</h4>
+                  <p>Let other users send you direct messages</p>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="allowDMs" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Save Preferences</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Danger Zone Section -->
+        <section class="settings-section glass-card danger-zone" id="danger" style="display: none;">
+          <div class="settings-section-header">
+            <h2>Danger Zone</h2>
+            <p>Irreversible and destructive actions</p>
+          </div>
+          
+          <div class="danger-actions">
+            <div class="danger-action">
+              <div>
+                <h4>Log out of all devices</h4>
+                <p>This will sign you out from all browsers and devices</p>
+              </div>
+              <button type="button" class="btn btn-outline-danger" id="logoutAllBtn">
+                Log Out All
+              </button>
+            </div>
+
+            <div class="danger-action">
+              <div>
+                <h4>Delete Account</h4>
+                <p>Permanently delete your account and all associated data</p>
+              </div>
+              <button type="button" class="btn btn-danger" id="deleteAccountBtn">
+                Delete Account
+              </button>
+            </div>
+          </div>
+
+          <!-- Delete Account Modal -->
+          <div class="settings-modal" id="deleteAccountModal" style="display: none;">
+            <div class="settings-modal-content glass-card danger">
+              <h3>⚠️ Delete Your Account?</h3>
+              <p>This action cannot be undone. All your data, streams, followers, and content will be permanently deleted.</p>
+              <form id="deleteAccountForm">
+                <div class="form-group">
+                  <label for="deleteConfirmPassword" class="form-label">Enter your password to confirm</label>
+                  <input type="password" id="deleteConfirmPassword" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-checkbox">
+                    <input type="checkbox" id="deleteConfirm" required>
+                    <span class="checkbox-custom"></span>
+                    <span class="checkbox-label">I understand this action is permanent and cannot be undone</span>
+                  </label>
+                </div>
+                <div class="form-actions">
+                  <button type="button" class="btn btn-secondary" onclick="closeModal('deleteAccountModal')">Cancel</button>
+                  <button type="submit" class="btn btn-danger">Delete My Account</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+  
+  <!-- Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth-service.js"></script>
+  <script src="js/app.js"></script>
+  
+  <script>
+    // Section navigation
+    document.querySelectorAll('.settings-nav-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const section = item.dataset.section;
+        showSection(section);
+        
+        // Update active state
+        document.querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        
+        // Update URL hash
+        window.location.hash = section;
+      });
+    });
+
+    function showSection(sectionId) {
+      document.querySelectorAll('.settings-section').forEach(s => s.style.display = 'none');
+      document.getElementById(sectionId).style.display = 'block';
+    }
+
+    // Handle initial hash
+    const initialHash = window.location.hash.slice(1) || 'profile';
+    showSection(initialHash);
+    document.querySelector(`[data-section="${initialHash}"]`)?.classList.add('active');
+
+    // Load user data when auth is ready
+    window.addEventListener('buzzaboo-auth-ready', loadUserData);
+
+    function loadUserData() {
+      if (!buzzabooAuth.isAuthenticated()) {
+        window.location.href = '/login.html?redirect=/settings.html';
+        return;
+      }
+
+      const profile = buzzabooAuth.getProfile();
+      const user = buzzabooAuth.getCurrentUser();
+
+      if (profile) {
+        // Profile form
+        document.getElementById('displayName').value = profile.displayName || '';
+        document.getElementById('username').value = profile.username || '';
+        document.getElementById('bio').value = profile.bio || '';
+        document.getElementById('bioCount').textContent = (profile.bio || '').length;
+        document.getElementById('avatarPreview').src = profile.avatar || 'https://i.pravatar.cc/150?img=1';
+
+        // Social links
+        if (profile.socials) {
+          document.getElementById('socialTwitter').value = profile.socials.twitter || '';
+          document.getElementById('socialInstagram').value = profile.socials.instagram || '';
+          document.getElementById('socialYoutube').value = profile.socials.youtube || '';
+          document.getElementById('socialTiktok').value = profile.socials.tiktok || '';
+        }
+
+        // Preferences
+        if (profile.preferences) {
+          // Theme
+          const themeRadio = document.querySelector(`input[name="theme"][value="${profile.preferences.theme || 'dark'}"]`);
+          if (themeRadio) themeRadio.checked = true;
+
+          // Quality
+          document.getElementById('defaultQuality').value = profile.preferences.quality || '720p';
+
+          // Notifications
+          if (profile.preferences.notifications) {
+            document.getElementById('notifyEmail').checked = profile.preferences.notifications.email !== false;
+            document.getElementById('notifyPush').checked = profile.preferences.notifications.push !== false;
+            document.getElementById('notifyFollower').checked = profile.preferences.notifications.newFollower !== false;
+            document.getElementById('notifyLive').checked = profile.preferences.notifications.goLive !== false;
+            document.getElementById('notifyMentions').checked = profile.preferences.notifications.mentions !== false;
+          }
+
+          // Privacy
+          if (profile.preferences.privacy) {
+            document.getElementById('showOnline').checked = profile.preferences.privacy.showOnline !== false;
+            document.getElementById('allowDMs').checked = profile.preferences.privacy.allowDMs !== false;
+          }
+        }
+      }
+
+      // Account email
+      if (user) {
+        document.getElementById('accountEmail').value = user.email || '';
+        const verifiedEl = document.getElementById('emailVerified');
+        if (user.emailVerified) {
+          verifiedEl.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Email verified';
+          verifiedEl.classList.add('verified');
+        } else {
+          verifiedEl.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg> Email not verified - <a href="#" onclick="resendVerification()">Resend</a>';
+          verifiedEl.classList.add('unverified');
+        }
+
+        // Show connected accounts
+        const providers = user.providerData.map(p => p.providerId);
+        if (providers.includes('google.com')) {
+          document.getElementById('googleConnected').style.display = 'flex';
+        }
+        if (providers.includes('apple.com')) {
+          document.getElementById('appleConnected').style.display = 'flex';
+        }
+      }
+
+      // Update header avatars
+      document.querySelectorAll('.auth-avatar').forEach(el => {
+        el.src = profile?.avatar || 'https://i.pravatar.cc/150?img=1';
+      });
+      document.querySelectorAll('.auth-display-name').forEach(el => {
+        el.textContent = profile?.displayName || 'You';
+      });
+    }
+
+    // Bio character count
+    document.getElementById('bio').addEventListener('input', (e) => {
+      document.getElementById('bioCount').textContent = e.target.value.length;
+    });
+
+    // Avatar upload
+    document.getElementById('avatarInput').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      if (file.size > 2 * 1024 * 1024) {
+        showToast('Image must be under 2MB', 'error');
+        return;
+      }
+
+      // Preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        document.getElementById('avatarPreview').src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+
+      // Upload
+      const result = await buzzabooAuth.uploadAvatar(file);
+      if (result.success) {
+        showToast('Avatar updated!');
+      } else {
+        showToast(result.error, 'error');
+      }
+    });
+
+    // Profile form
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const result = await buzzabooAuth.updateProfile({
+        displayName: document.getElementById('displayName').value,
+        username: document.getElementById('username').value,
+        bio: document.getElementById('bio').value,
+        socials: {
+          twitter: document.getElementById('socialTwitter').value,
+          instagram: document.getElementById('socialInstagram').value,
+          youtube: document.getElementById('socialYoutube').value,
+          tiktok: document.getElementById('socialTiktok').value
+        }
+      });
+
+      if (result.success) {
+        showToast('Profile updated!');
+      } else {
+        showToast(result.error, 'error');
+      }
+    });
+
+    // Notifications form
+    document.getElementById('notificationsForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const result = await buzzabooAuth.updatePreferences({
+        notifications: {
+          email: document.getElementById('notifyEmail').checked,
+          push: document.getElementById('notifyPush').checked,
+          newFollower: document.getElementById('notifyFollower').checked,
+          goLive: document.getElementById('notifyLive').checked,
+          mentions: document.getElementById('notifyMentions').checked
+        }
+      });
+
+      if (result.success) {
+        showToast('Notification preferences saved!');
+      } else {
+        showToast(result.error, 'error');
+      }
+    });
+
+    // Appearance form
+    document.getElementById('appearanceForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const theme = document.querySelector('input[name="theme"]:checked').value;
+      const quality = document.getElementById('defaultQuality').value;
+
+      const result = await buzzabooAuth.updatePreferences({ theme, quality });
+
+      if (result.success) {
+        showToast('Appearance settings saved!');
+      } else {
+        showToast(result.error, 'error');
+      }
+    });
+
+    // Theme preview
+    document.querySelectorAll('input[name="theme"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        const theme = e.target.value === 'system' 
+          ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+          : e.target.value;
+        document.documentElement.setAttribute('data-theme', theme);
+      });
+    });
+
+    // Privacy form
+    document.getElementById('privacyForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const result = await buzzabooAuth.updatePreferences({
+        privacy: {
+          showOnline: document.getElementById('showOnline').checked,
+          allowDMs: document.getElementById('allowDMs').checked
+        }
+      });
+
+      if (result.success) {
+        showToast('Privacy settings saved!');
+      } else {
+        showToast(result.error, 'error');
+      }
+    });
+
+    // Change email
+    document.getElementById('changeEmailBtn').addEventListener('click', () => {
+      document.getElementById('changeEmailModal').style.display = 'flex';
+    });
+
+    document.getElementById('changeEmailForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const newEmail = document.getElementById('newEmail').value;
+      const password = document.getElementById('currentPasswordEmail').value;
+
+      const result = await buzzabooAuth.changeEmail(password, newEmail);
+
+      if (result.success) {
+        closeModal('changeEmailModal');
+        showToast('Email updated! Please verify your new email.');
+        document.getElementById('accountEmail').value = newEmail;
+      } else {
+        showToast(result.error, 'error');
+      }
+    });
+
+    // Change password
+    document.getElementById('changePasswordBtn').addEventListener('click', () => {
+      document.getElementById('changePasswordModal').style.display = 'flex';
+    });
+
+    document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmNewPassword').value;
+
+      if (newPassword !== confirmPassword) {
+        showToast('Passwords do not match', 'error');
+        return;
+      }
+
+      const result = await buzzabooAuth.changePassword(currentPassword, newPassword);
+
+      if (result.success) {
+        closeModal('changePasswordModal');
+        showToast('Password updated successfully!');
+      } else {
+        showToast(result.error, 'error');
+      }
+    });
+
+    // Logout all
+    document.getElementById('logoutAllBtn').addEventListener('click', async () => {
+      if (confirm('This will sign you out from all devices. Continue?')) {
+        await buzzabooAuth.signOut();
+        window.location.href = '/login.html';
+      }
+    });
+
+    // Delete account
+    document.getElementById('deleteAccountBtn').addEventListener('click', () => {
+      document.getElementById('deleteAccountModal').style.display = 'flex';
+    });
+
+    document.getElementById('deleteAccountForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const password = document.getElementById('deleteConfirmPassword').value;
+      const confirmed = document.getElementById('deleteConfirm').checked;
+
+      if (!confirmed) {
+        showToast('Please confirm you understand this action is permanent', 'error');
+        return;
+      }
+
+      const result = await buzzabooAuth.deleteAccount(password);
+
+      if (result.success) {
+        window.location.href = '/index.html';
+      } else {
+        showToast(result.error, 'error');
+      }
+    });
+
+    // Modal close
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    // Close modals on backdrop click
+    document.querySelectorAll('.settings-modal').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+    });
+
+    // Resend verification
+    async function resendVerification() {
+      const result = await buzzabooAuth.resendVerificationEmail();
+      if (result.success) {
+        showToast('Verification email sent!');
+      } else {
+        showToast(result.error, 'error');
+      }
+    }
+
+    // Toast notification
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('settingsToast');
+      const messageEl = document.getElementById('toastMessage');
+      
+      messageEl.textContent = message;
+      toast.className = `settings-toast ${type}`;
+      toast.style.display = 'flex';
+
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+
+    // Logout button
+    document.querySelectorAll('.logout-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        await buzzabooAuth.signOut();
+        window.location.href = '/login.html';
+      });
+    });
+
+    // Dropdowns
+    document.querySelectorAll('.dropdown').forEach(dropdown => {
+      dropdown.querySelector('.dropdown-trigger').addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('active');
+      });
+    });
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.dropdown.active').forEach(d => d.classList.remove('active'));
+    });
+  </script>
+</body>
+</html>

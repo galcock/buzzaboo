@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Multiview - Watch Multiple Streams | Buzzaboo</title>
-  <meta name="description" content="Watch up to 4 streams simultaneously with Buzzaboo Multiview. The ultimate multi-stream experience.">
+  <title>Video Call | Buzzaboo</title>
+  <meta name="description" content="Start a 1-on-1 video call on Buzzaboo. Real-time WebRTC video chat with friends.">
   
-  <meta property="og:title" content="Multiview | Buzzaboo">
-  <meta property="og:description" content="Watch multiple streams at once">
+  <meta property="og:title" content="Video Call | Buzzaboo">
+  <meta property="og:description" content="1-on-1 video calls on Buzzaboo">
   
   <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="css/livekit.css">
 </head>
-<body data-page="multiview">
+<body data-page="call">
   <!-- Header -->
   <header class="header">
     <div class="header-inner">
@@ -32,15 +32,10 @@
         <a href="index.html" class="nav-link">Home</a>
         <a href="browse.html" class="nav-link">Browse</a>
         <a href="shorts.html" class="nav-link">Shorts</a>
-        <a href="multiview.html" class="nav-link active">Multiview</a>
+        <a href="multiview.html" class="nav-link">Multiview</a>
       </nav>
       
       <div class="header-actions">
-        <div style="display: flex; gap: 0.5rem; margin-right: 1rem;">
-          <button class="btn btn-ghost btn-sm multiview-layout-btn active" data-layout="2x2">2×2</button>
-          <button class="btn btn-ghost btn-sm multiview-layout-btn" data-layout="1-2">1+2</button>
-          <button class="btn btn-ghost btn-sm multiview-layout-btn" data-layout="3-1">3+1</button>
-        </div>
         <button class="btn btn-secondary btn-sm theme-toggle"><span class="theme-toggle-icon">🌙</span></button>
         <a href="dashboard.html" class="btn btn-primary btn-sm">Go Live</a>
         <div class="user-menu dropdown">
@@ -50,7 +45,7 @@
           <div class="dropdown-menu">
             <a href="profile.html" class="dropdown-item">👤 Your Profile</a>
             <a href="dashboard.html" class="dropdown-item">📊 Dashboard</a>
-            <a href="call.html" class="dropdown-item">📹 Video Call</a>
+            <a href="call.html" class="dropdown-item active">📹 Video Call</a>
             <div class="dropdown-divider"></div>
             <a href="#" class="dropdown-item">⚙️ Settings</a>
           </div>
@@ -59,10 +54,30 @@
     </div>
   </header>
   
-  <!-- Multiview Container -->
+  <!-- Main Call View -->
   <main class="main-content full-width" style="padding: 1rem; height: calc(100vh - 64px);">
-    <div id="multiview-container" class="lk-multiview-container layout-2x2"></div>
+    <div class="container" style="max-width: 1200px; margin: 0 auto; height: 100%;">
+      <div class="glass-card" style="height: 100%; padding: 0; overflow: hidden;">
+        <div id="video-call-container" style="height: 100%;"></div>
+      </div>
+    </div>
   </main>
+  
+  <!-- Info Section -->
+  <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 1rem; z-index: 10;">
+    <div class="glass-card" style="padding: 12px 20px; display: flex; align-items: center; gap: 8px;">
+      <span style="font-size: 1.25rem;">🔒</span>
+      <span style="font-size: 0.85rem; color: var(--text-secondary);">End-to-end encrypted</span>
+    </div>
+    <div class="glass-card" style="padding: 12px 20px; display: flex; align-items: center; gap: 8px;">
+      <span style="font-size: 1.25rem;">⚡</span>
+      <span style="font-size: 0.85rem; color: var(--text-secondary);">Sub-100ms latency</span>
+    </div>
+    <div class="glass-card" style="padding: 12px 20px; display: flex; align-items: center; gap: 8px;">
+      <span style="font-size: 1.25rem;">🎥</span>
+      <span style="font-size: 0.85rem; color: var(--text-secondary);">1080p video</span>
+    </div>
+  </div>
   
   <!-- LiveKit SDK -->
   <script src="https://unpkg.com/livekit-client@2.0.7/dist/livekit-client.umd.js"></script>
@@ -73,31 +88,15 @@
   <script src="js/call-components.js"></script>
   <script src="js/app.js"></script>
   
-  <script>
-    // Layout switching
-    document.querySelectorAll('.multiview-layout-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const layout = btn.dataset.layout;
-        const container = document.getElementById('multiview-container');
-        
-        document.querySelectorAll('.multiview-layout-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        
-        container.className = 'lk-multiview-container';
-        container.classList.add(`layout-${layout}`);
-        
-        // Update the grid component if it exists
-        if (window.Multiview?.grid) {
-          window.Multiview.grid.setLayout(layout);
-        }
-      });
-    });
-  </script>
-  
   <style>
-    .multiview-layout-btn.active {
-      background: var(--primary) !important;
-      color: white !important;
+    @media (max-width: 768px) {
+      main {
+        padding: 0.5rem !important;
+      }
+      
+      .glass-card[style*="bottom: 20px"] {
+        display: none;
+      }
     }
   </style>
 </body>

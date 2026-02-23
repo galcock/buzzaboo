@@ -1,10 +1,10 @@
 /* ============================================
    BUZZABOO - Next-Gen Live Streaming Platform
-   Main Application JavaScript
+   Main Application JavaScript with LiveKit Integration
    ============================================ */
 
 // ============================================
-// MOCK DATA - 50+ Streamers
+// MOCK DATA - 50+ Streamers (kept for UI)
 // ============================================
 
 const STREAMERS = [
@@ -28,41 +28,42 @@ const STREAMERS = [
   { id: 18, username: "FitnessFrank", displayName: "Fitness Frank", avatar: "https://i.pravatar.cc/150?img=53", banner: "https://picsum.photos/seed/banner18/1200/400", bio: "Personal trainer. Live workouts daily! No excuses, just results 💪", followers: 567890, verified: true, partner: true, socials: { instagram: "fitnessfrank", youtube: "FitnessFrankLive" } },
   { id: 19, username: "ChessGrandmaster", displayName: "GM Fischer", avatar: "https://i.pravatar.cc/150?img=58", banner: "https://picsum.photos/seed/banner19/1200/400", bio: "International Chess Master. Teaching chess to the masses! Rated 2650+ ♟️", followers: 1234567, verified: true, partner: true, socials: { twitter: "gmfischer", chess: "GMFischer" } },
   { id: 20, username: "VRPioneer", displayName: "VR Pioneer", avatar: "https://i.pravatar.cc/150?img=59", banner: "https://picsum.photos/seed/banner20/1200/400", bio: "Virtual reality explorer. Testing the future every day! 🥽", followers: 456789, verified: true, partner: true, socials: { twitter: "vrpioneer", youtube: "VRPioneerTV" } },
-  { id: 21, username: "BakingBetty", displayName: "Baking Betty", avatar: "https://i.pravatar.cc/150?img=28", banner: "https://picsum.photos/seed/banner21/1200/400", bio: "Home baker extraordinaire. Sweet treats and good eats! Recipe book coming soon 🧁", followers: 678901, verified: true, partner: true, socials: { instagram: "bakingbetty", pinterest: "bakingbetty" } },
-  { id: 22, username: "RocketLeaguer", displayName: "Rocket Master", avatar: "https://i.pravatar.cc/150?img=61", banner: "https://picsum.photos/seed/banner22/1200/400", bio: "SSL in Rocket League. Road to pro! Coaching available 🚀", followers: 890123, verified: true, partner: true, socials: { twitter: "rocketmaster", discord: "rocketmaster" } },
-  { id: 23, username: "PoetrySlam", displayName: "Poetry Slam", avatar: "https://i.pravatar.cc/150?img=29", banner: "https://picsum.photos/seed/banner23/1200/400", bio: "Spoken word artist. Words that move you. New book 'Midnight Thoughts' out now 📝", followers: 234567, verified: false, partner: false, socials: { twitter: "poetryslam_live" } },
-  { id: 24, username: "MinecraftMaster", displayName: "MC Master", avatar: "https://i.pravatar.cc/150?img=62", banner: "https://picsum.photos/seed/banner24/1200/400", bio: "Building amazing worlds in Minecraft! Server owner. 5000+ hours played ⛏️", followers: 3456789, verified: true, partner: true, socials: { twitter: "mcmaster", youtube: "MinecraftMasterTV" } },
-  { id: 25, username: "JustDancing", displayName: "Just Dancing 💃", avatar: "https://i.pravatar.cc/150?img=30", banner: "https://picsum.photos/seed/banner25/1200/400", bio: "Professional dancer. Hip-hop, contemporary, everything! Dance tutorials weekly", followers: 1567890, verified: true, partner: true, socials: { instagram: "justdancing", tiktok: "justdancing" } },
-  { id: 26, username: "ScienceSteve", displayName: "Science Steve", avatar: "https://i.pravatar.cc/150?img=63", banner: "https://picsum.photos/seed/banner26/1200/400", bio: "Physics PhD making science fun! Experiments, explanations, explosions! 🔬", followers: 789012, verified: true, partner: true, socials: { twitter: "sciencesteve", youtube: "ScienceSteveTV" } },
-  { id: 27, username: "CardMagician", displayName: "Card Magician", avatar: "https://i.pravatar.cc/150?img=64", banner: "https://picsum.photos/seed/banner27/1200/400", bio: "Professional magician. Card tricks, illusions, and mind-bending magic! 🎩", followers: 456789, verified: true, partner: true, socials: { instagram: "cardmagician", youtube: "CardMagicianTV" } },
-  { id: 28, username: "WildlifeWatcher", displayName: "Wildlife Watcher", avatar: "https://i.pravatar.cc/150?img=65", banner: "https://picsum.photos/seed/banner28/1200/400", bio: "Nature photographer streaming from the wild! Live animal encounters 🦁", followers: 567890, verified: true, partner: true, socials: { twitter: "wildlifewatcher", instagram: "wildlife.watcher" } },
-  { id: 29, username: "ASMRQueen", displayName: "ASMR Queen 🌙", avatar: "https://i.pravatar.cc/150?img=31", banner: "https://picsum.photos/seed/banner29/1200/400", bio: "Tingles guaranteed! Relaxation, sleep streams, and peaceful vibes only ✨", followers: 2345678, verified: true, partner: true, socials: { youtube: "ASMRQueenOfficial", instagram: "asmrqueen" } },
-  { id: 30, username: "TabletopKing", displayName: "Tabletop King", avatar: "https://i.pravatar.cc/150?img=66", banner: "https://picsum.photos/seed/banner30/1200/400", bio: "D&D dungeon master. Board games, RPGs, and epic adventures! Roll for initiative! 🎲", followers: 678901, verified: true, partner: true, socials: { twitter: "tabletopking", discord: "tabletopking" } },
-  { id: 31, username: "CarGuy", displayName: "Car Guy 🏎️", avatar: "https://i.pravatar.cc/150?img=67", banner: "https://picsum.photos/seed/banner31/1200/400", bio: "Automotive enthusiast. Sim racing, car shows, and engine sounds! Petrolhead for life", followers: 890123, verified: true, partner: true, socials: { instagram: "carguy_live", youtube: "CarGuyTV" } },
-  { id: 32, username: "PianoProdigy", displayName: "Piano Prodigy", avatar: "https://i.pravatar.cc/150?img=32", banner: "https://picsum.photos/seed/banner32/1200/400", bio: "Classical pianist. Taking requests! From Chopin to modern hits 🎹", followers: 1234567, verified: true, partner: true, socials: { spotify: "pianoprodigy", youtube: "PianoProdigyLive" } },
-  { id: 33, username: "FortniteKing", displayName: "Fortnite King", avatar: "https://i.pravatar.cc/150?img=68", banner: "https://picsum.photos/seed/banner33/1200/400", bio: "Top 100 Fortnite player. Victory Royales daily! Building like no other 🏆", followers: 4567890, verified: true, partner: true, socials: { twitter: "fortniteking", youtube: "FortniteKingTV" } },
-  { id: 34, username: "KnitNinja", displayName: "Knit Ninja 🧶", avatar: "https://i.pravatar.cc/150?img=34", banner: "https://picsum.photos/seed/banner34/1200/400", bio: "Knitting & crocheting streams. Cozy crafting vibes! Patterns on Etsy", followers: 234567, verified: false, partner: true, socials: { etsy: "knitninja", instagram: "knit.ninja" } },
-  { id: 35, username: "WarzoneWarrior", displayName: "Warzone Warrior", avatar: "https://i.pravatar.cc/150?img=69", banner: "https://picsum.photos/seed/banner35/1200/400", bio: "Call of Duty specialist. High kill games daily! 500+ wins this season 🔫", followers: 2345678, verified: true, partner: true, socials: { twitter: "warzonewarrior", youtube: "WarzoneWarriorTV" } },
-  { id: 36, username: "GuitarHero", displayName: "Guitar Hero 🎸", avatar: "https://i.pravatar.cc/150?img=70", banner: "https://picsum.photos/seed/banner36/1200/400", bio: "Shredding since '99! Rock, metal, blues - I play it all. Lessons available!", followers: 1567890, verified: true, partner: true, socials: { instagram: "guitarhero_live", youtube: "GuitarHeroLive" } },
-  { id: 37, username: "CosplayQueen", displayName: "Cosplay Queen", avatar: "https://i.pravatar.cc/150?img=35", banner: "https://picsum.photos/seed/banner37/1200/400", bio: "Award-winning cosplayer. Making costumes live! Con schedule on my website 👸", followers: 1890123, verified: true, partner: true, socials: { instagram: "cosplayqueen", tiktok: "cosplayqueen" } },
-  { id: 38, username: "PhilosophyNerd", displayName: "Philosophy Nerd", avatar: "https://i.pravatar.cc/150?img=71", banner: "https://picsum.photos/seed/banner38/1200/400", bio: "Let's discuss the big questions! Philosophy degree put to good use 🤔", followers: 345678, verified: false, partner: true, socials: { twitter: "philosophynerd" } },
-  { id: 39, username: "ValheimViking", displayName: "Valheim Viking", avatar: "https://i.pravatar.cc/150?img=72", banner: "https://picsum.photos/seed/banner39/1200/400", bio: "Survival game enthusiast. Building epic bases! ⚔️ SKÅL!", followers: 567890, verified: true, partner: true, socials: { twitter: "valheimviking", discord: "valheimviking" } },
-  { id: 40, username: "TravelWithTina", displayName: "Travel with Tina", avatar: "https://i.pravatar.cc/150?img=36", banner: "https://picsum.photos/seed/banner40/1200/400", bio: "IRL streams from around the world! Currently: Tokyo 🗼 50 countries and counting!", followers: 2456789, verified: true, partner: true, socials: { instagram: "travelwithtina", youtube: "TravelWithTinaTV" } },
-  { id: 41, username: "ApexPredator", displayName: "Apex Predator", avatar: "https://i.pravatar.cc/150?img=73", banner: "https://picsum.photos/seed/banner41/1200/400", bio: "Apex Legends ranked grinder. Predator every split! Tips and gameplay daily 🎯", followers: 1234567, verified: true, partner: true, socials: { twitter: "apexpredator_ttv", youtube: "ApexPredatorTV" } },
-  { id: 42, username: "MovieBuff", displayName: "Movie Buff 🎬", avatar: "https://i.pravatar.cc/150?img=74", banner: "https://picsum.photos/seed/banner42/1200/400", bio: "Film critic & watch-along host. New releases, classics, hidden gems!", followers: 678901, verified: true, partner: true, socials: { twitter: "moviebuff_live", letterboxd: "moviebuff" } },
-  { id: 43, username: "LeagueOfLegends", displayName: "LoL Legend", avatar: "https://i.pravatar.cc/150?img=75", banner: "https://picsum.photos/seed/banner43/1200/400", bio: "Challenger player every season. Educational League content! 🏆", followers: 3456789, verified: true, partner: true, socials: { twitter: "lollegend", youtube: "LoLLegendTV" } },
-  { id: 44, username: "PlantMom", displayName: "Plant Mom 🌱", avatar: "https://i.pravatar.cc/150?img=37", banner: "https://picsum.photos/seed/banner44/1200/400", bio: "300+ plants in my jungle! Indoor gardening tips, repotting streams, plant care ❤️", followers: 456789, verified: true, partner: true, socials: { instagram: "plantmom_live", tiktok: "plantmom" } },
-  { id: 45, username: "StreamerDad", displayName: "Streamer Dad", avatar: "https://i.pravatar.cc/150?img=76", banner: "https://picsum.photos/seed/banner45/1200/400", bio: "Dad by day, gamer by night! Family-friendly content. The kids sometimes crash my stream 👨‍👧‍👦", followers: 890123, verified: true, partner: true, socials: { twitter: "streamerdad", youtube: "StreamerDadTV" } },
-  { id: 46, username: "ValorantViper", displayName: "Valorant Viper", avatar: "https://i.pravatar.cc/150?img=38", banner: "https://picsum.photos/seed/banner46/1200/400", bio: "Immortal rank Valorant player. Viper main! Agent guides and ranked games 🐍", followers: 2345678, verified: true, partner: true, socials: { twitter: "valorantviper", youtube: "ValorantViperTV" } },
-  { id: 47, username: "BookWorm", displayName: "Book Worm 📚", avatar: "https://i.pravatar.cc/150?img=39", banner: "https://picsum.photos/seed/banner47/1200/400", bio: "Live reading sessions, book reviews, and literary discussions! 100 books/year challenge", followers: 345678, verified: false, partner: true, socials: { goodreads: "bookworm", instagram: "bookworm_reads" } },
-  { id: 48, username: "DrumMachine", displayName: "Drum Machine", avatar: "https://i.pravatar.cc/150?img=77", banner: "https://picsum.photos/seed/banner48/1200/400", bio: "Professional drummer. Session musician. Taking song requests! 🥁", followers: 567890, verified: true, partner: true, socials: { instagram: "drummachine", youtube: "DrumMachineLive" } },
-  { id: 49, username: "PokerPro", displayName: "Poker Pro", avatar: "https://i.pravatar.cc/150?img=78", banner: "https://picsum.photos/seed/banner49/1200/400", bio: "Professional poker player. Strategy streams & tournament runs! $2M+ lifetime winnings 🃏", followers: 1234567, verified: true, partner: true, socials: { twitter: "pokerpro_live", youtube: "PokerProTV" } },
-  { id: 50, username: "AnimeExpert", displayName: "Anime Expert", avatar: "https://i.pravatar.cc/150?img=40", banner: "https://picsum.photos/seed/banner50/1200/400", bio: "Anime reviewer & manga reader. Watch-alongs, discussions, and reactions! 🍥", followers: 2456789, verified: true, partner: true, socials: { twitter: "animeexpert", youtube: "AnimeExpertTV" } },
-  { id: 51, username: "CodingLive", displayName: "Coding Live", avatar: "https://i.pravatar.cc/150?img=79", banner: "https://picsum.photos/seed/banner51/1200/400", bio: "Full-stack dev building cool stuff! Learn to code with me 💻", followers: 678901, verified: true, partner: true, socials: { github: "codinglive", twitter: "codinglive" } },
-  { id: 52, username: "SoccerStar", displayName: "Soccer Star ⚽", avatar: "https://i.pravatar.cc/150?img=80", banner: "https://picsum.photos/seed/banner52/1200/400", bio: "EA FC & real soccer analysis. Former semi-pro player! Match breakdowns daily", followers: 890123, verified: true, partner: true, socials: { twitter: "soccerstar_live", instagram: "soccerstar" } }
+  // ... Additional streamers (21-52) kept for variety
+  { id: 21, username: "BakingBetty", displayName: "Baking Betty", avatar: "https://i.pravatar.cc/150?img=28", followers: 678901, verified: true, partner: true },
+  { id: 22, username: "RocketLeaguer", displayName: "Rocket Master", avatar: "https://i.pravatar.cc/150?img=61", followers: 890123, verified: true, partner: true },
+  { id: 23, username: "PoetrySlam", displayName: "Poetry Slam", avatar: "https://i.pravatar.cc/150?img=29", followers: 234567, verified: false, partner: false },
+  { id: 24, username: "MinecraftMaster", displayName: "MC Master", avatar: "https://i.pravatar.cc/150?img=62", followers: 3456789, verified: true, partner: true },
+  { id: 25, username: "JustDancing", displayName: "Just Dancing 💃", avatar: "https://i.pravatar.cc/150?img=30", followers: 1567890, verified: true, partner: true },
+  { id: 26, username: "ScienceSteve", displayName: "Science Steve", avatar: "https://i.pravatar.cc/150?img=63", followers: 789012, verified: true, partner: true },
+  { id: 27, username: "CardMagician", displayName: "Card Magician", avatar: "https://i.pravatar.cc/150?img=64", followers: 456789, verified: true, partner: true },
+  { id: 28, username: "WildlifeWatcher", displayName: "Wildlife Watcher", avatar: "https://i.pravatar.cc/150?img=65", followers: 567890, verified: true, partner: true },
+  { id: 29, username: "ASMRQueen", displayName: "ASMR Queen 🌙", avatar: "https://i.pravatar.cc/150?img=31", followers: 2345678, verified: true, partner: true },
+  { id: 30, username: "TabletopKing", displayName: "Tabletop King", avatar: "https://i.pravatar.cc/150?img=66", followers: 678901, verified: true, partner: true },
+  { id: 31, username: "CarGuy", displayName: "Car Guy 🏎️", avatar: "https://i.pravatar.cc/150?img=67", followers: 890123, verified: true, partner: true },
+  { id: 32, username: "PianoProdigy", displayName: "Piano Prodigy", avatar: "https://i.pravatar.cc/150?img=32", followers: 1234567, verified: true, partner: true },
+  { id: 33, username: "FortniteKing", displayName: "Fortnite King", avatar: "https://i.pravatar.cc/150?img=68", followers: 4567890, verified: true, partner: true },
+  { id: 34, username: "KnitNinja", displayName: "Knit Ninja 🧶", avatar: "https://i.pravatar.cc/150?img=34", followers: 234567, verified: false, partner: true },
+  { id: 35, username: "WarzoneWarrior", displayName: "Warzone Warrior", avatar: "https://i.pravatar.cc/150?img=69", followers: 2345678, verified: true, partner: true },
+  { id: 36, username: "GuitarHero", displayName: "Guitar Hero 🎸", avatar: "https://i.pravatar.cc/150?img=70", followers: 1567890, verified: true, partner: true },
+  { id: 37, username: "CosplayQueen", displayName: "Cosplay Queen", avatar: "https://i.pravatar.cc/150?img=35", followers: 1890123, verified: true, partner: true },
+  { id: 38, username: "PhilosophyNerd", displayName: "Philosophy Nerd", avatar: "https://i.pravatar.cc/150?img=71", followers: 345678, verified: false, partner: true },
+  { id: 39, username: "ValheimViking", displayName: "Valheim Viking", avatar: "https://i.pravatar.cc/150?img=72", followers: 567890, verified: true, partner: true },
+  { id: 40, username: "TravelWithTina", displayName: "Travel with Tina", avatar: "https://i.pravatar.cc/150?img=36", followers: 2456789, verified: true, partner: true },
+  { id: 41, username: "ApexPredator", displayName: "Apex Predator", avatar: "https://i.pravatar.cc/150?img=73", followers: 1234567, verified: true, partner: true },
+  { id: 42, username: "MovieBuff", displayName: "Movie Buff 🎬", avatar: "https://i.pravatar.cc/150?img=74", followers: 678901, verified: true, partner: true },
+  { id: 43, username: "LeagueOfLegends", displayName: "LoL Legend", avatar: "https://i.pravatar.cc/150?img=75", followers: 3456789, verified: true, partner: true },
+  { id: 44, username: "PlantMom", displayName: "Plant Mom 🌱", avatar: "https://i.pravatar.cc/150?img=37", followers: 456789, verified: true, partner: true },
+  { id: 45, username: "StreamerDad", displayName: "Streamer Dad", avatar: "https://i.pravatar.cc/150?img=76", followers: 890123, verified: true, partner: true },
+  { id: 46, username: "ValorantViper", displayName: "Valorant Viper", avatar: "https://i.pravatar.cc/150?img=38", followers: 2345678, verified: true, partner: true },
+  { id: 47, username: "BookWorm", displayName: "Book Worm 📚", avatar: "https://i.pravatar.cc/150?img=39", followers: 345678, verified: false, partner: true },
+  { id: 48, username: "DrumMachine", displayName: "Drum Machine", avatar: "https://i.pravatar.cc/150?img=77", followers: 567890, verified: true, partner: true },
+  { id: 49, username: "PokerPro", displayName: "Poker Pro", avatar: "https://i.pravatar.cc/150?img=78", followers: 1234567, verified: true, partner: true },
+  { id: 50, username: "AnimeExpert", displayName: "Anime Expert", avatar: "https://i.pravatar.cc/150?img=40", followers: 2456789, verified: true, partner: true },
+  { id: 51, username: "CodingLive", displayName: "Coding Live", avatar: "https://i.pravatar.cc/150?img=79", followers: 678901, verified: true, partner: true },
+  { id: 52, username: "SoccerStar", displayName: "Soccer Star ⚽", avatar: "https://i.pravatar.cc/150?img=80", followers: 890123, verified: true, partner: true }
 ];
 
-// Live streams (currently live)
+// Live streams (mock data for UI - actual streaming uses LiveKit)
 const LIVE_STREAMS = [
   { streamerId: 1, title: "🔴 ROAD TO GLOBAL! CSGO RANKED GRIND | !giveaway !discord", game: "Counter-Strike 2", viewers: 45672, startedAt: new Date(Date.now() - 3600000 * 2.5), tags: ["English", "FPS", "Ranked", "Giveaway"], thumbnail: "https://picsum.photos/seed/stream1/640/360" },
   { streamerId: 2, title: "✨ Chill art stream! Drawing your suggestions 🎨 | !socials", game: "Art", viewers: 12456, startedAt: new Date(Date.now() - 3600000 * 4), tags: ["English", "Art", "Creative", "Chill"], thumbnail: "https://picsum.photos/seed/stream2/640/360" },
@@ -110,47 +111,6 @@ const CATEGORIES = [
   { id: 20, name: "Poker", viewers: 54321, image: "https://picsum.photos/seed/cat20/300/400", tags: ["Card Game", "Casino"] },
   { id: 21, name: "Watch Party", viewers: 43210, image: "https://picsum.photos/seed/cat21/300/400", tags: ["Movies", "Anime"] },
   { id: 22, name: "Software Development", viewers: 32109, image: "https://picsum.photos/seed/cat22/300/400", tags: ["Coding", "Educational"] }
-];
-
-// Chat messages pool
-const CHAT_MESSAGES = [
-  "PogChamp let's gooooo!!!",
-  "This is insane gameplay!",
-  "First time here, love the vibes!",
-  "lmao that was hilarious 😂",
-  "GG EZ",
-  "Can someone explain what just happened?",
-  "KEKW",
-  "Let's get those W's!",
-  "Been following for 3 years now!",
-  "This stream is fire 🔥",
-  "Drop your predictions below!",
-  "Who else is watching at 3am? 😴",
-  "@streamer you're the best!",
-  "CLIP THAT!",
-  "Gave a sub to spread the love ❤️",
-  "The content today is S-tier",
-  "New viewer here, instant follow!",
-  "That play was absolutely insane",
-  "Everyone spam hearts ❤️❤️❤️",
-  "Reminder to stay hydrated! 💧",
-  "Can we hit 1000 likes?",
-  "Weekend streams hit different",
-  "Best community on the platform!",
-  "Song name?",
-  "!discord link please",
-  "Just dropped a sub bomb 💣",
-  "This chat is moving so fast",
-  "Certified hood classic",
-  "My streamer 😤",
-  "GOAT status confirmed 🐐"
-];
-
-const CHAT_USERNAMES = [
-  "XxGamerxX", "StreamFan99", "NightOwl2026", "ChillVibes", "LuckyUser", 
-  "ProWatcher", "SilentLurker", "HypeTrain", "MemeLord", "EpicGamer",
-  "StreamEnjoyer", "LateNighter", "CasualFan", "SuperMod", "ViewerOne",
-  "TheRealFan", "StreamSupporter", "PogChampion", "NicePerson", "RegularViewer"
 ];
 
 // ============================================
@@ -284,7 +244,7 @@ const Search = {
       results.streamers.forEach(s => {
         const isLive = LIVE_STREAMS.some(ls => ls.streamerId === s.id);
         html += `
-          <a href="profile.html?user=${s.username}" class="search-result-item">
+          <a href="stream.html?channel=${s.username}" class="search-result-item">
             <img src="${s.avatar}" alt="${s.displayName}" class="search-result-avatar">
             <div class="search-result-info">
               <div class="search-result-name">${s.displayName}</div>
@@ -327,125 +287,6 @@ const Search = {
     const container = document.querySelector('.search-results');
     if (container) {
       container.style.display = 'none';
-    }
-  }
-};
-
-// ============================================
-// CHAT SYSTEM
-// ============================================
-
-const Chat = {
-  messages: [],
-  interval: null,
-  
-  init(containerId) {
-    this.container = document.getElementById(containerId);
-    if (!this.container) return;
-    
-    this.messagesEl = this.container.querySelector('.chat-messages');
-    this.inputEl = this.container.querySelector('.chat-input');
-    this.sendBtn = this.container.querySelector('.chat-send-btn');
-    
-    this.bindEvents();
-    this.startSimulation();
-  },
-  
-  bindEvents() {
-    if (this.sendBtn) {
-      this.sendBtn.addEventListener('click', () => this.sendMessage());
-    }
-    if (this.inputEl) {
-      this.inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') this.sendMessage();
-      });
-    }
-  },
-  
-  sendMessage() {
-    const text = this.inputEl?.value.trim();
-    if (!text) return;
-    
-    this.addMessage({
-      username: 'You',
-      text: text,
-      isOwn: true,
-      badges: ['sub']
-    });
-    
-    this.inputEl.value = '';
-  },
-  
-  addMessage(msg) {
-    const msgEl = document.createElement('div');
-    msgEl.className = 'chat-message' + (msg.isOwn ? ' own' : '');
-    
-    const badgeHtml = msg.badges?.map(b => `<span class="chat-badge ${b}">${this.getBadgeIcon(b)}</span>`).join('') || '';
-    const userClass = msg.isOwn ? 'sub' : (Math.random() > 0.7 ? 'mod' : (Math.random() > 0.5 ? 'sub' : ''));
-    
-    msgEl.innerHTML = `
-      <div class="chat-content">
-        ${badgeHtml}
-        <span class="chat-username ${userClass}">${msg.username}:</span>
-        <span class="chat-text">${this.parseEmotes(msg.text)}</span>
-      </div>
-    `;
-    
-    this.messagesEl?.appendChild(msgEl);
-    this.messagesEl?.scrollTo({ top: this.messagesEl.scrollHeight, behavior: 'smooth' });
-    
-    // Limit messages
-    while (this.messagesEl?.children.length > 100) {
-      this.messagesEl.removeChild(this.messagesEl.firstChild);
-    }
-  },
-  
-  getBadgeIcon(badge) {
-    const icons = {
-      mod: '🛡️',
-      sub: '⭐',
-      vip: '💎',
-      verified: '✓'
-    };
-    return icons[badge] || '';
-  },
-  
-  parseEmotes(text) {
-    const emotes = {
-      ':)': '😊',
-      ':D': '😄',
-      ':P': '😛',
-      '<3': '❤️',
-      'PogChamp': '😲',
-      'KEKW': '😂',
-      'Sadge': '😢',
-      'LULW': '😆',
-      'monkaS': '😰',
-      'PepeHands': '😭'
-    };
-    
-    let result = text;
-    Object.keys(emotes).forEach(key => {
-      result = result.replace(new RegExp(key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), emotes[key]);
-    });
-    return result;
-  },
-  
-  startSimulation() {
-    this.interval = setInterval(() => {
-      if (Math.random() > 0.3) {
-        this.addMessage({
-          username: getRandomItem(CHAT_USERNAMES),
-          text: getRandomItem(CHAT_MESSAGES),
-          badges: Math.random() > 0.7 ? [getRandomItem(['mod', 'sub', 'vip'])] : []
-        });
-      }
-    }, 800 + Math.random() * 2000);
-  },
-  
-  stop() {
-    if (this.interval) {
-      clearInterval(this.interval);
     }
   }
 };
@@ -609,125 +450,32 @@ const FeaturedStream = {
 };
 
 // ============================================
-// MULTIVIEW
+// MULTIVIEW (Now uses LiveKit)
 // ============================================
 
 const Multiview = {
-  streams: [],
-  
   init() {
-    this.container = document.getElementById('multiview-container');
-    if (!this.container) return;
+    const container = document.getElementById('multiview-container');
+    if (!container) return;
     
-    this.render();
-    this.bindEvents();
-  },
-  
-  render() {
-    const slots = 4;
-    let html = '';
-    
-    for (let i = 0; i < slots; i++) {
-      if (this.streams[i]) {
-        const stream = this.streams[i];
-        const streamer = getStreamer(stream.streamerId);
-        html += `
-          <div class="multiview-item" data-slot="${i}">
-            <img src="${stream.thumbnail}" alt="${stream.title}" class="multiview-player">
-            <div class="multiview-info">
-              <div class="multiview-streamer">
-                <img src="${streamer.avatar}" alt="${streamer.displayName}" width="30" height="30" style="border-radius: 50%;">
-                <span>${streamer.displayName}</span>
-              </div>
-              <button class="multiview-close" data-slot="${i}">✕</button>
-            </div>
-          </div>
-        `;
-      } else {
-        html += `
-          <div class="multiview-item empty" data-slot="${i}">
-            <div class="multiview-add">
-              <div class="multiview-add-icon">+</div>
-              <div>Add Stream</div>
-            </div>
-          </div>
-        `;
-      }
+    // Use the MultiviewGrid component if available
+    if (typeof MultiviewGrid !== 'undefined') {
+      this.grid = new MultiviewGrid('multiview-container', {
+        maxSlots: 4,
+        layout: '2x2'
+      });
+    } else {
+      this.renderFallback(container);
     }
-    
-    this.container.innerHTML = html;
   },
   
-  bindEvents() {
-    this.container.addEventListener('click', (e) => {
-      const emptySlot = e.target.closest('.multiview-item.empty');
-      if (emptySlot) {
-        const slot = parseInt(emptySlot.dataset.slot);
-        this.showStreamPicker(slot);
-      }
-      
-      const closeBtn = e.target.closest('.multiview-close');
-      if (closeBtn) {
-        const slot = parseInt(closeBtn.dataset.slot);
-        this.removeStream(slot);
-      }
-    });
-  },
-  
-  showStreamPicker(slot) {
-    const modal = document.createElement('div');
-    modal.className = 'modal-overlay active';
-    modal.innerHTML = `
-      <div class="modal">
-        <div class="modal-header">
-          <h3 class="modal-title">Add Stream</h3>
-          <button class="modal-close">✕</button>
-        </div>
-        <div class="modal-body">
-          <div class="stream-picker-list">
-            ${LIVE_STREAMS.filter(s => !this.streams.includes(s)).map(stream => {
-              const streamer = getStreamer(stream.streamerId);
-              return `
-                <div class="stream-picker-item" data-stream-id="${stream.streamerId}">
-                  <img src="${streamer.avatar}" alt="${streamer.displayName}">
-                  <div>
-                    <div style="font-weight: 600;">${streamer.displayName}</div>
-                    <div style="font-size: 0.8rem; color: var(--text-secondary);">${stream.game} • ${formatNumber(stream.viewers)} viewers</div>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        </div>
+  renderFallback(container) {
+    // Fallback to basic rendering
+    container.innerHTML = `
+      <div class="multiview-fallback">
+        <p>Loading multiview...</p>
       </div>
     `;
-    
-    document.body.appendChild(modal);
-    
-    modal.querySelector('.modal-close').addEventListener('click', () => modal.remove());
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.remove();
-      
-      const item = e.target.closest('.stream-picker-item');
-      if (item) {
-        const streamerId = parseInt(item.dataset.streamId);
-        const stream = LIVE_STREAMS.find(s => s.streamerId === streamerId);
-        this.addStream(slot, stream);
-        modal.remove();
-      }
-    });
-  },
-  
-  addStream(slot, stream) {
-    this.streams[slot] = stream;
-    this.render();
-    this.bindEvents();
-  },
-  
-  removeStream(slot) {
-    this.streams[slot] = null;
-    this.render();
-    this.bindEvents();
   }
 };
 
@@ -832,6 +580,32 @@ const Dashboard = {
     this.renderStats();
     this.renderChart();
     this.renderRecentActivity();
+    this.initBroadcastControls();
+  },
+  
+  initBroadcastControls() {
+    // Initialize broadcast controls if container exists
+    const broadcastContainer = document.getElementById('broadcast-controls');
+    if (broadcastContainer && typeof BroadcastControls !== 'undefined') {
+      this.broadcastControls = new BroadcastControls('broadcast-controls', {
+        roomName: 'my-stream',
+        identity: 'broadcaster',
+        displayName: 'You',
+        onStreamStart: (info) => {
+          console.log('Stream started:', info);
+          this.showStreamInfo(info);
+        },
+        onStreamEnd: () => {
+          console.log('Stream ended');
+        }
+      });
+    }
+  },
+  
+  showStreamInfo(info) {
+    // Show stream info / share link
+    const streamUrl = `${window.location.origin}/stream.html?room=${info.roomName}`;
+    console.log('Share URL:', streamUrl);
   },
   
   renderStats() {
@@ -863,7 +637,6 @@ const Dashboard = {
     const container = document.getElementById('dashboard-chart');
     if (!container) return;
     
-    // Simplified chart visualization
     const data = [65, 78, 52, 91, 43, 85, 67, 72, 88, 95, 61, 79];
     const max = Math.max(...data);
     
@@ -877,7 +650,7 @@ const Dashboard = {
         </div>
       </div>
       <div style="display: flex; align-items: flex-end; gap: 8px; height: 300px; padding: 20px;">
-        ${data.map((d, i) => `
+        ${data.map((d) => `
           <div style="flex: 1; background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%); height: ${(d / max) * 100}%; border-radius: 4px 4px 0 0; opacity: 0.8; transition: opacity 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8"></div>
         `).join('')}
       </div>
@@ -935,12 +708,14 @@ const Profile = {
   },
   
   render(streamer, isLive, stream) {
-    // Update header info
     document.querySelector('.profile-avatar')?.setAttribute('src', streamer.avatar);
-    document.querySelector('.profile-name-text')?.textContent && (document.querySelector('.profile-name-text').textContent = streamer.displayName);
-    document.querySelector('.profile-bio')?.textContent && (document.querySelector('.profile-bio').textContent = streamer.bio);
     
-    // Update stats
+    const nameEl = document.querySelector('.profile-name-text');
+    if (nameEl) nameEl.textContent = streamer.displayName;
+    
+    const bioEl = document.querySelector('.profile-bio');
+    if (bioEl) bioEl.textContent = streamer.bio || '';
+    
     const statValues = document.querySelectorAll('.profile-stat-value');
     if (statValues.length >= 3) {
       statValues[0].textContent = formatNumber(streamer.followers);
@@ -948,16 +723,12 @@ const Profile = {
       statValues[2].textContent = formatNumber(Math.floor(streamer.followers * 0.03));
     }
     
-    // Show live indicator
     const liveIndicator = document.querySelector('.profile-live-indicator');
     if (liveIndicator) {
       liveIndicator.style.display = isLive ? 'block' : 'none';
     }
     
-    // Render VODs
     this.renderVODs(streamer.id);
-    
-    // Render Clips
     this.renderClips(streamer.id);
   },
   
@@ -1021,28 +792,30 @@ const Profile = {
 };
 
 // ============================================
-// STREAM PAGE
+// STREAM PAGE (Now uses LiveKit)
 // ============================================
 
 const StreamPage = {
-  init() {
+  player: null,
+  chat: null,
+  
+  async init() {
     const params = new URLSearchParams(window.location.search);
     const channel = params.get('channel') || 'NinjaVortex';
+    const roomName = params.get('room');
     
     const streamer = STREAMERS.find(s => s.username.toLowerCase() === channel.toLowerCase()) || STREAMERS[0];
     const stream = LIVE_STREAMS.find(s => s.streamerId === streamer.id) || LIVE_STREAMS[0];
     
-    this.render(streamer, stream);
-    Chat.init('chat-container');
+    this.renderInfo(streamer, stream);
+    this.initLiveKitPlayer(roomName || `stream-${streamer.id}`);
+    this.initLiveKitChat();
     this.initPredictions();
-    this.updateViewerCount(stream.viewers);
   },
   
-  render(streamer, stream) {
-    // Update page title
+  renderInfo(streamer, stream) {
     document.title = `${streamer.displayName} - ${stream.title} | Buzzaboo`;
     
-    // Update stream info
     const titleEl = document.querySelector('.stream-page-title');
     if (titleEl) titleEl.textContent = stream.title;
     
@@ -1060,7 +833,6 @@ const StreamPage = {
       `;
     }
     
-    // Update viewer count
     const viewerEl = document.querySelector('.stream-viewer-count');
     if (viewerEl) {
       viewerEl.innerHTML = `
@@ -1068,11 +840,64 @@ const StreamPage = {
         <span id="viewer-count">${formatNumber(stream.viewers)}</span> watching
       `;
     }
+  },
+  
+  async initLiveKitPlayer(roomName) {
+    const playerContainer = document.getElementById('video-player');
     
-    // Set thumbnail as video placeholder
-    const playerEl = document.querySelector('.player-video');
-    if (playerEl) {
-      playerEl.src = stream.thumbnail;
+    if (playerContainer && typeof LiveVideoPlayer !== 'undefined') {
+      this.player = new LiveVideoPlayer('video-player', {
+        showControls: true,
+        showQualityBadge: true,
+        showViewerCount: true
+      });
+      
+      // Connect to LiveKit room as viewer
+      if (typeof livekitService !== 'undefined') {
+        const viewerId = 'viewer-' + Math.random().toString(36).substr(2, 9);
+        
+        this.player.showSpinner(true);
+        this.player.showOffline(false);
+        
+        livekitService.on('trackSubscribed', ({ track, participant }) => {
+          if (track.kind === 'video') {
+            this.player.attachTrack(track);
+          }
+        });
+        
+        livekitService.on('participantConnected', ({ participant }) => {
+          this.updateViewerCount();
+        });
+        
+        livekitService.on('participantDisconnected', ({ participant }) => {
+          this.updateViewerCount();
+        });
+        
+        const connected = await livekitService.connect(roomName, viewerId, {
+          canPublish: false,
+          canSubscribe: true
+        });
+        
+        if (connected) {
+          console.log('Connected to stream room:', roomName);
+          this.updateViewerCount();
+        } else {
+          this.player.showSpinner(false);
+          this.player.showOffline(true);
+        }
+      }
+    }
+  },
+  
+  initLiveKitChat() {
+    const chatContainer = document.getElementById('chat-container');
+    
+    if (chatContainer && typeof LiveChat !== 'undefined') {
+      this.chat = new LiveChat('chat-container', {
+        maxMessages: 200,
+        showBadges: true,
+        autoScroll: true
+      });
     }
   },
   
@@ -1110,13 +935,17 @@ const StreamPage = {
     `;
   },
   
-  updateViewerCount(base) {
-    setInterval(() => {
-      const change = Math.floor(Math.random() * 100) - 50;
-      const newCount = Math.max(base + change, 100);
-      const el = document.getElementById('viewer-count');
-      if (el) el.textContent = formatNumber(newCount);
-    }, 5000);
+  updateViewerCount() {
+    if (typeof livekitService !== 'undefined') {
+      const participants = livekitService.getParticipants();
+      const countEl = document.getElementById('viewer-count');
+      if (countEl) {
+        countEl.textContent = formatNumber(participants.length);
+      }
+      if (this.player) {
+        this.player.setViewerCount(participants.length);
+      }
+    }
   }
 };
 
@@ -1194,7 +1023,6 @@ const MobileMenu = {
         sidebar.classList.toggle('open');
       });
       
-      // Close on outside click
       document.addEventListener('click', (e) => {
         if (!e.target.closest('.sidebar') && !e.target.closest('.mobile-menu-toggle')) {
           sidebar.classList.remove('open');
@@ -1216,7 +1044,6 @@ const Dropdowns = {
       trigger?.addEventListener('click', (e) => {
         e.stopPropagation();
         
-        // Close others
         document.querySelectorAll('.dropdown.active').forEach(d => {
           if (d !== dropdown) d.classList.remove('active');
         });
@@ -1225,7 +1052,6 @@ const Dropdowns = {
       });
     });
     
-    // Close on outside click
     document.addEventListener('click', () => {
       document.querySelectorAll('.dropdown.active').forEach(d => d.classList.remove('active'));
     });
@@ -1243,8 +1069,10 @@ const LazyLoad = {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             const img = entry.target;
-            img.src = img.dataset.src;
-            img.classList.remove('lazy');
+            if (img.dataset.src) {
+              img.src = img.dataset.src;
+              img.classList.remove('lazy');
+            }
             observer.unobserve(img);
           }
         });
@@ -1256,11 +1084,31 @@ const LazyLoad = {
 };
 
 // ============================================
+// VIDEO CALL PAGE
+// ============================================
+
+const CallPage = {
+  init() {
+    const container = document.getElementById('video-call-container');
+    if (container && typeof VideoCall !== 'undefined') {
+      this.call = new VideoCall('video-call-container', {
+        displayName: 'You'
+      });
+    }
+  }
+};
+
+// ============================================
 // GLOBAL INITIALIZATION
 // ============================================
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Core
+document.addEventListener('DOMContentLoaded', async () => {
+  // Initialize LiveKit service if available
+  if (typeof livekitService !== 'undefined') {
+    await livekitService.init();
+  }
+  
+  // Core modules
   Theme.init();
   Search.init();
   Toast.init();
@@ -1269,7 +1117,7 @@ document.addEventListener('DOMContentLoaded', () => {
   LazyLoad.init();
   PWA.init();
   
-  // Page-specific
+  // Page-specific initialization
   const page = document.body.dataset.page;
   
   switch (page) {
@@ -1288,7 +1136,7 @@ document.addEventListener('DOMContentLoaded', () => {
       break;
       
     case 'stream':
-      StreamPage.init();
+      await StreamPage.init();
       break;
       
     case 'profile':
@@ -1306,6 +1154,10 @@ document.addEventListener('DOMContentLoaded', () => {
     case 'shorts':
       Shorts.init();
       break;
+      
+    case 'call':
+      CallPage.init();
+      break;
   }
 });
 
@@ -1319,9 +1171,9 @@ window.Buzzaboo = {
   CATEGORIES,
   Theme,
   Search,
-  Chat,
   Toast,
   formatNumber,
   formatDuration,
-  getStreamer
+  getStreamer,
+  livekitService: typeof livekitService !== 'undefined' ? livekitService : null
 };

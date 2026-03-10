@@ -3,7 +3,7 @@
  * Main orchestrator for the video chat page (chat.html)
  *
  * State machine: idle -> setup -> searching -> connected -> disconnected -> suspended
- * Coordinates: LiveKit (WebRTC), MatchingService, NSFWDetector, ClipService, BuzzabooAuth
+ * Coordinates: LiveKit, Matching, NSFW, Clips, Filters, Face Detection, AI Bots, Scoring
  */
 
 const CHAT_STATES = {
@@ -30,7 +30,28 @@ class ChatController {
     this.isCameraMuted = false;
     this.isMicMuted = false;
 
-    // DOM element references (populated in bindDOM)
+    // Filter engine
+    this.filterEngine = null;
+    this.faceDetector = null;
+    this.activeFilter = null;
+    this.autoBlurEnabled = true;
+    this.faceRevealCountdown = null;
+    this.faceRevealInterval = null;
+
+    // Game mode
+    this.gameModeEnabled = false;
+    this.isBotSession = false;
+    this.aiBotService = null;
+    this.scoringService = null;
+    this.gameTimer = null;
+    this.guessTimerInterval = null;
+    this.guessTimeLeft = 0;
+    this.guessButtonDelay = null;
+    this.hasGuessed = false;
+    this.matchAttemptCount = 0;
+    this.matchTimeoutId = null;
+
+    // DOM element references
     this.dom = {};
   }
 
@@ -43,17 +64,36 @@ class ChatController {
     this.bindEvents();
     this.bindBeforeUnload();
 
+    // Initialize AI bot service
+    this.aiBotService = new AIBotService();
+    await this.aiBotService.init();
+
+    // Initialize scoring service
+    this.scoringService = new ScoringService();
     const auth = window.buzzabooAuth;
     const userId = auth.getUserId();
+    const isAuth = auth.isAuthenticated();
+    await this.scoringService.init(userId, isAuth);
 
-    // Check for active suspension before anything else
+    // Show game mode toggle if bots are available
+    if (this.aiBotService.isAvailable() && this.dom.gameModeToggle) {
+      this.dom.gameModeToggle.style.display = '';
+    }
+
+    // Show score badge if authenticated
+    if (isAuth && this.dom.scoreBadge) {
+      this.dom.scoreBadge.style.display = '';
+      this.updateScoreDisplay();
+    }
+
+    // Check for active suspension
     const suspension = window.nsfwDetector.checkSuspension(userId);
     if (suspension.isSuspended) {
       this.showSuspension(suspension);
       return;
     }
 
-    // Determine age gate / consent flow
+    // Age gate / consent flow
     const storedAge = localStorage.getItem('buzzaboo-age');
     if (storedAge) {
       this.agePool = parseInt(storedAge, 10) >= 18 ? 'adult' : 'minor';
@@ -63,9 +103,6 @@ class ChatController {
     }
   }
 
-  /**
-   * Cache all DOM element references by ID.
-   */
   bindDOM() {
     const ids = [
       'ageGate', 'ageInput', 'ageSubmitBtn', 'ageError', 'ageBlockedMsg',
@@ -76,7 +113,14 @@ class ChatController {
       'chatStatusBar', 'chatStatus', 'chatTimer', 'recordingIndicator', 'privacyBadge',
       'toggleCameraBtn', 'toggleMicBtn', 'privacyBtn', 'textChatBtn', 'nextBtn', 'stopBtn',
       'textChatPanel', 'textChatMessages', 'textChatInput', 'sendMessageBtn',
-      'suspensionOverlay', 'suspensionCountdown', 'offenseCount'
+      'suspensionOverlay', 'suspensionCountdown', 'offenseCount',
+      // New elements
+      'filterBtn', 'filterTray', 'filterTrayClose', 'filterGrid',
+      'faceRevealOverlay', 'faceRevealNumber',
+      'gameModeToggle', 'gameModeCheckbox',
+      'guessBtn', 'guessModal', 'guessTimerValue', 'guessResult',
+      'guessResultIcon', 'guessResultText', 'guessResultPoints',
+      'scoreBadge', 'scoreValue', 'streakBadge', 'streakValue', 'scoreAnimation'
     ];
 
     for (const id of ids) {
@@ -84,9 +128,6 @@ class ChatController {
     }
   }
 
-  /**
-   * Bind all user-interaction event handlers.
-   */
   bindEvents() {
     // Age gate
     if (this.dom.ageSubmitBtn) {
@@ -115,8 +156,15 @@ class ChatController {
 
     // Privacy toggle
     if (this.dom.privacyToggle) {
-      this.dom.privacyToggle.addEventListener('change', () => {
-        this.setPrivacy(this.dom.privacyToggle.checked);
+      this.dom.privacyToggle.addEventListener('click', () => {
+        this.setPrivacy(!this.isPrivate);
+      });
+    }
+
+    // Game mode toggle
+    if (this.dom.gameModeCheckbox) {
+      this.dom.gameModeCheckbox.addEventListener('change', () => {
+        this.gameModeEnabled = this.dom.gameModeCheckbox.checked;
       });
     }
 
@@ -126,29 +174,36 @@ class ChatController {
     }
 
     // Chat controls
-    if (this.dom.toggleCameraBtn) {
-      this.dom.toggleCameraBtn.addEventListener('click', () => this.toggleCamera());
-    }
-    if (this.dom.toggleMicBtn) {
-      this.dom.toggleMicBtn.addEventListener('click', () => this.toggleMic());
-    }
-    if (this.dom.privacyBtn) {
-      this.dom.privacyBtn.addEventListener('click', () => this.togglePrivacy());
-    }
-    if (this.dom.textChatBtn) {
-      this.dom.textChatBtn.addEventListener('click', () => this.toggleTextChat());
-    }
-    if (this.dom.nextBtn) {
-      this.dom.nextBtn.addEventListener('click', () => this.handleNext());
-    }
-    if (this.dom.stopBtn) {
-      this.dom.stopBtn.addEventListener('click', () => this.handleStop());
-    }
+    if (this.dom.toggleCameraBtn) this.dom.toggleCameraBtn.addEventListener('click', () => this.toggleCamera());
+    if (this.dom.toggleMicBtn) this.dom.toggleMicBtn.addEventListener('click', () => this.toggleMic());
+    if (this.dom.privacyBtn) this.dom.privacyBtn.addEventListener('click', () => this.togglePrivacy());
+    if (this.dom.textChatBtn) this.dom.textChatBtn.addEventListener('click', () => this.toggleTextChat());
+    if (this.dom.nextBtn) this.dom.nextBtn.addEventListener('click', () => this.handleNext());
+    if (this.dom.stopBtn) this.dom.stopBtn.addEventListener('click', () => this.handleStop());
+
+    // Filter controls
+    if (this.dom.filterBtn) this.dom.filterBtn.addEventListener('click', () => this.toggleFilterTray());
+    if (this.dom.filterTrayClose) this.dom.filterTrayClose.addEventListener('click', () => this.closeFilterTray());
+
+    // Filter category tabs
+    document.querySelectorAll('.filter-cat').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-cat').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.renderFilterGrid(btn.dataset.cat);
+      });
+    });
+
+    // Guess button
+    if (this.dom.guessBtn) this.dom.guessBtn.addEventListener('click', () => this.showGuessModal());
+
+    // Guess options
+    document.querySelectorAll('.guess-option').forEach(btn => {
+      btn.addEventListener('click', () => this.handleGuess(btn.dataset.guess));
+    });
 
     // Text chat send
-    if (this.dom.sendMessageBtn) {
-      this.dom.sendMessageBtn.addEventListener('click', () => this.sendTextMessage());
-    }
+    if (this.dom.sendMessageBtn) this.dom.sendMessageBtn.addEventListener('click', () => this.sendTextMessage());
     if (this.dom.textChatInput) {
       this.dom.textChatInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -160,67 +215,41 @@ class ChatController {
 
     // Service events
     this.bindServiceEvents();
+
+    // Scoring events
+    this.scoringService.on('scoreChanged', (data) => {
+      this.updateScoreDisplay();
+      if (data.reason) {
+        this.showScoreAnimation(data.delta, data.reason);
+      }
+    });
   }
 
-  /**
-   * Subscribe to events from matching, livekit, nsfw, and clip services.
-   */
   bindServiceEvents() {
     const matching = window.matchingService;
     const livekit = window.livekitService;
     const nsfw = window.nsfwDetector;
     const clip = window.clipService;
 
-    matching.on('searching', () => {
-      this.updateStatus('Searching...');
-    });
+    matching.on('searching', () => this.updateStatus('Searching...'));
+    matching.on('matched', (data) => this.handleMatch(data));
+    matching.on('timeout', () => this.handleMatchTimeout());
 
-    matching.on('matched', (data) => {
-      this.handleMatch(data);
-    });
-
-    livekit.on('participantConnected', () => {
-      this.updateStatus('Connected');
-    });
-
-    livekit.on('participantDisconnected', () => {
-      this.handlePartnerDisconnected();
-    });
-
-    livekit.on('trackSubscribed', ({ track, participant }) => {
-      this.handleTrackSubscribed(track, participant);
-    });
-
-    livekit.on('trackUnsubscribed', ({ track }) => {
-      this.handleTrackUnsubscribed(track);
-    });
-
+    livekit.on('participantConnected', () => this.updateStatus('Connected'));
+    livekit.on('participantDisconnected', () => this.handlePartnerDisconnected());
+    livekit.on('trackSubscribed', ({ track, participant }) => this.handleTrackSubscribed(track, participant));
+    livekit.on('trackUnsubscribed', ({ track }) => this.handleTrackUnsubscribed(track));
     livekit.on('disconnected', () => {
-      if (this.state === CHAT_STATES.CONNECTED) {
-        this.handlePartnerDisconnected();
-      }
+      if (this.state === CHAT_STATES.CONNECTED) this.handlePartnerDisconnected();
     });
+    livekit.on('chatMessage', (message) => this.handleIncomingChatMessage(message));
 
-    livekit.on('chatMessage', (message) => {
-      this.handleIncomingChatMessage(message);
-    });
-
-    nsfw.on('violation', (data) => {
-      this.handleNSFWViolation(data);
-    });
-
-    clip.on('clipCaptured', (data) => {
-      console.log('Clip captured:', data.clipId);
-    });
+    nsfw.on('violation', (data) => this.handleNSFWViolation(data));
+    clip.on('clipCaptured', (data) => console.log('Clip captured:', data.clipId));
   }
 
-  /**
-   * Register cleanup on page unload.
-   */
   bindBeforeUnload() {
-    window.addEventListener('beforeunload', () => {
-      this.cleanup();
-    });
+    window.addEventListener('beforeunload', () => this.cleanup());
   }
 
   // ============================================
@@ -236,35 +265,24 @@ class ChatController {
     const input = this.dom.ageInput;
     const error = this.dom.ageError;
     const blocked = this.dom.ageBlockedMsg;
-
     if (!input) return;
 
     const age = parseInt(input.value, 10);
-
-    // Clear previous error states
     if (error) error.style.display = 'none';
     if (blocked) blocked.style.display = 'none';
 
     if (isNaN(age) || age < 1 || age > 120) {
-      if (error) {
-        error.textContent = 'Please enter a valid age.';
-        error.style.display = '';
-      }
+      if (error) { error.textContent = 'Please enter a valid age.'; error.style.display = ''; }
       return;
     }
 
     if (age < 13) {
-      if (blocked) {
-        blocked.textContent = 'You must be 13 or older to use Buzzaboo.';
-        blocked.style.display = '';
-      }
+      if (blocked) { blocked.textContent = 'You must be 13 or older to use Buzzaboo.'; blocked.style.display = ''; }
       return;
     }
 
-    // Valid age: store and determine pool
     localStorage.setItem('buzzaboo-age', age.toString());
     this.agePool = age >= 18 ? 'adult' : 'minor';
-
     if (this.dom.ageGate) this.dom.ageGate.style.display = 'none';
     this.checkConsent();
   }
@@ -274,8 +292,7 @@ class ChatController {
   // ============================================
 
   checkConsent() {
-    const consented = localStorage.getItem('buzzaboo-consent') === 'true';
-    if (consented) {
+    if (localStorage.getItem('buzzaboo-consent') === 'true') {
       this.enterSetup();
     } else {
       this.showConsentBanner();
@@ -299,27 +316,18 @@ class ChatController {
   async enterSetup() {
     this.state = CHAT_STATES.SETUP;
     this.hideAll();
-
     if (this.dom.setupPanel) this.dom.setupPanel.style.display = '';
 
-    // Load default privacy preference from auth profile if available
-    const auth = window.buzzabooAuth;
-    if (auth.isAuthenticated() && auth.getProfile) {
-      const profile = auth.getProfile();
-      if (profile && profile.preferences && profile.preferences.privateByDefault) {
-        this.isPrivate = true;
-        if (this.dom.privacyToggle) this.dom.privacyToggle.checked = true;
-      }
-    }
-
-    // Restore saved privacy preference from localStorage
+    // Load privacy preference
     const savedPrivacy = localStorage.getItem('buzzaboo-private');
     if (savedPrivacy !== null) {
       this.isPrivate = savedPrivacy === 'true';
-      if (this.dom.privacyToggle) this.dom.privacyToggle.checked = this.isPrivate;
     }
 
-    // Start camera preview
+    // Load auto-blur preference
+    const savedAutoBlur = localStorage.getItem('buzzaboo-auto-blur');
+    this.autoBlurEnabled = savedAutoBlur !== 'false'; // Default true
+
     await this.startPreview();
   }
 
@@ -330,34 +338,138 @@ class ChatController {
         audio: false
       });
 
+      // Initialize filter engine with preview stream
+      this.filterEngine = new FilterEngine();
+      const processedStream = this.filterEngine.init(this.previewStream);
+
+      // Initialize face detector lazily
+      if (!this.faceDetector) {
+        this.faceDetector = new FaceDetectionService();
+      }
+      this.filterEngine.setFaceDetector(this.faceDetector);
+
+      // Show filtered preview
       if (this.dom.previewVideo) {
-        this.dom.previewVideo.srcObject = this.previewStream;
+        this.dom.previewVideo.srcObject = processedStream;
         this.dom.previewVideo.muted = true;
         this.dom.previewVideo.play().catch(() => {});
         this.dom.previewVideo.style.display = '';
       }
-      if (this.dom.previewPlaceholder) {
-        this.dom.previewPlaceholder.style.display = 'none';
-      }
+      if (this.dom.previewPlaceholder) this.dom.previewPlaceholder.style.display = 'none';
     } catch (error) {
       console.error('Camera preview failed:', error);
-      if (this.dom.previewPlaceholder) {
-        this.dom.previewPlaceholder.style.display = '';
-      }
-      if (this.dom.previewVideo) {
-        this.dom.previewVideo.style.display = 'none';
-      }
+      if (this.dom.previewPlaceholder) this.dom.previewPlaceholder.style.display = '';
+      if (this.dom.previewVideo) this.dom.previewVideo.style.display = 'none';
     }
   }
 
   stopPreview() {
+    if (this.filterEngine) {
+      this.filterEngine.destroy();
+      this.filterEngine = null;
+    }
     if (this.previewStream) {
       this.previewStream.getTracks().forEach(track => track.stop());
       this.previewStream = null;
     }
-    if (this.dom.previewVideo) {
-      this.dom.previewVideo.srcObject = null;
+    if (this.dom.previewVideo) this.dom.previewVideo.srcObject = null;
+  }
+
+  // ============================================
+  // FILTER TRAY
+  // ============================================
+
+  toggleFilterTray() {
+    if (this.dom.filterTray) {
+      const visible = this.dom.filterTray.style.display !== 'none';
+      this.dom.filterTray.style.display = visible ? 'none' : '';
+      if (!visible) this.renderFilterGrid('face');
     }
+  }
+
+  closeFilterTray() {
+    if (this.dom.filterTray) this.dom.filterTray.style.display = 'none';
+  }
+
+  renderFilterGrid(category) {
+    const grid = this.dom.filterGrid;
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    const filters = {
+      face: [
+        { id: null, name: 'None', icon: '🚫' },
+        { id: 'sunglasses', name: 'Shades', icon: '🕶️' },
+        { id: 'devilhorns', name: 'Devil', icon: '😈' },
+        { id: 'angelhalo', name: 'Angel', icon: '😇' },
+        { id: 'neonoutline', name: 'Neon', icon: '💜' },
+        { id: 'cartooneyes', name: 'Googly', icon: '👀' },
+        { id: 'pixelretro', name: 'Pixel', icon: '🟩' }
+      ],
+      effects: [
+        { id: null, name: 'None', icon: '🚫' },
+        { id: 'vhs', name: 'VHS', icon: '📼' },
+        { id: 'nightvision', name: 'Night', icon: '🌙' },
+        { id: 'thermal', name: 'Thermal', icon: '🌡️' },
+        { id: 'matrix', name: 'Matrix', icon: '💊' },
+        { id: 'comicbook', name: 'Comic', icon: '💥' },
+        { id: 'glitch', name: 'Glitch', icon: '⚡' }
+      ],
+      privacy: [
+        { id: 'faceblur', name: 'Blur Face', icon: '🫣', toggle: true },
+        { id: 'autoblur', name: 'Auto-Blur', icon: '⏱️', toggle: true }
+      ]
+    };
+
+    const items = filters[category] || [];
+    const currentFilter = this.filterEngine ? this.filterEngine.getFilter() : null;
+
+    items.forEach(f => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-item';
+
+      if (f.toggle) {
+        // Toggle-style button
+        const isActive = f.id === 'faceblur'
+          ? (this.filterEngine && this.filterEngine.isFaceBlurActive())
+          : this.autoBlurEnabled;
+
+        if (isActive) btn.classList.add('active');
+
+        btn.addEventListener('click', () => {
+          if (f.id === 'faceblur') {
+            const newState = !(this.filterEngine && this.filterEngine.isFaceBlurActive());
+            if (this.filterEngine) this.filterEngine.setFaceBlur(newState);
+            if (newState && this.faceDetector && !this.faceDetector.isReady()) {
+              this.faceDetector.init();
+            }
+          } else if (f.id === 'autoblur') {
+            this.autoBlurEnabled = !this.autoBlurEnabled;
+            localStorage.setItem('buzzaboo-auto-blur', this.autoBlurEnabled.toString());
+          }
+          this.renderFilterGrid(category);
+        });
+      } else {
+        // Selection-style button
+        if (currentFilter === f.id) btn.classList.add('active');
+
+        btn.addEventListener('click', () => {
+          if (this.filterEngine) {
+            this.filterEngine.setFilter(f.id);
+            // Load face detector for face filters
+            if (f.id && ['sunglasses', 'devilhorns', 'angelhalo', 'neonoutline', 'cartooneyes', 'pixelretro'].includes(f.id)) {
+              if (this.faceDetector && !this.faceDetector.isReady() && !this.faceDetector.isLoading()) {
+                this.faceDetector.init();
+              }
+            }
+          }
+          this.renderFilterGrid(category);
+        });
+      }
+
+      btn.innerHTML = `<span class="filter-item-icon">${f.icon}</span><span class="filter-item-name">${f.name}</span>`;
+      grid.appendChild(btn);
+    });
   }
 
   // ============================================
@@ -366,19 +478,11 @@ class ChatController {
 
   addInterest(tag) {
     if (!tag) return;
-
-    // Normalize: lowercase, trim, limit length
     const normalized = tag.toLowerCase().slice(0, 30);
-
-    // Prevent duplicates
     if (this.interests.includes(normalized)) return;
-
-    // Limit total tags
     if (this.interests.length >= 10) return;
-
     this.interests.push(normalized);
     this.renderInterests();
-
     if (this.dom.interestInput) this.dom.interestInput.value = '';
   }
 
@@ -390,20 +494,15 @@ class ChatController {
   renderInterests() {
     const container = this.dom.interestTags;
     if (!container) return;
-
     container.innerHTML = '';
-
     for (const tag of this.interests) {
       const el = document.createElement('span');
       el.className = 'interest-tag';
       el.textContent = tag;
-
       const removeBtn = document.createElement('button');
       removeBtn.className = 'interest-tag-remove';
       removeBtn.textContent = '\u00D7';
-      removeBtn.setAttribute('aria-label', `Remove ${tag}`);
       removeBtn.addEventListener('click', () => this.removeInterest(tag));
-
       el.appendChild(removeBtn);
       container.appendChild(el);
     }
@@ -417,30 +516,18 @@ class ChatController {
     this.isPrivate = isPrivate;
     localStorage.setItem('buzzaboo-private', isPrivate.toString());
     this.updatePrivacyUI();
-
-    if (window.clipService) {
-      window.clipService.setPrivate(isPrivate);
-    }
+    if (window.clipService) window.clipService.setPrivate(isPrivate);
   }
 
   togglePrivacy() {
     this.setPrivacy(!this.isPrivate);
-    if (this.dom.privacyToggle) this.dom.privacyToggle.checked = this.isPrivate;
   }
 
   updatePrivacyUI() {
-    if (this.dom.recordingIndicator) {
-      this.dom.recordingIndicator.style.display = this.isPrivate ? 'none' : '';
-    }
-    if (this.dom.privacyBadge) {
-      this.dom.privacyBadge.style.display = this.isPrivate ? '' : 'none';
-    }
+    if (this.dom.recordingIndicator) this.dom.recordingIndicator.style.display = this.isPrivate ? 'none' : '';
+    if (this.dom.privacyBadge) this.dom.privacyBadge.style.display = this.isPrivate ? '' : 'none';
     if (this.dom.privacyBtn) {
-      if (this.isPrivate) {
-        this.dom.privacyBtn.classList.add('active');
-      } else {
-        this.dom.privacyBtn.classList.remove('active');
-      }
+      this.dom.privacyBtn.classList.toggle('active', this.isPrivate);
     }
   }
 
@@ -450,11 +537,21 @@ class ChatController {
 
   async startSearching() {
     if (this.state === CHAT_STATES.SEARCHING) return;
-
     this.state = CHAT_STATES.SEARCHING;
+    this.matchAttemptCount = 0;
+    this.hasGuessed = false;
+    this.isBotSession = false;
 
-    // Stop preview stream — LiveKit will manage its own tracks
-    this.stopPreview();
+    // Keep filter engine alive but stop preview display
+    // We'll transfer it to the chat view
+    if (this.dom.previewVideo) this.dom.previewVideo.srcObject = null;
+
+    // If we don't have a filter engine yet, create one
+    if (!this.filterEngine && this.previewStream) {
+      this.filterEngine = new FilterEngine();
+      this.filterEngine.init(this.previewStream);
+      if (this.faceDetector) this.filterEngine.setFaceDetector(this.faceDetector);
+    }
 
     // Switch UI to chat view
     this.hideAll();
@@ -462,41 +559,175 @@ class ChatController {
     if (this.dom.searchingIndicator) this.dom.searchingIndicator.style.display = '';
     if (this.dom.remotePlaceholder) this.dom.remotePlaceholder.style.display = '';
     if (this.dom.remoteVideo) this.dom.remoteVideo.style.display = 'none';
+    if (this.dom.guessBtn) this.dom.guessBtn.style.display = 'none';
 
     this.updateStatus('Searching...');
     this.updatePrivacyUI();
 
-    // Load NSFW model in background (non-blocking)
-    window.nsfwDetector.loadModel().catch(err => {
-      console.error('NSFW model load failed:', err);
-    });
+    // Check if we should match with a bot (game mode or no humans available)
+    if (this.aiBotService.shouldMatchWithBot(this.gameModeEnabled)) {
+      // Short fake search delay for realism
+      setTimeout(() => this.startBotMatch(), 1500 + Math.random() * 2000);
+      return;
+    }
+
+    // Load NSFW model in background
+    window.nsfwDetector.loadModel().catch(err => console.error('NSFW model load failed:', err));
 
     // Initialize LiveKit
     await window.livekitService.init();
 
-    // Initialize matching service with Firestore
-    const auth = window.buzzabooAuth;
-    const db = (typeof firebase !== 'undefined' && firebase.apps.length)
-      ? firebase.firestore()
-      : null;
-    const userId = auth.getUserId();
+    // Set filter engine on LiveKit so it publishes processed track
+    if (this.filterEngine) {
+      window.livekitService.setFilterEngine(this.filterEngine);
+    }
 
+    // Set filter engine on clip service
+    if (this.filterEngine) {
+      window.clipService.setFilterEngine(this.filterEngine);
+    }
+
+    // Initialize matching
+    const auth = window.buzzabooAuth;
+    const db = (typeof firebase !== 'undefined' && firebase.apps.length) ? firebase.firestore() : null;
+    const userId = auth.getUserId();
     window.matchingService.init(db, userId);
 
-    // Enter the matchmaking queue
     try {
       await window.matchingService.enterQueue(this.interests, this.agePool);
+
+      // Set timeout: if no match found in 15 seconds, fall back to bot if available
+      this.matchTimeoutId = setTimeout(() => {
+        if (this.state === CHAT_STATES.SEARCHING && this.aiBotService.shouldFallbackToBot()) {
+          console.log('No humans available, matching with AI bot');
+          window.matchingService.leaveQueue();
+          this.startBotMatch();
+        }
+      }, 15000);
     } catch (error) {
       console.error('Failed to enter queue:', error);
-      this.updateStatus('Connection error. Try again.');
-      this.state = CHAT_STATES.SETUP;
-      this.enterSetup();
+
+      // Try bot fallback on queue error
+      if (this.aiBotService.shouldFallbackToBot()) {
+        setTimeout(() => this.startBotMatch(), 1000);
+      } else {
+        this.updateStatus('Connection error. Try again.');
+        this.state = CHAT_STATES.SETUP;
+        this.enterSetup();
+      }
     }
   }
 
+  handleMatchTimeout() {
+    // Called when matching service times out
+    if (this.state === CHAT_STATES.SEARCHING && this.aiBotService.shouldFallbackToBot()) {
+      this.startBotMatch();
+    }
+  }
+
+  // ============================================
+  // BOT MATCH
+  // ============================================
+
+  async startBotMatch() {
+    if (this.state !== CHAT_STATES.SEARCHING) return;
+
+    if (this.matchTimeoutId) {
+      clearTimeout(this.matchTimeoutId);
+      this.matchTimeoutId = null;
+    }
+
+    this.isBotSession = true;
+    this.state = CHAT_STATES.CONNECTED;
+
+    // Hide searching indicator
+    if (this.dom.searchingIndicator) this.dom.searchingIndicator.style.display = 'none';
+
+    // Start bot session
+    const session = await this.aiBotService.startBotSession(
+      this.dom.remoteVideo,
+      (text) => {
+        // Bot sends a chat message
+        this.appendChatMessage({
+          isOwn: false,
+          senderName: 'Stranger',
+          text,
+          timestamp: Date.now()
+        });
+        window.clipService.onChatMessage();
+      }
+    );
+
+    if (!session) {
+      // Bot failed to start, try regular matching
+      this.isBotSession = false;
+      this.state = CHAT_STATES.SEARCHING;
+      this.handleNext();
+      return;
+    }
+
+    // Show remote video
+    if (this.dom.remoteVideo) this.dom.remoteVideo.style.display = '';
+    if (this.dom.remotePlaceholder) this.dom.remotePlaceholder.style.display = 'none';
+
+    // Show local video with filter engine
+    if (this.filterEngine && this.dom.localVideo) {
+      this.dom.localVideo.srcObject = this.filterEngine.getProcessedStream();
+      this.dom.localVideo.muted = true;
+      this.dom.localVideo.play().catch(() => {});
+    }
+
+    // Listen for bot typing
+    this.aiBotService.on('botTyping', (typing) => {
+      // Could show typing indicator in text chat
+    });
+
+    // Start face reveal countdown if auto-blur enabled
+    if (this.autoBlurEnabled) {
+      this.startFaceReveal();
+    }
+
+    // Start chat timer
+    this.startChatTimer();
+    this.updateStatus('Connected');
+    this.updatePrivacyUI();
+
+    // Start clip recording if not private
+    if (!this.isPrivate && this.dom.localVideo && this.dom.remoteVideo) {
+      window.clipService.startRecording(this.dom.localVideo, this.dom.remoteVideo);
+    }
+
+    // Show guess button after 15 seconds if game mode is on
+    if (this.gameModeEnabled) {
+      this.guessButtonDelay = setTimeout(() => {
+        if (this.dom.guessBtn && this.state === CHAT_STATES.CONNECTED) {
+          this.dom.guessBtn.style.display = '';
+        }
+      }, 15000);
+
+      // Auto-end guess window after 60 seconds
+      this.gameTimer = setTimeout(() => {
+        if (!this.hasGuessed && this.state === CHAT_STATES.CONNECTED) {
+          // Time ran out, no guess made
+          this.showGuessModal();
+        }
+      }, 60000);
+    }
+  }
+
+  // ============================================
+  // REAL MATCH
+  // ============================================
+
   async handleMatch({ roomName, partnerId }) {
+    if (this.matchTimeoutId) {
+      clearTimeout(this.matchTimeoutId);
+      this.matchTimeoutId = null;
+    }
+
     this.roomName = roomName;
     this.partnerId = partnerId;
+    this.isBotSession = false;
 
     const auth = window.buzzabooAuth;
     const userId = auth.getUserId();
@@ -504,12 +735,11 @@ class ChatController {
 
     // Connect to LiveKit room
     const connected = await window.livekitService.connect(roomName, userId, {
-      displayName: displayName,
+      displayName,
       metadata: { agePool: this.agePool }
     });
 
     if (!connected) {
-      console.error('Failed to connect to LiveKit room');
       this.updateStatus('Connection failed. Retrying...');
       this.handleNext();
       return;
@@ -527,31 +757,235 @@ class ChatController {
     this.isMicMuted = false;
     this.updateToggleButtons();
 
-    // Attach local video
-    const localTrack = window.livekitService.localVideoTrack;
-    if (localTrack && this.dom.localVideo) {
-      window.livekitService.attachTrack(localTrack, this.dom.localVideo);
+    // Attach local video — show filter engine output
+    if (this.filterEngine && this.dom.localVideo) {
+      this.dom.localVideo.srcObject = this.filterEngine.getProcessedStream();
       this.dom.localVideo.muted = true;
+      this.dom.localVideo.play().catch(() => {});
     }
 
     // Transition to connected state
     this.state = CHAT_STATES.CONNECTED;
-
-    // Hide searching indicator
     if (this.dom.searchingIndicator) this.dom.searchingIndicator.style.display = 'none';
 
     // Start NSFW scanning
     window.nsfwDetector.startScanning(this.dom.localVideo, this.dom.remoteVideo);
 
-    // Start clip recording (if not private)
+    // Start clip recording
     if (!this.isPrivate) {
       window.clipService.startRecording(this.dom.localVideo, this.dom.remoteVideo);
     }
 
+    // Start face reveal countdown
+    if (this.autoBlurEnabled) {
+      this.startFaceReveal();
+    }
+
     // Start chat timer
     this.startChatTimer();
-
     this.updateStatus('Connected');
+
+    // Show guess button after 15 seconds in game mode
+    if (this.gameModeEnabled) {
+      this.guessButtonDelay = setTimeout(() => {
+        if (this.dom.guessBtn && this.state === CHAT_STATES.CONNECTED) {
+          this.dom.guessBtn.style.display = '';
+        }
+      }, 15000);
+
+      this.gameTimer = setTimeout(() => {
+        if (!this.hasGuessed && this.state === CHAT_STATES.CONNECTED) {
+          this.showGuessModal();
+        }
+      }, 60000);
+    }
+  }
+
+  // ============================================
+  // FACE REVEAL COUNTDOWN
+  // ============================================
+
+  startFaceReveal() {
+    if (!this.filterEngine) return;
+
+    // Load face detector if not ready
+    if (this.faceDetector && !this.faceDetector.isReady() && !this.faceDetector.isLoading()) {
+      this.faceDetector.init();
+    }
+
+    this.filterEngine.setFaceBlur(true);
+    this.faceRevealCountdown = 10;
+
+    if (this.dom.faceRevealOverlay) this.dom.faceRevealOverlay.style.display = '';
+    if (this.dom.faceRevealNumber) this.dom.faceRevealNumber.textContent = '10';
+
+    this.faceRevealInterval = setInterval(() => {
+      this.faceRevealCountdown--;
+
+      if (this.dom.faceRevealNumber) {
+        this.dom.faceRevealNumber.textContent = this.faceRevealCountdown;
+        // Pulse animation
+        this.dom.faceRevealNumber.classList.remove('pulse');
+        void this.dom.faceRevealNumber.offsetWidth; // Force reflow
+        this.dom.faceRevealNumber.classList.add('pulse');
+      }
+
+      if (this.faceRevealCountdown <= 0) {
+        clearInterval(this.faceRevealInterval);
+        this.faceRevealInterval = null;
+
+        // Smooth blur dissolve
+        this.animateBlurReveal();
+      }
+    }, 1000);
+  }
+
+  animateBlurReveal() {
+    if (!this.filterEngine) return;
+
+    const startRadius = 20;
+    const duration = 1000;
+    const startTime = performance.now();
+
+    const animate = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(1, elapsed / duration);
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const radius = startRadius * (1 - eased);
+
+      this.filterEngine.setBlurRadius(radius);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        this.filterEngine.setFaceBlur(false);
+        if (this.dom.faceRevealOverlay) this.dom.faceRevealOverlay.style.display = 'none';
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }
+
+  stopFaceReveal() {
+    if (this.faceRevealInterval) {
+      clearInterval(this.faceRevealInterval);
+      this.faceRevealInterval = null;
+    }
+    if (this.dom.faceRevealOverlay) this.dom.faceRevealOverlay.style.display = 'none';
+  }
+
+  // ============================================
+  // GUESS (Human or AI?)
+  // ============================================
+
+  showGuessModal() {
+    if (this.hasGuessed) return;
+    if (this.dom.guessModal) this.dom.guessModal.style.display = '';
+
+    // Start countdown timer from remaining time
+    this.guessTimeLeft = 30;
+    if (this.dom.guessTimerValue) this.dom.guessTimerValue.textContent = this.guessTimeLeft;
+
+    this.guessTimerInterval = setInterval(() => {
+      this.guessTimeLeft--;
+      if (this.dom.guessTimerValue) this.dom.guessTimerValue.textContent = this.guessTimeLeft;
+
+      if (this.guessTimeLeft <= 0) {
+        clearInterval(this.guessTimerInterval);
+        this.guessTimerInterval = null;
+        // Time's up — count as wrong guess
+        this.handleGuess(this.isBotSession ? 'human' : 'ai');
+      }
+    }, 1000);
+  }
+
+  async handleGuess(guess) {
+    if (this.hasGuessed) return;
+    this.hasGuessed = true;
+
+    // Clear timers
+    if (this.guessTimerInterval) {
+      clearInterval(this.guessTimerInterval);
+      this.guessTimerInterval = null;
+    }
+    if (this.gameTimer) {
+      clearTimeout(this.gameTimer);
+      this.gameTimer = null;
+    }
+
+    // Hide modal
+    if (this.dom.guessModal) this.dom.guessModal.style.display = 'none';
+    if (this.dom.guessBtn) this.dom.guessBtn.style.display = 'none';
+
+    // Determine correctness
+    const actual = this.isBotSession ? 'ai' : 'human';
+    const correct = guess === actual;
+
+    // Record score
+    const result = await this.scoringService.recordGuess(correct);
+
+    // Show result
+    this.showGuessResult(correct, result.points, actual);
+  }
+
+  showGuessResult(correct, points, actual) {
+    if (!this.dom.guessResult) return;
+
+    this.dom.guessResult.style.display = '';
+    this.dom.guessResult.className = 'guess-result ' + (correct ? 'correct' : 'wrong');
+
+    if (this.dom.guessResultIcon) {
+      this.dom.guessResultIcon.textContent = correct ? '🎉' : '😮';
+    }
+    if (this.dom.guessResultText) {
+      this.dom.guessResultText.textContent = correct
+        ? `Correct! It was ${actual === 'ai' ? 'an AI' : 'a real human'}!`
+        : `Wrong! It was actually ${actual === 'ai' ? 'an AI' : 'a real human'}!`;
+    }
+    if (this.dom.guessResultPoints) {
+      this.dom.guessResultPoints.textContent = `${points > 0 ? '+' : ''}${points} points`;
+      this.dom.guessResultPoints.className = 'guess-result-points ' + (points > 0 ? 'positive' : 'negative');
+    }
+
+    this.updateScoreDisplay();
+
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+      if (this.dom.guessResult) this.dom.guessResult.style.display = 'none';
+    }, 3000);
+  }
+
+  // ============================================
+  // SCORING DISPLAY
+  // ============================================
+
+  updateScoreDisplay() {
+    if (!this.scoringService || !window.buzzabooAuth.isAuthenticated()) return;
+
+    const stats = this.scoringService.getStats();
+    if (this.dom.scoreValue) this.dom.scoreValue.textContent = stats.score;
+    if (this.dom.scoreBadge) this.dom.scoreBadge.style.display = '';
+
+    if (stats.currentStreak >= 2) {
+      if (this.dom.streakBadge) this.dom.streakBadge.style.display = '';
+      if (this.dom.streakValue) this.dom.streakValue.textContent = stats.currentStreak;
+    } else {
+      if (this.dom.streakBadge) this.dom.streakBadge.style.display = 'none';
+    }
+  }
+
+  showScoreAnimation(points, reason) {
+    if (!this.dom.scoreAnimation) return;
+
+    this.dom.scoreAnimation.textContent = `${points > 0 ? '+' : ''}${points}`;
+    this.dom.scoreAnimation.className = 'score-animation ' + (points > 0 ? 'positive' : 'negative');
+    this.dom.scoreAnimation.style.display = '';
+
+    // Remove after animation
+    setTimeout(() => {
+      if (this.dom.scoreAnimation) this.dom.scoreAnimation.style.display = 'none';
+    }, 1500);
   }
 
   // ============================================
@@ -560,17 +994,13 @@ class ChatController {
 
   handleTrackSubscribed(track, participant) {
     if (!track) return;
-
     if (track.kind === 'video') {
       if (this.dom.remoteVideo) {
         window.livekitService.attachTrack(track, this.dom.remoteVideo);
         this.dom.remoteVideo.style.display = '';
       }
-      if (this.dom.remotePlaceholder) {
-        this.dom.remotePlaceholder.style.display = 'none';
-      }
+      if (this.dom.remotePlaceholder) this.dom.remotePlaceholder.style.display = 'none';
     } else if (track.kind === 'audio') {
-      // Create or reuse an audio element for remote audio
       let audioEl = document.getElementById('remoteAudio');
       if (!audioEl) {
         audioEl = document.createElement('audio');
@@ -584,21 +1014,13 @@ class ChatController {
 
   handleTrackUnsubscribed(track) {
     if (!track) return;
-
     if (track.kind === 'video') {
-      if (this.dom.remoteVideo) {
-        this.dom.remoteVideo.style.display = 'none';
-      }
-      if (this.dom.remotePlaceholder) {
-        this.dom.remotePlaceholder.style.display = '';
-      }
+      if (this.dom.remoteVideo) this.dom.remoteVideo.style.display = 'none';
+      if (this.dom.remotePlaceholder) this.dom.remotePlaceholder.style.display = '';
     } else if (track.kind === 'audio') {
       const audioEl = document.getElementById('remoteAudio');
-      if (audioEl) {
-        audioEl.srcObject = null;
-      }
+      if (audioEl) audioEl.srcObject = null;
     }
-
     track.detach();
   }
 
@@ -608,12 +1030,16 @@ class ChatController {
 
   handlePartnerDisconnected() {
     if (this.state !== CHAT_STATES.CONNECTED) return;
-
     this.state = CHAT_STATES.DISCONNECTED;
     this.updateStatus('Partner disconnected');
     this.stopConnectedSession();
 
-    // Auto-search for a new partner after a short delay
+    // Record chat duration for scoring
+    if (this.chatStartTime) {
+      const duration = Math.floor((Date.now() - this.chatStartTime) / 1000);
+      this.scoringService.recordChat(duration);
+    }
+
     setTimeout(() => {
       if (this.state === CHAT_STATES.DISCONNECTED) {
         this.startSearching();
@@ -628,33 +1054,25 @@ class ChatController {
   async handleNext() {
     if (this.state !== CHAT_STATES.CONNECTED && this.state !== CHAT_STATES.SEARCHING) return;
 
+    // Record chat duration
+    if (this.chatStartTime) {
+      const duration = Math.floor((Date.now() - this.chatStartTime) / 1000);
+      this.scoringService.recordChat(duration);
+    }
+
     this.stopConnectedSession();
     this.state = CHAT_STATES.SEARCHING;
-
-    // Clear text chat
     this.clearTextChat();
 
-    // Reset remote video display
     if (this.dom.remoteVideo) this.dom.remoteVideo.style.display = 'none';
     if (this.dom.remotePlaceholder) this.dom.remotePlaceholder.style.display = '';
     if (this.dom.searchingIndicator) this.dom.searchingIndicator.style.display = '';
 
     this.updateStatus('Searching...');
 
-    // Re-enter queue
-    try {
-      const auth = window.buzzabooAuth;
-      const db = (typeof firebase !== 'undefined' && firebase.apps.length)
-        ? firebase.firestore()
-        : null;
-      const userId = auth.getUserId();
-
-      window.matchingService.init(db, userId);
-      await window.matchingService.enterQueue(this.interests, this.agePool);
-    } catch (error) {
-      console.error('Failed to re-enter queue:', error);
-      this.updateStatus('Connection error. Try again.');
-    }
+    // Re-start searching (will handle bot/human decision)
+    this.state = CHAT_STATES.IDLE; // Reset so startSearching works
+    await this.startSearching();
   }
 
   // ============================================
@@ -662,126 +1080,107 @@ class ChatController {
   // ============================================
 
   async handleStop() {
+    if (this.chatStartTime) {
+      const duration = Math.floor((Date.now() - this.chatStartTime) / 1000);
+      this.scoringService.recordChat(duration);
+    }
+
     this.stopConnectedSession();
     this.clearTextChat();
-
-    // Return to setup state and restart preview
     this.state = CHAT_STATES.SETUP;
     await this.enterSetup();
   }
 
-  /**
-   * Stop all active connected-state services.
-   * Shared between next, stop, and disconnect flows.
-   */
   async stopConnectedSession() {
-    // Stop NSFW scanning
+    // Stop game mode timers
+    if (this.gameTimer) { clearTimeout(this.gameTimer); this.gameTimer = null; }
+    if (this.guessButtonDelay) { clearTimeout(this.guessButtonDelay); this.guessButtonDelay = null; }
+    if (this.guessTimerInterval) { clearInterval(this.guessTimerInterval); this.guessTimerInterval = null; }
+    if (this.matchTimeoutId) { clearTimeout(this.matchTimeoutId); this.matchTimeoutId = null; }
+
+    // Hide game UI
+    if (this.dom.guessBtn) this.dom.guessBtn.style.display = 'none';
+    if (this.dom.guessModal) this.dom.guessModal.style.display = 'none';
+    if (this.dom.guessResult) this.dom.guessResult.style.display = 'none';
+
+    // Stop face reveal
+    this.stopFaceReveal();
+    if (this.filterEngine) {
+      this.filterEngine.setFaceBlur(false);
+    }
+
+    // End bot session if active
+    if (this.isBotSession) {
+      this.aiBotService.endBotSession();
+      this.isBotSession = false;
+    }
+
+    // Stop services
     window.nsfwDetector.stopScanning();
-
-    // Stop clip recording
     window.clipService.stopRecording();
-
-    // Disconnect LiveKit
     await window.livekitService.disconnect();
-
-    // Leave matchmaking queue
     await window.matchingService.leaveQueue();
-
-    // Stop chat timer
     this.stopChatTimer();
 
-    // Clear partner state
     this.partnerId = null;
     this.roomName = null;
+    this.hasGuessed = false;
   }
 
   // ============================================
-  // NSFW VIOLATION HANDLING
+  // NSFW VIOLATION
   // ============================================
 
   async handleNSFWViolation({ source, confidence }) {
     if (source === 'local') {
-      // Local user violated: disconnect, record, suspend
-      console.warn(`Local NSFW violation detected (confidence: ${confidence.toFixed(2)})`);
-
       await this.stopConnectedSession();
-
       const auth = window.buzzabooAuth;
       const userId = auth.getUserId();
       const isAuth = auth.isAuthenticated();
-      const db = (typeof firebase !== 'undefined' && firebase.apps.length)
-        ? firebase.firestore()
-        : null;
-
-      const data = await window.nsfwDetector.recordViolation(userId, isAuth, db);
+      const db = (typeof firebase !== 'undefined' && firebase.apps.length) ? firebase.firestore() : null;
+      await window.nsfwDetector.recordViolation(userId, isAuth, db);
       const suspension = window.nsfwDetector.checkSuspension(userId);
       this.showSuspension(suspension);
     } else if (source === 'remote') {
-      // Remote user violated: report and auto-skip
-      console.warn(`Remote NSFW violation detected (confidence: ${confidence.toFixed(2)})`);
-
-      if (this.partnerId) {
-        window.matchingService.reportPartner(this.partnerId, 'nsfw_auto_detection');
-      }
-
+      if (this.partnerId) window.matchingService.reportPartner(this.partnerId, 'nsfw_auto_detection');
       this.handleNext();
     }
   }
 
   // ============================================
-  // SUSPENSION DISPLAY
+  // SUSPENSION
   // ============================================
 
   showSuspension(suspension) {
     this.state = CHAT_STATES.SUSPENDED;
     this.hideAll();
-
     if (this.dom.suspensionOverlay) this.dom.suspensionOverlay.style.display = '';
     if (this.dom.offenseCount) this.dom.offenseCount.textContent = suspension.offenseCount;
 
     if (suspension.isPermanent) {
-      if (this.dom.suspensionCountdown) {
-        this.dom.suspensionCountdown.textContent = 'Permanently suspended';
-      }
+      if (this.dom.suspensionCountdown) this.dom.suspensionCountdown.textContent = 'Permanently suspended';
       return;
     }
 
-    // Animate countdown using requestAnimationFrame
     const expiresAt = suspension.expiresAt;
     const updateCountdown = () => {
       const remaining = Math.max(0, expiresAt - Date.now());
-
       if (remaining <= 0) {
-        if (this.dom.suspensionCountdown) {
-          this.dom.suspensionCountdown.textContent = '00:00:00';
-        }
-        // Suspension expired — return to setup
+        if (this.dom.suspensionCountdown) this.dom.suspensionCountdown.textContent = '00:00:00';
         if (this.dom.suspensionOverlay) this.dom.suspensionOverlay.style.display = 'none';
         this.enterSetup();
         return;
       }
-
-      const hours = Math.floor(remaining / 3600000);
-      const minutes = Math.floor((remaining % 3600000) / 60000);
-      const seconds = Math.floor((remaining % 60000) / 1000);
-
-      const formatted =
-        String(hours).padStart(2, '0') + ':' +
-        String(minutes).padStart(2, '0') + ':' +
-        String(seconds).padStart(2, '0');
-
+      const h = Math.floor(remaining / 3600000);
+      const m = Math.floor((remaining % 3600000) / 60000);
+      const s = Math.floor((remaining % 60000) / 1000);
       if (this.dom.suspensionCountdown) {
-        this.dom.suspensionCountdown.textContent = formatted;
+        this.dom.suspensionCountdown.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
       }
-
       this.suspensionAnimFrameId = requestAnimationFrame(updateCountdown);
     };
 
-    // Cancel any previous countdown animation
-    if (this.suspensionAnimFrameId) {
-      cancelAnimationFrame(this.suspensionAnimFrameId);
-    }
-
+    if (this.suspensionAnimFrameId) cancelAnimationFrame(this.suspensionAnimFrameId);
     this.suspensionAnimFrameId = requestAnimationFrame(updateCountdown);
   }
 
@@ -790,75 +1189,57 @@ class ChatController {
   // ============================================
 
   toggleTextChat() {
-    if (this.dom.textChatPanel) {
-      this.dom.textChatPanel.classList.toggle('open');
-    }
+    if (this.dom.textChatPanel) this.dom.textChatPanel.classList.toggle('open');
   }
 
   async sendTextMessage() {
     const input = this.dom.textChatInput;
     if (!input) return;
-
     const text = input.value.trim();
-    if (!text) return;
-
-    if (this.state !== CHAT_STATES.CONNECTED) return;
-
+    if (!text || this.state !== CHAT_STATES.CONNECTED) return;
     input.value = '';
 
-    try {
-      await window.livekitService.sendChatMessage(text);
-      // The chatMessage event will handle UI update for own messages
-      // Notify clip service of chat activity
+    if (this.isBotSession) {
+      // Send to bot
+      this.appendChatMessage({ isOwn: true, senderName: 'You', text, timestamp: Date.now() });
+      this.aiBotService.handleUserMessage(text);
       window.clipService.onChatMessage();
-    } catch (error) {
-      console.error('Failed to send message:', error);
+    } else {
+      try {
+        await window.livekitService.sendChatMessage(text);
+        window.clipService.onChatMessage();
+      } catch (error) {
+        console.error('Failed to send message:', error);
+      }
     }
   }
 
   handleIncomingChatMessage(message) {
     this.appendChatMessage(message);
-
-    // Notify clip service of chat activity for highlight detection
-    if (!message.isOwn) {
-      window.clipService.onChatMessage();
-    }
+    if (!message.isOwn) window.clipService.onChatMessage();
   }
 
   appendChatMessage(message) {
     const container = this.dom.textChatMessages;
     if (!container) return;
-
     const msgEl = document.createElement('div');
     msgEl.className = 'chat-message' + (message.isOwn ? ' own' : '');
-
     const nameEl = document.createElement('span');
     nameEl.className = 'chat-message-name';
     nameEl.textContent = message.isOwn ? 'You' : (message.senderName || 'Stranger');
-
     const textEl = document.createElement('span');
     textEl.className = 'chat-message-text';
     textEl.textContent = message.text;
-
     msgEl.appendChild(nameEl);
     msgEl.appendChild(textEl);
     container.appendChild(msgEl);
-
-    // Auto-scroll to bottom
     container.scrollTop = container.scrollHeight;
   }
 
   clearTextChat() {
-    if (this.dom.textChatMessages) {
-      this.dom.textChatMessages.innerHTML = '';
-    }
-    if (this.dom.textChatInput) {
-      this.dom.textChatInput.value = '';
-    }
-    // Close text chat panel
-    if (this.dom.textChatPanel) {
-      this.dom.textChatPanel.classList.remove('open');
-    }
+    if (this.dom.textChatMessages) this.dom.textChatMessages.innerHTML = '';
+    if (this.dom.textChatInput) this.dom.textChatInput.value = '';
+    if (this.dom.textChatPanel) this.dom.textChatPanel.classList.remove('open');
   }
 
   // ============================================
@@ -867,43 +1248,25 @@ class ChatController {
 
   async toggleCamera() {
     if (this.state !== CHAT_STATES.CONNECTED) return;
-
     try {
       const enabled = await window.livekitService.toggleCamera();
       this.isCameraMuted = !enabled;
       this.updateToggleButtons();
-    } catch (error) {
-      console.error('Failed to toggle camera:', error);
-    }
+    } catch (error) { console.error('Failed to toggle camera:', error); }
   }
 
   async toggleMic() {
     if (this.state !== CHAT_STATES.CONNECTED) return;
-
     try {
       const enabled = await window.livekitService.toggleMicrophone();
       this.isMicMuted = !enabled;
       this.updateToggleButtons();
-    } catch (error) {
-      console.error('Failed to toggle microphone:', error);
-    }
+    } catch (error) { console.error('Failed to toggle microphone:', error); }
   }
 
   updateToggleButtons() {
-    if (this.dom.toggleCameraBtn) {
-      if (this.isCameraMuted) {
-        this.dom.toggleCameraBtn.classList.add('muted');
-      } else {
-        this.dom.toggleCameraBtn.classList.remove('muted');
-      }
-    }
-    if (this.dom.toggleMicBtn) {
-      if (this.isMicMuted) {
-        this.dom.toggleMicBtn.classList.add('muted');
-      } else {
-        this.dom.toggleMicBtn.classList.remove('muted');
-      }
-    }
+    if (this.dom.toggleCameraBtn) this.dom.toggleCameraBtn.classList.toggle('muted', this.isCameraMuted);
+    if (this.dom.toggleMicBtn) this.dom.toggleMicBtn.classList.toggle('muted', this.isMicMuted);
   }
 
   // ============================================
@@ -914,33 +1277,21 @@ class ChatController {
     this.stopChatTimer();
     this.chatStartTime = Date.now();
     this.updateChatTimerDisplay();
-
-    this.chatTimerInterval = setInterval(() => {
-      this.updateChatTimerDisplay();
-    }, 1000);
+    this.chatTimerInterval = setInterval(() => this.updateChatTimerDisplay(), 1000);
   }
 
   stopChatTimer() {
-    if (this.chatTimerInterval) {
-      clearInterval(this.chatTimerInterval);
-      this.chatTimerInterval = null;
-    }
+    if (this.chatTimerInterval) { clearInterval(this.chatTimerInterval); this.chatTimerInterval = null; }
     this.chatStartTime = null;
-
-    if (this.dom.chatTimer) {
-      this.dom.chatTimer.textContent = '00:00';
-    }
+    if (this.dom.chatTimer) this.dom.chatTimer.textContent = '00:00';
   }
 
   updateChatTimerDisplay() {
     if (!this.chatStartTime || !this.dom.chatTimer) return;
-
     const elapsed = Date.now() - this.chatStartTime;
-    const minutes = Math.floor(elapsed / 60000);
-    const seconds = Math.floor((elapsed % 60000) / 1000);
-
-    this.dom.chatTimer.textContent =
-      String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+    const m = Math.floor(elapsed / 60000);
+    const s = Math.floor((elapsed % 60000) / 1000);
+    this.dom.chatTimer.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   }
 
   // ============================================
@@ -948,14 +1299,10 @@ class ChatController {
   // ============================================
 
   hideAll() {
-    const panels = [
-      'ageGate', 'consentBanner', 'setupPanel', 'chatView', 'suspensionOverlay'
-    ];
+    const panels = ['ageGate', 'consentBanner', 'setupPanel', 'chatView', 'suspensionOverlay'];
     for (const id of panels) {
       if (this.dom[id]) this.dom[id].style.display = 'none';
     }
-
-    // Cancel any active suspension countdown
     if (this.suspensionAnimFrameId) {
       cancelAnimationFrame(this.suspensionAnimFrameId);
       this.suspensionAnimFrameId = null;
@@ -963,9 +1310,7 @@ class ChatController {
   }
 
   updateStatus(text) {
-    if (this.dom.chatStatus) {
-      this.dom.chatStatus.textContent = text;
-    }
+    if (this.dom.chatStatus) this.dom.chatStatus.textContent = text;
   }
 
   // ============================================
@@ -974,16 +1319,20 @@ class ChatController {
 
   cleanup() {
     this.stopPreview();
+    if (this.filterEngine) { this.filterEngine.destroy(); this.filterEngine = null; }
+    if (this.faceDetector) { this.faceDetector.destroy(); this.faceDetector = null; }
+    if (this.aiBotService) { this.aiBotService.destroy(); }
+    if (this.scoringService) { this.scoringService.destroy(); }
     window.nsfwDetector.stopScanning();
     window.clipService.stopRecording();
     window.livekitService.disconnect();
     window.matchingService.leaveQueue();
     this.stopChatTimer();
-
-    if (this.suspensionAnimFrameId) {
-      cancelAnimationFrame(this.suspensionAnimFrameId);
-      this.suspensionAnimFrameId = null;
-    }
+    this.stopFaceReveal();
+    if (this.gameTimer) clearTimeout(this.gameTimer);
+    if (this.guessButtonDelay) clearTimeout(this.guessButtonDelay);
+    if (this.matchTimeoutId) clearTimeout(this.matchTimeoutId);
+    if (this.suspensionAnimFrameId) cancelAnimationFrame(this.suspensionAnimFrameId);
   }
 }
 
@@ -996,16 +1345,11 @@ window.chatController = chatController;
 
 document.addEventListener('DOMContentLoaded', () => {
   let initialized = false;
-
   const doInit = () => {
     if (initialized) return;
     initialized = true;
     chatController.init();
   };
-
-  // Wait for auth service to be ready
   window.addEventListener('buzzaboo-auth-ready', doInit);
-
-  // Fallback: initialize after 2 seconds if auth-ready never fires
   setTimeout(doInit, 2000);
 });

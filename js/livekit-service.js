@@ -70,6 +70,11 @@ class LiveKitService {
     this.isConnected = false;
     this.chatMessages = [];
     this.maxChatHistory = 200;
+    this.filterEngine = null;
+  }
+
+  setFilterEngine(engine) {
+    this.filterEngine = engine;
   }
 
   async init() {
@@ -225,6 +230,23 @@ class LiveKitService {
       throw new Error('Not connected to a room');
     }
     try {
+      // If filter engine is active, publish its processed track instead of raw camera
+      if (this.filterEngine && this.filterEngine.getProcessedStream()) {
+        const processedTrack = this.filterEngine.getProcessedStream().getVideoTracks()[0];
+        if (processedTrack) {
+          const localTrack = new LivekitClient.LocalVideoTrack(processedTrack, undefined, false);
+          await this.localParticipant.publishTrack(localTrack, {
+            source: LivekitClient.Track.Source.Camera,
+            simulcast: false,
+            videoEncoding: { maxBitrate: 800000, maxFramerate: 30 }
+          });
+          this.localVideoTrack = localTrack;
+          this.emit('cameraEnabled', { track: this.localVideoTrack });
+          return this.localVideoTrack;
+        }
+      }
+
+      // Fallback: publish raw camera
       await this.localParticipant.setCameraEnabled(true, {
         resolution: { width: 854, height: 480, frameRate: 30 }
       });

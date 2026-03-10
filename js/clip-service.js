@@ -42,6 +42,7 @@ class ClipService {
     this.canvasStream = null;
     this.localVideo = null;
     this.remoteVideo = null;
+    this.filterEngine = null;
     this.drawFrameId = null;
     this.rollingBuffer = [];
     this.bufferStartTime = null;
@@ -79,6 +80,10 @@ class ClipService {
   // ============================================
   // RECORDING - Rolling Buffer
   // ============================================
+
+  setFilterEngine(engine) {
+    this.filterEngine = engine;
+  }
 
   startRecording(localVideo, remoteVideo) {
     if (this.isRecording) return;
@@ -180,8 +185,10 @@ class ClipService {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, CLIP_CONFIG.canvasWidth, height);
 
-    // Draw local video on the left
-    if (this.localVideo.readyState >= 2) {
+    // Draw local video on the left (use filter engine canvas if available for filtered output)
+    if (this.filterEngine && this.filterEngine.getCanvas()) {
+      ctx.drawImage(this.filterEngine.getCanvas(), 0, 0, halfWidth, height);
+    } else if (this.localVideo.readyState >= 2) {
       ctx.drawImage(this.localVideo, 0, 0, halfWidth, height);
     }
 

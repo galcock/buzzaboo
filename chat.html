@@ -157,6 +157,14 @@
           <span>Go Private (no clipping)</span>
         </div>
 
+        <div id="gameModeToggle" class="game-mode-toggle" style="display:none;">
+          <label class="game-mode-label">
+            <input type="checkbox" id="gameModeCheckbox">
+            <span class="game-mode-icon">🤖</span>
+            <span>Human or AI? — guess who you're talking to</span>
+          </label>
+        </div>
+
         <button id="startBtn" class="btn btn-primary btn-xl btn-block" style="margin-top:1rem;">
           Start Chatting
         </button>
@@ -186,6 +194,11 @@
         <!-- Local Video (PiP) -->
         <div class="chat-video-local-container">
           <video id="localVideo" class="chat-video-local" autoplay muted playsinline></video>
+          <!-- Face Reveal Countdown -->
+          <div id="faceRevealOverlay" class="face-reveal-overlay" style="display:none;">
+            <div class="face-reveal-number" id="faceRevealNumber">10</div>
+            <div class="face-reveal-label">Revealing in...</div>
+          </div>
         </div>
 
         <!-- Text Chat Panel -->
@@ -212,6 +225,11 @@
         <span id="privacyBadge" class="privacy-badge" style="display:none;">
           🛡️ Private
         </span>
+        <span id="scoreBadge" class="score-badge" style="display:none;">
+          <span class="score-value" id="scoreValue">0</span>
+          <span class="streak-badge" id="streakBadge" style="display:none;">🔥<span id="streakValue">0</span></span>
+        </span>
+        <div id="scoreAnimation" class="score-animation" style="display:none;"></div>
       </div>
 
       <!-- Controls -->
@@ -222,11 +240,18 @@
         <button id="toggleMicBtn" class="chat-control-btn" title="Toggle Mic">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
         </button>
+        <button id="filterBtn" class="chat-control-btn" title="Filters">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M7.5 5.6L10 7 8.6 4.5 10 2 7.5 3.4 5 2l1.4 2.5L5 7zm12 9.8L17 14l1.4 2.5L17 19l2.5-1.4L22 19l-1.4-2.5L22 14zM22 2l-2.5 1.4L17 2l1.4 2.5L17 7l2.5-1.4L22 7l-1.4-2.5zm-7.63 5.29a.996.996 0 00-1.41 0L1.29 18.96a.996.996 0 000 1.41l2.34 2.34c.39.39 1.02.39 1.41 0L16.71 11.04a.996.996 0 000-1.41l-2.34-2.34zm-1.97 5.67L7.73 18.3l-2.03-2.03 4.64-4.64 2.06 2.06z"/></svg>
+        </button>
         <button id="privacyBtn" class="chat-control-btn" title="Toggle Privacy">
           🛡️
         </button>
         <button id="textChatBtn" class="chat-control-btn" title="Text Chat">
           💬
+        </button>
+        <button id="guessBtn" class="chat-control-btn guess-btn" title="Guess: Human or AI?" style="display:none;">
+          <span class="guess-btn-icon">?</span>
+          <span>Guess</span>
         </button>
         <button id="nextBtn" class="chat-control-btn chat-next-btn" title="Next Person">
           Next →
@@ -234,6 +259,47 @@
         <button id="stopBtn" class="chat-control-btn chat-stop-btn" title="Stop">
           Stop
         </button>
+      </div>
+
+      <!-- Filter Tray -->
+      <div id="filterTray" class="filter-tray" style="display:none;">
+        <div class="filter-tray-header">
+          <span>Filters</span>
+          <button id="filterTrayClose" class="btn btn-ghost btn-sm">✕</button>
+        </div>
+        <div class="filter-tray-categories">
+          <button class="filter-cat active" data-cat="face">Face</button>
+          <button class="filter-cat" data-cat="effects">Effects</button>
+          <button class="filter-cat" data-cat="privacy">Privacy</button>
+        </div>
+        <div class="filter-tray-grid" id="filterGrid"></div>
+      </div>
+
+      <!-- Guess Modal -->
+      <div id="guessModal" class="guess-modal" style="display:none;">
+        <div class="guess-modal-content glass-card">
+          <h3>Who are you talking to?</h3>
+          <div class="guess-options">
+            <button class="guess-option" data-guess="human">
+              <span class="guess-emoji">🧑</span>
+              <span>Real Human</span>
+            </button>
+            <button class="guess-option" data-guess="ai">
+              <span class="guess-emoji">🤖</span>
+              <span>AI Bot</span>
+            </button>
+          </div>
+          <div class="guess-timer">Time left: <span id="guessTimerValue">45</span>s</div>
+        </div>
+      </div>
+
+      <!-- Guess Result -->
+      <div id="guessResult" class="guess-result" style="display:none;">
+        <div class="guess-result-content">
+          <div class="guess-result-icon" id="guessResultIcon"></div>
+          <div class="guess-result-text" id="guessResultText"></div>
+          <div class="guess-result-points" id="guessResultPoints"></div>
+        </div>
       </div>
     </div>
 
@@ -248,6 +314,10 @@
   <!-- Buzzaboo Scripts -->
   <script src="js/firebase-config.js"></script>
   <script src="js/auth-service.js"></script>
+  <script src="js/face-detection.js"></script>
+  <script src="js/filter-engine.js"></script>
+  <script src="js/ai-bot-service.js"></script>
+  <script src="js/scoring-service.js"></script>
   <script src="js/livekit-service.js"></script>
   <script src="js/matching-service.js"></script>
   <script src="js/nsfw-detector.js"></script>

@@ -3,7 +3,7 @@
 
   <!-- Homepage — primary landing page for all SEO keywords -->
   <url>
-    <loc>https://buzzaboo.tv/</loc>
+    <loc>https://buzzaboo.com/</loc>
     <lastmod>2026-03-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -11,7 +11,7 @@
 
   <!-- Chat page — core product page -->
   <url>
-    <loc>https://buzzaboo.tv/chat.html</loc>
+    <loc>https://buzzaboo.com/chat.html</loc>
     <lastmod>2026-03-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -19,7 +19,7 @@
 
   <!-- Clips feed — dynamic content, frequently updated -->
   <url>
-    <loc>https://buzzaboo.tv/clips.html</loc>
+    <loc>https://buzzaboo.com/clips.html</loc>
     <lastmod>2026-03-10</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.8</priority>
@@ -27,21 +27,21 @@
 
   <!-- Legal pages — important for trust signals -->
   <url>
-    <loc>https://buzzaboo.tv/terms.html</loc>
+    <loc>https://buzzaboo.com/terms.html</loc>
     <lastmod>2026-03-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
 
   <url>
-    <loc>https://buzzaboo.tv/privacy.html</loc>
+    <loc>https://buzzaboo.com/privacy.html</loc>
     <lastmod>2026-03-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
 
   <url>
-    <loc>https://buzzaboo.tv/community-guidelines.html</loc>
+    <loc>https://buzzaboo.com/community-guidelines.html</loc>
     <lastmod>2026-03-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>

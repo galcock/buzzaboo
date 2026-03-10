@@ -1,5 +1,5 @@
 # Buzzaboo Robots.txt
-# https://buzzaboo.tv — Free Random Video Chat | Omegle Alternative
+# https://buzzaboo.com — Free Random Video Chat | Omegle Alternative
 
 User-agent: *
 Allow: /
@@ -39,7 +39,7 @@ Disallow: /*?redirect=
 Crawl-delay: 1
 
 # Sitemap location
-Sitemap: https://buzzaboo.tv/sitemap.xml
+Sitemap: https://buzzaboo.com/sitemap.xml
 
 # Google specific
 User-agent: Googlebot

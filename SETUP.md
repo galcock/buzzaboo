@@ -207,7 +207,7 @@ service firebase.storage {
 1. Go to **Authentication** → **Settings** → **Authorized domains**
 2. Add your custom domains:
    - `localhost` (for development)
-   - `buzzaboo.tv` (your production domain)
+   - `buzzaboo.com` (your production domain)
    - Any staging/preview domains
 
 ---
@@ -339,7 +339,7 @@ sgMail.setApiKey(functions.config().sendgrid.key);
 exports.sendWelcomeEmail = functions.auth.user().onCreate(async (user) => {
   const msg = {
     to: user.email,
-    from: 'noreply@buzzaboo.tv',
+    from: 'noreply@buzzaboo.com',
     templateId: 'd-welcometemplate123', // Your SendGrid template ID
     dynamic_template_data: {
       username: user.displayName,

@@ -1,5 +1,5 @@
 # Buzzaboo Robots.txt
-# https://buzzaboo.tv
+# https://buzzaboo.tv — Free Random Video Chat | Omegle Alternative
 
 User-agent: *
 Allow: /
@@ -8,8 +8,6 @@ Allow: /
 Allow: /index.html
 Allow: /chat.html
 Allow: /clips.html
-Allow: /login.html
-Allow: /signup.html
 
 # Legal pages
 Allow: /terms.html
@@ -27,10 +25,15 @@ Disallow: /admin/
 Disallow: /_internal/
 Disallow: /private/
 
+# Disallow auth pages (noindex in meta too)
+Disallow: /login.html
+Disallow: /signup.html
+
 # Disallow query strings that create duplicate content
 Disallow: /*?sort=
 Disallow: /*?filter=
 Disallow: /*?ref=
+Disallow: /*?redirect=
 
 # Crawl-delay for polite crawling
 Crawl-delay: 1

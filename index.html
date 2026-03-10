@@ -3,447 +3,211 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  
-  <!-- Google Analytics 4 (Replace with your Measurement ID) -->
-  <meta name="ga-measurement-id" content="G-XXXXXXXXXX">
-  
-  <!-- Primary Meta Tags -->
-  <title>Buzzaboo - Next-Gen Live Streaming Platform | Kick Alternative</title>
-  <meta name="title" content="Buzzaboo - Next-Gen Live Streaming Platform | Kick Alternative">
-  <meta name="description" content="Buzzaboo is the future of live streaming. Watch live gaming, music, IRL, and creative content. AI highlights, multiview, watch parties, and more. The best Kick and Twitch alternative for creators.">
-  <meta name="keywords" content="live streaming, streaming platform, Kick alternative, Twitch alternative, gaming streams, IRL streams, watch parties, multiview, AI highlights, live chat">
+
+  <title>Buzzaboo - Meet New People via Random Video Chat</title>
+  <meta name="description" content="Buzzaboo is the best random video chat platform. Meet new people instantly with one click. AI-powered safety, auto-clips, and private mode. No downloads required.">
+  <meta name="keywords" content="random video chat, omegle alternative, meet strangers, video call, anonymous chat, buzzaboo">
   <meta name="author" content="Buzzaboo">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://buzzaboo.tv/">
-  
-  <!-- Open Graph / Facebook -->
+
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://buzzaboo.tv/">
-  <meta property="og:title" content="Buzzaboo - Next-Gen Live Streaming Platform">
-  <meta property="og:description" content="The future of live streaming. AI highlights, multiview, watch parties. Join millions of creators and viewers.">
-  <meta property="og:image" content="https://buzzaboo.tv/assets/og-image.png">
+  <meta property="og:title" content="Buzzaboo - Meet New People via Random Video Chat">
+  <meta property="og:description" content="Random video chat with strangers. One click to connect. AI safety, auto-clips, and private mode.">
   <meta property="og:site_name" content="Buzzaboo">
-  
-  <!-- Twitter -->
+
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://buzzaboo.tv/">
-  <meta property="twitter:title" content="Buzzaboo - Next-Gen Live Streaming Platform">
-  <meta property="twitter:description" content="The future of live streaming. AI highlights, multiview, watch parties. Join millions of creators and viewers.">
-  <meta property="twitter:image" content="https://buzzaboo.tv/assets/twitter-card.png">
-  
-  <!-- Favicons -->
+  <meta property="twitter:title" content="Buzzaboo - Meet New People via Random Video Chat">
+  <meta property="twitter:description" content="Random video chat with strangers. One click to connect.">
+
   <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/android-chrome-192x192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="assets/icons/android-chrome-512x512.png">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#8B5CF6">
-  <meta name="msapplication-TileColor" content="#8B5CF6">
-  
-  <!-- Preconnect -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://i.pravatar.cc">
-  <link rel="preconnect" href="https://picsum.photos">
-  
-  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Styles -->
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="css/livekit.css">
-  <link rel="stylesheet" href="css/auth.css">
-  
-  <!-- JSON-LD Structured Data -->
+
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Buzzaboo",
-    "alternateName": "Buzzaboo Live Streaming",
-    "url": "https://buzzaboo.tv/",
-    "description": "Next-generation live streaming platform with AI highlights, multiview, and watch parties",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://buzzaboo.tv/search?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": "WebApplication",
     "name": "Buzzaboo",
     "url": "https://buzzaboo.tv/",
-    "logo": "https://buzzaboo.tv/assets/icons/logo.png",
-    "sameAs": [
-      "https://twitter.com/buzzaboo",
-      "https://instagram.com/buzzaboo",
-      "https://youtube.com/buzzaboo"
-    ]
+    "description": "Random video chat platform — meet new people instantly with AI-powered safety",
+    "applicationCategory": "CommunicationApplication",
+    "operatingSystem": "Web"
   }
   </script>
 </head>
 <body data-page="home">
-  <!-- Skip Link -->
   <a href="#main-content" class="sr-only">Skip to main content</a>
-  
+
   <!-- Header -->
-  <header class="header" role="banner">
+  <header class="header">
     <div class="header-inner">
-      <!-- Logo -->
-      <a href="index.html" class="logo" aria-label="Buzzaboo Home">
+      <a href="index.html" class="logo">
         <span class="logo-icon">🐝</span>
         <span>Buzzaboo</span>
       </a>
-      
-      <!-- Navigation -->
-      <nav class="nav-menu" role="navigation" aria-label="Main navigation">
+      <nav class="nav-menu">
         <a href="index.html" class="nav-link active">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
           Home
         </a>
-        <a href="browse.html" class="nav-link">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-          Browse
-        </a>
-        <a href="shorts.html" class="nav-link">
+        <a href="chat.html" class="nav-link">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-          Shorts
+          Chat
         </a>
-        <a href="multiview.html" class="nav-link">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
-          Multiview
+        <a href="clips.html" class="nav-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>
+          Clips
         </a>
       </nav>
-      
-      <!-- Search -->
-      <div class="search-container">
-        <div class="search-bar">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-          <input type="text" placeholder="Search streams, channels, games..." aria-label="Search">
-        </div>
-      </div>
-      
-      <!-- Header Actions -->
       <div class="header-actions">
-        <button class="btn btn-secondary btn-sm theme-toggle" aria-label="Toggle theme">
+        <button class="btn btn-secondary btn-sm theme-toggle" onclick="document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark')">
           <span class="theme-toggle-icon">🌙</span>
         </button>
-        
-        <!-- Auth Buttons (shown when logged out) -->
         <div class="auth-buttons" id="authButtons">
-          <button class="btn btn-secondary btn-sm" onclick="authModal.open('login')">Log In</button>
-          <button class="btn btn-primary btn-sm" onclick="authModal.open('signup')">Sign Up</button>
+          <a href="login.html" class="btn btn-secondary btn-sm">Log In</a>
+          <a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a>
         </div>
-        
-        <!-- User Menu (shown when logged in) -->
-        <a href="dashboard.html" class="btn btn-primary btn-sm user-only" style="display: none;">
-          Go Live
-        </a>
-        <div class="user-menu dropdown user-only" style="display: none;">
-          <div class="dropdown-trigger">
-            <img src="https://i.pravatar.cc/150?img=68" alt="Profile" class="user-avatar auth-avatar">
-            <span class="user-name auth-display-name">You</span>
-          </div>
-          <div class="dropdown-menu">
-            <a href="profile.html" class="dropdown-item">👤 Your Profile</a>
-            <a href="dashboard.html" class="dropdown-item">📊 Dashboard</a>
-            <a href="settings.html" class="dropdown-item">⚙️ Settings</a>
-            <div class="dropdown-divider"></div>
-            <button class="dropdown-item logout-btn">🚪 Log Out</button>
-          </div>
+        <div class="user-menu" id="userMenu" style="display:none;">
+          <span class="user-name auth-display-name">Stranger</span>
+          <button class="logout-btn btn btn-ghost btn-sm">Log Out</button>
         </div>
       </div>
-      
-      <!-- Mobile Menu Toggle -->
-      <button class="btn btn-ghost btn-icon mobile-menu-toggle" aria-label="Toggle menu" style="display: none;">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-      </button>
     </div>
   </header>
-  
-  <!-- Sidebar -->
-  <aside class="sidebar" role="complementary" aria-label="Followed channels">
-    <div class="sidebar-section">
-      <div class="sidebar-title">Followed Channels</div>
-      <div id="sidebar-followed"></div>
-    </div>
-    
-    <div class="sidebar-section">
-      <div class="sidebar-title">Recommended</div>
-      <a href="browse.html?category=1" class="sidebar-item">
-        <span style="font-size: 1.25rem;">💬</span>
-        <span class="sidebar-item-name">Just Chatting</span>
-      </a>
-      <a href="browse.html?category=2" class="sidebar-item">
-        <span style="font-size: 1.25rem;">🎮</span>
-        <span class="sidebar-item-name">Gaming</span>
-      </a>
-      <a href="browse.html?category=10" class="sidebar-item">
-        <span style="font-size: 1.25rem;">🎵</span>
-        <span class="sidebar-item-name">Music</span>
-      </a>
-      <a href="browse.html?category=11" class="sidebar-item">
-        <span style="font-size: 1.25rem;">🎨</span>
-        <span class="sidebar-item-name">Art</span>
-      </a>
-    </div>
-  </aside>
-  
+
   <!-- Main Content -->
-  <main class="main-content" id="main-content" role="main">
-    <!-- Hero / Featured Stream -->
-    <section class="section" id="featured-stream" aria-label="Featured stream"></section>
-    
-    <!-- Live Now -->
-    <section class="section" aria-labelledby="live-now-title">
-      <div class="section-header">
-        <h2 class="section-title" id="live-now-title">
-          <span style="color: var(--accent-red);">●</span> Live Now
-        </h2>
-        <a href="browse.html" class="section-link">See all →</a>
-      </div>
-      <div class="grid grid-auto" id="live-streams"></div>
-    </section>
-    
-    <!-- Categories -->
-    <section class="section" aria-labelledby="categories-title">
-      <div class="section-header">
-        <h2 class="section-title" id="categories-title">🎮 Browse Categories</h2>
-        <a href="browse.html" class="section-link">See all →</a>
-      </div>
-      <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem;" id="categories"></div>
-    </section>
-    
-    <!-- Features Banner -->
-    <section class="section glass-card" style="padding: 2rem; margin-bottom: 2rem;" aria-labelledby="features-title">
-      <h2 class="section-title text-gradient" id="features-title" style="margin-bottom: 1.5rem;">✨ Why Buzzaboo?</h2>
-      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
-        <div style="text-align: center;">
-          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🤖</div>
-          <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">AI Highlights</h3>
-          <p style="font-size: 0.85rem; color: var(--text-secondary);">Auto-generated highlight reels from your streams</p>
+  <main class="main-content full-width" id="main-content">
+
+    <!-- Hero -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="text-gradient">Meet New People.</span><br>Instantly.
+        </h1>
+        <p class="hero-subtitle">
+          Random video chat with strangers from around the world. One click to connect. Go private anytime.
+        </p>
+        <div class="hero-cta">
+          <a href="chat.html" class="btn btn-primary btn-xl">Start Chatting</a>
+          <a href="clips.html" class="btn btn-secondary btn-lg">Watch Clips</a>
         </div>
-        <div style="text-align: center;">
-          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📺</div>
-          <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Multiview</h3>
-          <p style="font-size: 0.85rem; color: var(--text-secondary);">Watch 4+ streams simultaneously</p>
-        </div>
-        <div style="text-align: center;">
-          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎉</div>
-          <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Watch Parties</h3>
-          <p style="font-size: 0.85rem; color: var(--text-secondary);">Sync viewing with friends in real-time</p>
-        </div>
-        <div style="text-align: center;">
-          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚡</div>
-          <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Zero Latency</h3>
-          <p style="font-size: 0.85rem; color: var(--text-secondary);">Sub-second latency for real interaction</p>
-        </div>
-        <div style="text-align: center;">
-          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">💰</div>
-          <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Revenue Transparency</h3>
-          <p style="font-size: 0.85rem; color: var(--text-secondary);">See exactly what you earn, always</p>
-        </div>
-        <div style="text-align: center;">
-          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎬</div>
-          <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Instant Clips</h3>
-          <p style="font-size: 0.85rem; color: var(--text-secondary);">AI-titled clips with one click</p>
+        <div class="hero-badge">
+          🛡️ AI-powered safety &nbsp;·&nbsp; 🎬 Auto-clips &nbsp;·&nbsp; 🔒 Private mode
         </div>
       </div>
     </section>
-    
-    <!-- Recommended Streams -->
-    <section class="section" aria-labelledby="recommended-title">
-      <div class="section-header">
-        <h2 class="section-title" id="recommended-title">🔥 Recommended For You</h2>
-        <a href="browse.html" class="section-link">See all →</a>
+
+    <!-- How It Works -->
+    <section class="section container" style="margin-top:-2rem;">
+      <h2 class="section-title" style="text-align:center; margin-bottom:2rem;">How It Works</h2>
+      <div class="steps-grid">
+        <div class="glass-card step-card">
+          <div class="step-number">1</div>
+          <h3 class="step-title">Click Start</h3>
+          <p class="step-desc">Hit the button and your camera turns on. No signup required — just start chatting.</p>
+        </div>
+        <div class="glass-card step-card">
+          <div class="step-number">2</div>
+          <h3 class="step-title">Get Matched</h3>
+          <p class="step-desc">Our matchmaking connects you with a random stranger instantly. Add interests for better matches.</p>
+        </div>
+        <div class="glass-card step-card">
+          <div class="step-number">3</div>
+          <h3 class="step-title">Chat or Skip</h3>
+          <p class="step-desc">Video chat face-to-face. Having fun? Keep talking. Want someone new? Hit Next.</p>
+        </div>
       </div>
-      <div class="grid grid-auto" id="recommended-streams"></div>
     </section>
-    
-    <!-- Footer CTA -->
-    <section class="section hero" style="background: var(--gradient-primary); height: auto; padding: 3rem; text-align: center;" aria-labelledby="cta-title">
-      <h2 id="cta-title" style="font-size: 2rem; font-weight: 800; color: white; margin-bottom: 1rem;">Ready to Start Streaming?</h2>
-      <p style="font-size: 1.1rem; color: rgba(255,255,255,0.9); margin-bottom: 1.5rem;">Join thousands of creators building their community on Buzzaboo</p>
-      <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-        <a href="dashboard.html" class="btn btn-lg" style="background: white; color: var(--primary);">Start Streaming</a>
-        <a href="browse.html" class="btn btn-secondary btn-lg">Browse Streams</a>
+
+    <!-- Features -->
+    <section class="section container">
+      <h2 class="section-title" style="text-align:center; margin-bottom:2rem;">Why Buzzaboo?</h2>
+      <div class="features-grid">
+        <div class="glass-card feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3 class="feature-title">Instant Matching</h3>
+          <p class="feature-desc">Get connected in seconds with real-time matchmaking</p>
+        </div>
+        <div class="glass-card feature-card">
+          <div class="feature-icon">📹</div>
+          <h3 class="feature-title">HD Video</h3>
+          <p class="feature-desc">Crystal-clear WebRTC video with sub-second latency</p>
+        </div>
+        <div class="glass-card feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3 class="feature-title">AI Safety</h3>
+          <p class="feature-desc">Automatic content moderation protects everyone</p>
+        </div>
+        <div class="glass-card feature-card">
+          <div class="feature-icon">🎬</div>
+          <h3 class="feature-title">Auto-Clips</h3>
+          <p class="feature-desc">AI captures the best moments and shares them to the feed</p>
+        </div>
+        <div class="glass-card feature-card">
+          <div class="feature-icon">👤</div>
+          <h3 class="feature-title">Anonymous</h3>
+          <p class="feature-desc">No signup required. Chat as a stranger or create an account</p>
+        </div>
+        <div class="glass-card feature-card">
+          <div class="feature-icon">🔒</div>
+          <h3 class="feature-title">Private Mode</h3>
+          <p class="feature-desc">Go private anytime — no recording, no clipping, just you</p>
+        </div>
       </div>
     </section>
+
+    <!-- Safety Section -->
+    <section class="section container">
+      <div class="glass-card" style="padding:2.5rem; text-align:center;">
+        <h2 class="section-title text-gradient" style="margin-bottom:1rem;">Your Safety Matters</h2>
+        <p style="color:var(--text-secondary); max-width:600px; margin:0 auto 1.5rem; font-size:0.95rem;">
+          Buzzaboo uses AI-powered content detection to automatically moderate video feeds in real-time.
+          Age-based matching keeps minors and adults in separate pools.
+          Violations result in escalating suspensions up to permanent bans.
+        </p>
+        <a href="community-guidelines.html" class="btn btn-secondary">Read Our Guidelines</a>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section" style="background:var(--gradient-primary); padding:4rem 2rem; text-align:center;">
+      <h2 style="font-size:2rem; font-weight:800; color:white; margin-bottom:1rem;">Ready to Meet Someone New?</h2>
+      <p style="font-size:1.1rem; color:rgba(255,255,255,0.9); margin-bottom:1.5rem;">One click. No downloads. No signup required.</p>
+      <a href="chat.html" class="btn btn-xl" style="background:white; color:var(--primary);">Start Chatting Now</a>
+    </section>
+
   </main>
-  
+
   <!-- Footer -->
-  <footer style="margin-left: 240px; padding: 2rem; border-top: 1px solid var(--glass-border); background: var(--bg-secondary);" role="contentinfo">
-    <div class="container">
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
-        <div>
-          <div class="logo" style="margin-bottom: 1rem;">
-            <span class="logo-icon">🐝</span>
-            <span>Buzzaboo</span>
-          </div>
-          <p style="font-size: 0.85rem; color: var(--text-secondary);">The next generation of live streaming. Built for creators, loved by viewers.</p>
-        </div>
-        <div>
-          <h4 style="font-size: 0.85rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-secondary);">Platform</h4>
-          <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <a href="browse.html" style="font-size: 0.9rem; color: var(--text-primary);">Browse</a>
-            <a href="shorts.html" style="font-size: 0.9rem; color: var(--text-primary);">Shorts</a>
-            <a href="multiview.html" style="font-size: 0.9rem; color: var(--text-primary);">Multiview</a>
-            <a href="dashboard.html" style="font-size: 0.9rem; color: var(--text-primary);">Dashboard</a>
-          </nav>
-        </div>
-        <div>
-          <h4 style="font-size: 0.85rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-secondary);">Company</h4>
-          <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <a href="#" style="font-size: 0.9rem; color: var(--text-primary);">About Us</a>
-            <a href="#" style="font-size: 0.9rem; color: var(--text-primary);">Careers</a>
-            <a href="#" style="font-size: 0.9rem; color: var(--text-primary);">Press</a>
-            <a href="#" style="font-size: 0.9rem; color: var(--text-primary);">Contact</a>
-          </nav>
-        </div>
-        <div>
-          <h4 style="font-size: 0.85rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-secondary);">Legal</h4>
-          <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <a href="terms.html" style="font-size: 0.9rem; color: var(--text-primary);">Terms of Service</a>
-            <a href="privacy.html" style="font-size: 0.9rem; color: var(--text-primary);">Privacy Policy</a>
-            <a href="community-guidelines.html" style="font-size: 0.9rem; color: var(--text-primary);">Community Guidelines</a>
-            <a href="dmca.html" style="font-size: 0.9rem; color: var(--text-primary);">DMCA</a>
-            <a href="cookies.html" style="font-size: 0.9rem; color: var(--text-primary);">Cookie Policy</a>
-          </nav>
-        </div>
+  <footer class="footer">
+    <div class="footer-inner">
+      <div style="display:flex; align-items:center; gap:0.5rem;">
+        <span class="logo-icon">🐝</span>
+        <span class="footer-copy">© 2026 Buzzaboo. All rights reserved.</span>
       </div>
-      <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 1.5rem; border-top: 1px solid var(--glass-border); flex-wrap: wrap; gap: 1rem;">
-        <p style="font-size: 0.8rem; color: var(--text-muted);">© 2026 Buzzaboo. All rights reserved.</p>
-        <div style="display: flex; gap: 1rem;">
-          <a href="#" class="social-link" aria-label="Twitter">𝕏</a>
-          <a href="#" class="social-link" aria-label="Instagram">📷</a>
-          <a href="#" class="social-link" aria-label="YouTube">▶️</a>
-          <a href="#" class="social-link" aria-label="Discord">💬</a>
-        </div>
-      </div>
+      <nav class="footer-links">
+        <a href="terms.html">Terms</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="community-guidelines.html">Guidelines</a>
+      </nav>
     </div>
   </footer>
-  
-  <!-- LiveKit SDK -->
-  <script src="https://unpkg.com/livekit-client@2.0.7/dist/livekit-client.umd.js"></script>
-  
-  <!-- Firebase SDK -->
+
+  <!-- Firebase SDK (for auth state on landing page) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  
-  <!-- Buzzaboo Scripts -->
-  <script src="js/analytics-service.js"></script>
-  <script src="js/moderation-service.js"></script>
   <script src="js/firebase-config.js"></script>
   <script src="js/auth-service.js"></script>
-  <script src="js/auth-modal.js"></script>
-  <script src="js/livekit-service.js"></script>
-  <script src="js/stream-components.js"></script>
-  <script src="js/app.js"></script>
-  
-  <!-- Auth UI Integration -->
-  <script>
-    // Update UI based on auth state
-    window.addEventListener('buzzaboo-auth-ready', () => {
-      updateAuthUI();
-    });
-    
-    buzzabooAuth.on('authStateChanged', () => {
-      updateAuthUI();
-    });
-    
-    function updateAuthUI() {
-      const isLoggedIn = buzzabooAuth.isAuthenticated();
-      const profile = buzzabooAuth.getProfile();
-      
-      // Toggle visibility
-      document.querySelectorAll('.auth-buttons').forEach(el => {
-        el.style.display = isLoggedIn ? 'none' : 'flex';
-      });
-      document.querySelectorAll('.user-only').forEach(el => {
-        el.style.display = isLoggedIn ? 'flex' : 'none';
-      });
-      
-      if (isLoggedIn && profile) {
-        // Update avatars and names
-        document.querySelectorAll('.auth-avatar').forEach(el => {
-          if (el.tagName === 'IMG') {
-            el.src = profile.avatar || buzzabooAuth.getAvatarUrl();
-          }
-        });
-        document.querySelectorAll('.auth-display-name').forEach(el => {
-          el.textContent = profile.displayName || 'You';
-        });
-      }
-    }
-    
-    // Logout handler
-    document.querySelectorAll('.logout-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        await buzzabooAuth.signOut();
-        window.location.reload();
-      });
-    });
-  </script>
-  
-  <!-- Mobile nav styles -->
-  <style>
-    @media (max-width: 1024px) {
-      .mobile-menu-toggle { display: flex !important; }
-      .sidebar { transform: translateX(-100%); }
-      .sidebar.open { transform: translateX(0); }
-      .main-content { margin-left: 0 !important; }
-      footer { margin-left: 0 !important; }
-    }
-    @media (max-width: 768px) {
-      .nav-menu { display: none; }
-      .user-name { display: none; }
-    }
-    
-    /* Search results dropdown */
-    .search-results {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: var(--bg-secondary);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius-lg);
-      margin-top: 8px;
-      padding: 8px;
-      display: none;
-      box-shadow: var(--glass-shadow);
-      z-index: 100;
-    }
-    .search-section { margin-bottom: 8px; }
-    .search-section:last-child { margin-bottom: 0; }
-    .search-section-title {
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      padding: 4px 8px;
-    }
-    .search-result-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 8px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    .search-result-item:hover { background: var(--bg-glass-hover); }
-    .search-result-avatar { width: 40px; height: 40px; border-radius: 50%; }
-    .search-result-name { font-weight: 600; font-size: 0.9rem; }
-    .search-result-meta { font-size: 0.75rem; color: var(--text-secondary); }
-    .search-no-results { padding: 16px; text-align: center; color: var(--text-muted); }
-    .search-container { position: relative; }
-  </style>
 </body>
 </html>

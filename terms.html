@@ -4,15 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Terms of Service | Buzzaboo</title>
-  <meta name="description" content="Terms of Service for Buzzaboo live streaming platform.">
+  <meta name="description" content="Terms of Service for Buzzaboo random video chat platform.">
   <meta name="robots" content="index, follow">
-  
+
   <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#8B5CF6">
-  
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -24,178 +25,215 @@
         <span class="logo-icon">🐝</span>
         <span>Buzzaboo</span>
       </a>
-      
       <nav class="nav-menu">
-        <a href="index.html" class="nav-link">Home</a>
-        <a href="browse.html" class="nav-link">Browse</a>
-        <a href="shorts.html" class="nav-link">Shorts</a>
+        <a href="index.html" class="nav-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          Home
+        </a>
+        <a href="chat.html" class="nav-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+          Chat
+        </a>
+        <a href="clips.html" class="nav-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>
+          Clips
+        </a>
       </nav>
-      
       <div class="header-actions">
-        <button class="btn btn-secondary btn-sm theme-toggle"><span class="theme-toggle-icon">🌙</span></button>
-        <a href="dashboard.html" class="btn btn-primary btn-sm">Go Live</a>
+        <button class="btn btn-secondary btn-sm theme-toggle" onclick="document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark')">
+          <span class="theme-toggle-icon">🌙</span>
+        </button>
+        <div class="auth-buttons" id="authButtons">
+          <a href="login.html" class="btn btn-secondary btn-sm">Log In</a>
+          <a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a>
+        </div>
+        <div class="user-menu" id="userMenu" style="display:none;">
+          <span class="user-name auth-display-name">Stranger</span>
+          <button class="logout-btn btn btn-ghost btn-sm">Log Out</button>
+        </div>
       </div>
     </div>
   </header>
-  
+
   <!-- Main Content -->
   <main class="main-content full-width" style="max-width: 900px; margin: 0 auto; padding: 3rem 2rem;">
     <div class="legal-document">
       <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">Terms of Service</h1>
-      <p class="text-secondary" style="margin-bottom: 2rem;">Last Updated: February 22, 2026</p>
-      
+      <p class="text-secondary" style="margin-bottom: 2rem;">Last Updated: March 10, 2026</p>
+
       <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
         <h2>1. Acceptance of Terms</h2>
-        <p>Welcome to Buzzaboo. By accessing or using our live streaming platform, website, mobile applications, or any related services (collectively, the "Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, do not use the Service.</p>
-        
+        <p>Welcome to Buzzaboo. By accessing or using our random video chat platform, website, or any related services (collectively, the "Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, do not use the Service.</p>
+
         <p>These Terms constitute a legally binding agreement between you and Buzzaboo, Inc. ("Buzzaboo," "we," "us," or "our"). We reserve the right to modify these Terms at any time. Your continued use of the Service following any changes indicates your acceptance of the new Terms.</p>
       </div>
-      
+
       <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
         <h2>2. Eligibility</h2>
-        <p>You must be at least 13 years old to use the Service. If you are between 13 and 18 years old (or the age of legal majority in your jurisdiction), you represent that your legal guardian has reviewed and agrees to these Terms.</p>
-        
-        <p>By using the Service, you represent and warrant that:</p>
+        <p>You must be at least 13 years of age to use the Service. By using Buzzaboo, you represent and warrant that you meet this minimum age requirement.</p>
+
+        <p><strong>2.1 Age-Based Matching:</strong> To protect younger users, Buzzaboo enforces age-segregated matching pools:</p>
+        <ul>
+          <li>Users under the age of 18 are matched exclusively with other users under the age of 18.</li>
+          <li>Users aged 18 and older are matched exclusively with other users aged 18 and older.</li>
+        </ul>
+        <p>Any attempt to misrepresent your age to circumvent these matching pools is a violation of these Terms and may result in immediate and permanent suspension of your access to the Service.</p>
+
+        <p><strong>2.2 Parental Consent:</strong> If you are between 13 and 18 years old (or the age of legal majority in your jurisdiction), you represent that your parent or legal guardian has reviewed and agrees to these Terms on your behalf.</p>
+
+        <p><strong>2.3 Additional Representations:</strong> By using the Service, you represent and warrant that:</p>
         <ul>
           <li>You have the legal capacity to enter into these Terms</li>
           <li>You will comply with these Terms and all applicable local, state, national, and international laws</li>
-          <li>You have not been previously suspended or removed from the Service</li>
+          <li>You have not been previously suspended or permanently banned from the Service</li>
         </ul>
       </div>
-      
+
       <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
-        <h2>3. Account Registration and Security</h2>
-        <p><strong>3.1 Account Creation:</strong> To access certain features of the Service, you must create an account. You agree to provide accurate, current, and complete information during registration and to update such information to keep it accurate, current, and complete.</p>
-        
-        <p><strong>3.2 Account Security:</strong> You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to immediately notify us of any unauthorized use of your account.</p>
-        
-        <p><strong>3.3 Account Termination:</strong> We reserve the right to suspend or terminate your account at any time, with or without notice, for any reason, including violation of these Terms.</p>
+        <h2>3. Anonymous Usage and Accounts</h2>
+        <p><strong>3.1 No Account Required:</strong> Buzzaboo allows anonymous usage. You may use the video chat Service without creating an account. Anonymous users are assigned a temporary session identifier and are referred to as "Strangers."</p>
+
+        <p><strong>3.2 Optional Account Registration:</strong> You may optionally create an account using Firebase Authentication (including email/password, Google Sign-In, or other supported providers). Creating an account allows you to save preferences, manage your clip history, and set persistent settings such as Private Mode defaults.</p>
+
+        <p><strong>3.3 Account Security:</strong> If you create an account, you are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to immediately notify us of any unauthorized use of your account.</p>
+
+        <p><strong>3.4 Account Termination:</strong> We reserve the right to suspend or terminate your account at any time, with or without notice, for any reason, including violation of these Terms.</p>
       </div>
-      
+
       <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
-        <h2>4. User Content</h2>
-        <p><strong>4.1 Your Content:</strong> You retain all ownership rights to content you create, upload, stream, or share on the Service ("User Content"). By submitting User Content, you grant Buzzaboo a worldwide, non-exclusive, royalty-free, sublicensable, and transferable license to use, reproduce, distribute, prepare derivative works of, display, and perform your User Content in connection with the Service.</p>
-        
-        <p><strong>4.2 Content Standards:</strong> You agree that your User Content will not:</p>
+        <h2>4. Video Chat Functionality</h2>
+        <p><strong>4.1 Camera and Microphone Access:</strong> The Service requires access to your device's camera and microphone to function. By using the video chat feature, you grant the Service permission to access your camera and microphone through your browser's media APIs. You may revoke this permission at any time through your browser settings, but doing so will prevent you from using the video chat feature.</p>
+
+        <p><strong>4.2 Random Matching:</strong> Buzzaboo connects you with random users for one-on-one video conversations. Matches are made within age-appropriate pools as described in Section 2. While you may optionally provide interests to influence matching, we do not guarantee any particular match quality or outcome.</p>
+
+        <p><strong>4.3 Skip and Next:</strong> You may end any video chat at any time by clicking the "Next" or "Skip" button. This will immediately disconnect the current session and attempt to connect you with a new random user. There is no obligation to continue any conversation.</p>
+
+        <p><strong>4.4 No Guaranteed Availability:</strong> We do not guarantee that other users will be available for matching at any given time. Wait times may vary based on the number of active users in your matching pool.</p>
+      </div>
+
+      <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
+        <h2>5. Auto-Clipping Consent</h2>
+        <p><strong>IMPORTANT: PLEASE READ THIS SECTION CAREFULLY.</strong></p>
+
+        <p><strong>5.1 Automatic Clipping:</strong> By using the Buzzaboo video chat Service, you acknowledge and agree that your video chats may be automatically clipped by our AI-powered system. These clips capture notable, entertaining, or highlighted moments from your conversations and may be shared publicly on the Buzzaboo Clips feed, accessible to all users and visitors of the platform.</p>
+
+        <p><strong>5.2 Public Sharing:</strong> Auto-generated clips are public by default. This means that other users, visitors, and potentially third parties may view clips that include your likeness, voice, and chat content. By using the Service with auto-clipping enabled, you grant Buzzaboo a worldwide, non-exclusive, royalty-free, sublicensable, and transferable license to use, reproduce, distribute, prepare derivative works of, display, and perform your video chat content in connection with the Clips feature and the Service.</p>
+
+        <p><strong>5.3 Private Mode:</strong> You may enable "Private Mode" at any time during a video chat session. When Private Mode is active, your video chat will not be recorded or clipped by the auto-clipping system. Private Mode takes effect immediately upon activation.</p>
+
+        <p><strong>5.4 Private-by-Default Setting:</strong> Registered users may set Private Mode as their default preference in their account settings. When this preference is enabled, Private Mode will be automatically activated at the start of every video chat session. You may still manually disable Private Mode during a session if you choose.</p>
+
+        <p><strong>5.5 No Retroactive Removal Guarantee:</strong> While we provide tools to manage your clips, once a clip has been publicly shared, we cannot guarantee that all copies or derivatives have been removed from third-party caches, search engines, or other external services.</p>
+      </div>
+
+      <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
+        <h2>6. Content Policy and NSFW Detection</h2>
+        <p><strong>6.1 Automated AI Moderation:</strong> Buzzaboo employs automated AI-powered content detection that monitors video chat feeds in real-time. This system is designed to detect inappropriate content, including but not limited to indecent exposure and nudity.</p>
+
+        <p><strong>6.2 Escalating Suspensions:</strong> Violations of the content policy detected by our AI moderation system or reported by other users will result in escalating suspensions as follows:</p>
         <ul>
-          <li>Violate any third-party rights, including copyright, trademark, privacy, or other personal or proprietary rights</li>
-          <li>Contain hate speech, harassment, threats, or incitement to violence</li>
-          <li>Contain sexually explicit or pornographic material</li>
-          <li>Depict or promote illegal activities</li>
-          <li>Contain malware, viruses, or other harmful code</li>
-          <li>Impersonate any person or entity</li>
-          <li>Constitute spam or unauthorized advertising</li>
+          <li><strong>1st Violation:</strong> 30-minute suspension from the Service</li>
+          <li><strong>2nd Violation:</strong> 2-hour suspension from the Service</li>
+          <li><strong>3rd Violation:</strong> 24-hour suspension from the Service</li>
+          <li><strong>4th and Subsequent Violations:</strong> Permanent ban from the Service</li>
         </ul>
-        
-        <p><strong>4.3 Content Removal:</strong> We reserve the right, but have no obligation, to monitor, review, or remove User Content that violates these Terms or is otherwise objectionable, in our sole discretion.</p>
+
+        <p><strong>6.3 Enforcement:</strong> Suspensions are tracked by device fingerprint, IP address, and account (if applicable). Attempting to circumvent a suspension by creating new accounts, using VPNs, or other evasion techniques is itself a violation of these Terms and may result in an immediate permanent ban.</p>
+
+        <p><strong>6.4 Appeals:</strong> If you believe a suspension was issued in error, you may contact us at legal@buzzaboo.tv to request a review. We reserve the right to uphold or reverse any suspension at our sole discretion.</p>
       </div>
-      
+
       <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
-        <h2>5. Streaming and Broadcasting</h2>
-        <p><strong>5.1 Streamer Responsibilities:</strong> If you stream content on the Service, you are responsible for ensuring that your streams comply with these Terms, our Community Guidelines, and all applicable laws.</p>
-        
-        <p><strong>5.2 Prohibited Content:</strong> Streamers may not broadcast content that includes:</p>
+        <h2>7. Prohibited Conduct</h2>
+        <p>You agree not to engage in any of the following prohibited conduct while using the Service:</p>
         <ul>
-          <li>Copyrighted material without proper authorization</li>
-          <li>Extreme violence or gore</li>
-          <li>Sexual content or nudity (except in educational or artistic contexts, subject to our guidelines)</li>
-          <li>Dangerous or harmful activities</li>
-          <li>Harassment or bullying of other users</li>
-        </ul>
-        
-        <p><strong>5.3 Content Archival:</strong> We may archive your streams for a limited period. You understand that we may delete archived content at any time without notice.</p>
-      </div>
-      
-      <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
-        <h2>6. Monetization and Payments</h2>
-        <p><strong>6.1 Revenue Sharing:</strong> Eligible streamers may participate in our revenue sharing program. Eligibility requirements, payment terms, and revenue splits are subject to separate agreements and may change at our discretion.</p>
-        
-        <p><strong>6.2 Subscriptions and Tips:</strong> Users may support streamers through subscriptions, tips, or other monetary contributions. All payments are processed through third-party payment processors and are subject to their terms and conditions.</p>
-        
-        <p><strong>6.3 Taxes:</strong> You are responsible for all taxes associated with your use of the Service, including income taxes on any revenue earned through the Service.</p>
-      </div>
-      
-      <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
-        <h2>7. Intellectual Property</h2>
-        <p><strong>7.1 Buzzaboo IP:</strong> The Service, including its design, functionality, and all content provided by Buzzaboo (excluding User Content), is owned by Buzzaboo and is protected by copyright, trademark, and other intellectual property laws.</p>
-        
-        <p><strong>7.2 Trademarks:</strong> "Buzzaboo," the Buzzaboo logo, and other Buzzaboo trademarks may not be used without our prior written permission.</p>
-        
-        <p><strong>7.3 Copyright Infringement:</strong> We respect intellectual property rights. If you believe that your copyrighted work has been infringed, please see our DMCA Policy.</p>
-      </div>
-      
-      <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
-        <h2>8. Prohibited Conduct</h2>
-        <p>In addition to the content restrictions above, you agree not to:</p>
-        <ul>
-          <li>Use automated systems (bots, scripts, scrapers) to access the Service</li>
-          <li>Attempt to gain unauthorized access to any portion of the Service</li>
-          <li>Interfere with or disrupt the Service or servers</li>
-          <li>Circumvent any access or use restrictions</li>
-          <li>Collect personal information about other users</li>
-          <li>Use the Service for any illegal purpose</li>
-          <li>Manipulate view counts, follower counts, or other metrics</li>
-          <li>Engage in any form of fraud or deceptive practices</li>
+          <li><strong>Harassment and Bullying:</strong> Threatening, intimidating, stalking, or otherwise harassing other users</li>
+          <li><strong>Threats of Violence:</strong> Making threats of physical harm, violence, or any form of intimidation</li>
+          <li><strong>Hate Speech:</strong> Using slurs, derogatory language, or engaging in discrimination based on race, ethnicity, national origin, religion, gender, gender identity, sexual orientation, disability, or any other protected characteristic</li>
+          <li><strong>Exploitation of Minors:</strong> Any form of sexual exploitation, grooming, solicitation, or abuse of minors. <strong>This is a zero-tolerance policy.</strong> Any user found engaging in the exploitation of minors will be permanently banned immediately, and all relevant information will be reported to the National Center for Missing &amp; Exploited Children (NCMEC) and applicable law enforcement authorities.</li>
+          <li><strong>Spam and Solicitation:</strong> Sending unsolicited advertisements, promotions, or repetitive messages; using the Service to promote products or services without authorization</li>
+          <li><strong>Impersonation:</strong> Pretending to be another person, entity, or Buzzaboo representative</li>
+          <li><strong>Illegal Activity:</strong> Using the Service for any purpose that violates applicable local, state, national, or international law</li>
+          <li><strong>Automated Access:</strong> Using bots, scripts, scrapers, or other automated systems to access the Service</li>
+          <li><strong>System Interference:</strong> Attempting to gain unauthorized access to any portion of the Service, interfering with or disrupting the Service or its servers, or circumventing any access or use restrictions</li>
+          <li><strong>Data Harvesting:</strong> Collecting personal information about other users without their consent</li>
         </ul>
       </div>
-      
+
+      <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
+        <h2>8. Intellectual Property</h2>
+        <p><strong>8.1 Buzzaboo IP:</strong> The Service, including its design, functionality, software, and all content provided by Buzzaboo (excluding user-generated clips), is owned by Buzzaboo and is protected by copyright, trademark, and other intellectual property laws.</p>
+
+        <p><strong>8.2 Trademarks:</strong> "Buzzaboo," the Buzzaboo logo, and other Buzzaboo trademarks may not be used without our prior written permission.</p>
+
+        <p><strong>8.3 User Content License:</strong> By using the Service and generating clips (whether auto-generated or otherwise), you grant Buzzaboo the license described in Section 5.2 above.</p>
+      </div>
+
       <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
         <h2>9. Third-Party Services</h2>
-        <p>The Service may contain links to third-party websites or services. We are not responsible for the content, privacy policies, or practices of third-party websites. Your use of third-party services is at your own risk.</p>
+        <p>The Service may integrate with or contain links to third-party services, including Firebase Authentication and WebRTC infrastructure providers. We are not responsible for the content, privacy policies, or practices of third-party services. Your use of third-party services is at your own risk and subject to those services' respective terms and conditions.</p>
       </div>
-      
+
       <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
         <h2>10. Disclaimer of Warranties</h2>
-        <p>THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.</p>
-        
-        <p>We do not warrant that the Service will be uninterrupted, secure, or error-free, or that defects will be corrected. You use the Service at your own risk.</p>
+        <p>THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.</p>
+
+        <p>We do not warrant that the Service will be uninterrupted, secure, or error-free, or that defects will be corrected. We do not warrant that the AI moderation system will detect all violations or that all matches will be appropriate. You use the Service at your own risk.</p>
+
+        <p>Buzzaboo does not guarantee the identity, age, or intentions of any user you are matched with. You are solely responsible for your interactions with other users.</p>
       </div>
-      
+
       <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
         <h2>11. Limitation of Liability</h2>
-        <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, BUZZABOO SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS OR REVENUES, WHETHER INCURRED DIRECTLY OR INDIRECTLY, OR ANY LOSS OF DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES.</p>
-        
-        <p>IN NO EVENT SHALL BUZZABOO'S TOTAL LIABILITY TO YOU EXCEED THE GREATER OF (A) $100 OR (B) THE AMOUNT YOU PAID TO BUZZABOO IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM.</p>
+        <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, BUZZABOO SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS OR REVENUES, WHETHER INCURRED DIRECTLY OR INDIRECTLY, OR ANY LOSS OF DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES, ARISING OUT OF OR IN CONNECTION WITH YOUR USE OF THE SERVICE.</p>
+
+        <p>THIS INCLUDES, WITHOUT LIMITATION, ANY DAMAGES ARISING FROM: (A) YOUR INTERACTIONS WITH OTHER USERS; (B) ANY CONTENT SHARED, RECORDED, OR CLIPPED DURING VIDEO CHAT SESSIONS; (C) ANY UNAUTHORIZED ACCESS TO OR ALTERATION OF YOUR TRANSMISSIONS OR DATA; OR (D) ANY SUSPENSION OR TERMINATION OF YOUR ACCESS TO THE SERVICE.</p>
+
+        <p>IN NO EVENT SHALL BUZZABOO'S TOTAL LIABILITY TO YOU EXCEED ONE HUNDRED DOLLARS ($100).</p>
       </div>
-      
+
       <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
         <h2>12. Indemnification</h2>
         <p>You agree to indemnify, defend, and hold harmless Buzzaboo and its officers, directors, employees, and agents from any claims, liabilities, damages, losses, and expenses (including reasonable attorneys' fees) arising out of or in any way connected with:</p>
         <ul>
           <li>Your access to or use of the Service</li>
-          <li>Your User Content</li>
+          <li>Your conduct during video chat sessions</li>
+          <li>Any content you share, transmit, or display through the Service</li>
           <li>Your violation of these Terms</li>
           <li>Your violation of any rights of another party</li>
+          <li>Your violation of any applicable law or regulation</li>
         </ul>
       </div>
-      
+
       <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
         <h2>13. Dispute Resolution and Arbitration</h2>
-        <p><strong>13.1 Informal Resolution:</strong> Before filing a claim, you agree to contact us to attempt to resolve the dispute informally by sending a written notice to legal@buzzaboo.tv.</p>
-        
-        <p><strong>13.2 Arbitration Agreement:</strong> Any dispute arising out of or relating to these Terms or the Service shall be resolved through binding arbitration in accordance with the rules of the American Arbitration Association. The arbitration shall take place in San Francisco, California.</p>
-        
+        <p><strong>13.1 Informal Resolution:</strong> Before filing a claim, you agree to contact us to attempt to resolve the dispute informally by sending a written notice to legal@buzzaboo.tv. We will attempt to resolve the dispute within 30 days of receiving your notice.</p>
+
+        <p><strong>13.2 Arbitration Agreement:</strong> Any dispute arising out of or relating to these Terms or the Service that cannot be resolved informally shall be resolved through binding arbitration in accordance with the rules of the American Arbitration Association. The arbitration shall take place in San Francisco, California.</p>
+
         <p><strong>13.3 Class Action Waiver:</strong> You agree that any arbitration or proceeding shall be limited to the dispute between you and Buzzaboo individually. You waive any right to participate in a class action lawsuit or class-wide arbitration.</p>
-        
-        <p><strong>13.4 Exceptions:</strong> Either party may seek equitable relief in court for infringement or misuse of intellectual property rights.</p>
+
+        <p><strong>13.4 Exceptions:</strong> Either party may seek equitable relief in court for infringement or misuse of intellectual property rights. Additionally, claims related to the exploitation of minors are not subject to arbitration and may be brought in any court of competent jurisdiction.</p>
       </div>
-      
+
       <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
         <h2>14. Governing Law</h2>
-        <p>These Terms shall be governed by and construed in accordance with the laws of the State of California, without regard to its conflict of law provisions. Any legal action or proceeding arising out of or relating to these Terms shall be brought exclusively in the federal or state courts located in San Francisco County, California.</p>
+        <p>These Terms shall be governed by and construed in accordance with the laws of the State of California, without regard to its conflict of law provisions. Any legal action or proceeding arising out of or relating to these Terms shall be brought exclusively in the federal or state courts located in San Francisco County, California, and you consent to the personal jurisdiction of such courts.</p>
       </div>
-      
+
       <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
         <h2>15. Miscellaneous</h2>
-        <p><strong>15.1 Entire Agreement:</strong> These Terms, along with our Privacy Policy and Community Guidelines, constitute the entire agreement between you and Buzzaboo.</p>
-        
-        <p><strong>15.2 Severability:</strong> If any provision of these Terms is found to be unenforceable, the remaining provisions will remain in full force and effect.</p>
-        
+        <p><strong>15.1 Entire Agreement:</strong> These Terms, along with our Privacy Policy and Community Guidelines, constitute the entire agreement between you and Buzzaboo regarding your use of the Service.</p>
+
+        <p><strong>15.2 Severability:</strong> If any provision of these Terms is found to be unenforceable or invalid, that provision will be limited or eliminated to the minimum extent necessary, and the remaining provisions will remain in full force and effect.</p>
+
         <p><strong>15.3 Waiver:</strong> Our failure to enforce any right or provision of these Terms will not be deemed a waiver of such right or provision.</p>
-        
-        <p><strong>15.4 Assignment:</strong> You may not assign these Terms without our prior written consent. We may assign these Terms at any time without notice.</p>
+
+        <p><strong>15.4 Assignment:</strong> You may not assign or transfer these Terms without our prior written consent. We may assign these Terms at any time without notice.</p>
+
+        <p><strong>15.5 Modifications:</strong> We reserve the right to modify these Terms at any time. Material changes will be communicated through the Service or via email to registered users. Your continued use of the Service after changes are posted constitutes your acceptance of the revised Terms.</p>
       </div>
-      
+
       <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
         <h2>16. Contact Us</h2>
         <p>If you have any questions about these Terms, please contact us at:</p>
@@ -205,7 +243,7 @@
           Address: 123 Stream Lane, San Francisco, CA 94105
         </p>
       </div>
-      
+
       <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--glass-border);">
         <p class="text-muted" style="font-size: 0.9rem;">
           By using Buzzaboo, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
@@ -213,43 +251,27 @@
       </div>
     </div>
   </main>
-  
+
   <!-- Footer -->
-  <footer style="padding: 2rem; border-top: 1px solid var(--glass-border); background: var(--bg-secondary);">
-    <div class="container" style="max-width: 1400px; margin: 0 auto;">
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
-        <div>
-          <div class="logo" style="margin-bottom: 1rem;">
-            <span class="logo-icon">🐝</span>
-            <span>Buzzaboo</span>
-          </div>
-          <p style="font-size: 0.85rem; color: var(--text-secondary);">The next generation of live streaming.</p>
-        </div>
-        <div>
-          <h4 style="font-size: 0.85rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-secondary);">Platform</h4>
-          <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <a href="browse.html" style="font-size: 0.9rem; color: var(--text-primary);">Browse</a>
-            <a href="shorts.html" style="font-size: 0.9rem; color: var(--text-primary);">Shorts</a>
-            <a href="dashboard.html" style="font-size: 0.9rem; color: var(--text-primary);">Dashboard</a>
-          </nav>
-        </div>
-        <div>
-          <h4 style="font-size: 0.85rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-secondary);">Legal</h4>
-          <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <a href="terms.html" style="font-size: 0.9rem; color: var(--text-primary);">Terms of Service</a>
-            <a href="privacy.html" style="font-size: 0.9rem; color: var(--text-primary);">Privacy Policy</a>
-            <a href="community-guidelines.html" style="font-size: 0.9rem; color: var(--text-primary);">Community Guidelines</a>
-            <a href="dmca.html" style="font-size: 0.9rem; color: var(--text-primary);">DMCA</a>
-            <a href="cookies.html" style="font-size: 0.9rem; color: var(--text-primary);">Cookie Policy</a>
-          </nav>
-        </div>
+  <footer class="footer">
+    <div class="footer-inner">
+      <div style="display:flex; align-items:center; gap:0.5rem;">
+        <span class="logo-icon">🐝</span>
+        <span class="footer-copy">&copy; 2026 Buzzaboo. All rights reserved.</span>
       </div>
-      <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 1.5rem; border-top: 1px solid var(--glass-border);">
-        <p style="font-size: 0.8rem; color: var(--text-muted);">© 2026 Buzzaboo. All rights reserved.</p>
-      </div>
+      <nav class="footer-links">
+        <a href="terms.html">Terms</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="community-guidelines.html">Guidelines</a>
+      </nav>
     </div>
   </footer>
-  
-  <script src="js/app.js"></script>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth-service.js"></script>
 </body>
 </html>

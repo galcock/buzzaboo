@@ -3,18 +3,25 @@
  * Provides offline support and caching for the PWA
  */
 
-const CACHE_NAME = 'buzzaboo-v1';
+const CACHE_NAME = 'buzzaboo-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
-  '/browse.html',
-  '/stream.html',
-  '/profile.html',
-  '/dashboard.html',
-  '/shorts.html',
-  '/multiview.html',
+  '/chat.html',
+  '/clips.html',
+  '/login.html',
+  '/signup.html',
   '/styles.css',
-  '/app.js',
+  '/css/auth.css',
+  '/css/livekit.css',
+  '/js/firebase-config.js',
+  '/js/auth-service.js',
+  '/js/livekit-service.js',
+  '/js/matching-service.js',
+  '/js/nsfw-detector.js',
+  '/js/clip-service.js',
+  '/js/chat.js',
+  '/js/clips-feed.js',
   '/manifest.json',
   '/assets/icons/icon-192x192.png',
   '/assets/icons/icon-512x512.png'
@@ -96,7 +103,6 @@ self.addEventListener('fetch', (event) => {
           return cachedResponse;
         }
         return fetch(request).then((response) => {
-          // Cache the fetched response
           const responseClone = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(request, responseClone);
@@ -135,12 +141,7 @@ self.addEventListener('push', (event) => {
       dateOfArrival: Date.now(),
       url: data.url || '/',
       type: data.type || 'default'
-    },
-    requireInteraction: data.type === 'stream_live',
-    actions: data.type === 'stream_live' ? [
-      { action: 'watch', title: 'Watch Now', icon: '/assets/icons/play.png' },
-      { action: 'dismiss', title: 'Dismiss' }
-    ] : []
+    }
   };
 
   event.waitUntil(
@@ -157,49 +158,16 @@ self.addEventListener('notificationclick', (event) => {
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true })
       .then((clientList) => {
-        // Check if there's already a window open
         for (let client of clientList) {
           if (client.url === url && 'focus' in client) {
             return client.focus();
           }
         }
-        // Open new window if none found
         if (clients.openWindow) {
           return clients.openWindow(url);
         }
       })
   );
-
-  // Send message to all clients about the notification click
-  clients.matchAll().then((clients) => {
-    clients.forEach((client) => {
-      client.postMessage({
-        type: 'notification-click',
-        url: url,
-        data: event.notification.data
-      });
-    });
-  });
 });
-
-// Background sync for offline actions
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-chat') {
-    event.waitUntil(syncChatMessages());
-  }
-});
-
-async function syncChatMessages() {
-  // Sync any pending chat messages when back online
-  const cache = await caches.open(CACHE_NAME);
-  const pendingMessages = await cache.match('pending-messages');
-  
-  if (pendingMessages) {
-    const messages = await pendingMessages.json();
-    // Send messages to server
-    // await fetch('/api/chat/sync', { method: 'POST', body: JSON.stringify(messages) });
-    await cache.delete('pending-messages');
-  }
-}
 
 console.log('Buzzaboo Service Worker loaded');

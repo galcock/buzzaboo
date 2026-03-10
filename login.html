@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login | Buzzaboo</title>
-  <meta name="description" content="Sign in to Buzzaboo - The next-gen live streaming platform">
+  <meta name="description" content="Sign in to Buzzaboo - Random video chat with strangers">
   
   <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
@@ -110,7 +110,7 @@
             <span class="checkbox-custom"></span>
             <span class="checkbox-label">Remember me</span>
           </label>
-          <a href="forgot-password.html" class="form-link">Forgot password?</a>
+          <a href="#" class="form-link" id="forgotPasswordLink">Forgot password?</a>
         </div>
 
         <button type="submit" class="btn btn-primary btn-lg btn-block" id="loginBtn">
@@ -128,7 +128,7 @@
 
     <!-- Terms -->
     <p class="auth-terms">
-      By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+      By continuing, you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>
     </p>
   </main>
 
@@ -193,7 +193,7 @@
           showSuccess('Welcome back!');
           // Redirect after short delay
           setTimeout(() => {
-            const redirect = params.get('redirect') || '/index.html';
+            const redirect = params.get('redirect') || '/chat.html';
             window.location.href = redirect;
           }, 1000);
         } else {
@@ -211,7 +211,7 @@
         setLoading(false, 'google');
         
         if (result.success) {
-          const redirect = params.get('redirect') || '/index.html';
+          const redirect = params.get('redirect') || '/chat.html';
           window.location.href = redirect;
         } else if (result.error !== 'Sign in cancelled') {
           showError(result.error);
@@ -228,9 +228,26 @@
         setLoading(false, 'apple');
         
         if (result.success) {
-          const redirect = params.get('redirect') || '/index.html';
+          const redirect = params.get('redirect') || '/chat.html';
           window.location.href = redirect;
         } else if (result.error !== 'Sign in cancelled') {
+          showError(result.error);
+        }
+      });
+
+      // Forgot password
+      document.getElementById('forgotPasswordLink').addEventListener('click', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        if (!email) {
+          showError('Please enter your email address first, then click Forgot password.');
+          return;
+        }
+        hideMessages();
+        const result = await buzzabooAuth.sendPasswordReset(email);
+        if (result.success) {
+          showSuccess('Password reset email sent! Check your inbox.');
+        } else {
           showError(result.error);
         }
       });
@@ -238,7 +255,7 @@
       // Redirect if already logged in
       window.addEventListener('buzzaboo-auth-ready', () => {
         if (buzzabooAuth.isAuthenticated()) {
-          const redirect = params.get('redirect') || '/index.html';
+          const redirect = params.get('redirect') || '/chat.html';
           window.location.href = redirect;
         }
       });

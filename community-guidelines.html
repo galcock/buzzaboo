@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Community Guidelines | Buzzaboo</title>
-  <meta name="description" content="Community Guidelines for Buzzaboo live streaming platform.">
+  <meta name="description" content="Community Guidelines for Buzzaboo random video chat platform.">
   <meta name="robots" content="index, follow">
-  
+
   <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#8B5CF6">
-  
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
@@ -24,261 +24,243 @@
         <span class="logo-icon">🐝</span>
         <span>Buzzaboo</span>
       </a>
-      
       <nav class="nav-menu">
-        <a href="index.html" class="nav-link">Home</a>
-        <a href="browse.html" class="nav-link">Browse</a>
-        <a href="shorts.html" class="nav-link">Shorts</a>
+        <a href="index.html" class="nav-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          Home
+        </a>
+        <a href="chat.html" class="nav-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+          Chat
+        </a>
+        <a href="clips.html" class="nav-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>
+          Clips
+        </a>
       </nav>
-      
       <div class="header-actions">
-        <button class="btn btn-secondary btn-sm theme-toggle"><span class="theme-toggle-icon">🌙</span></button>
-        <a href="dashboard.html" class="btn btn-primary btn-sm">Go Live</a>
+        <button class="btn btn-secondary btn-sm theme-toggle" onclick="document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark')">
+          <span class="theme-toggle-icon">🌙</span>
+        </button>
+        <div class="auth-buttons" id="authButtons">
+          <a href="login.html" class="btn btn-secondary btn-sm">Log In</a>
+          <a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a>
+        </div>
+        <div class="user-menu" id="userMenu" style="display:none;">
+          <span class="user-name auth-display-name">Stranger</span>
+          <button class="logout-btn btn btn-ghost btn-sm">Log Out</button>
+        </div>
       </div>
     </div>
   </header>
-  
+
   <!-- Main Content -->
   <main class="main-content full-width" style="max-width: 900px; margin: 0 auto; padding: 3rem 2rem;">
     <div class="legal-document">
-      <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">🤝 Community Guidelines</h1>
-      <p class="text-secondary" style="margin-bottom: 2rem;">Last Updated: February 22, 2026</p>
-      
+      <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">Community Guidelines</h1>
+      <p class="text-secondary" style="margin-bottom: 2rem;">Last Updated: March 10, 2026</p>
+
+      <!-- Mission -->
       <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem; background: var(--gradient-primary); color: white;">
         <h2 style="color: white;">Our Mission</h2>
-        <p>Buzzaboo is built on the belief that everyone deserves a platform to express themselves, connect with others, and build communities around shared interests. These Community Guidelines exist to ensure Buzzaboo remains a safe, welcoming, and inclusive space for all users.</p>
+        <p>Buzzaboo connects strangers around the world for random one-on-one video chats. Our mission is to create a platform that is safe, respectful, and fun for everyone. These Community Guidelines exist to protect our users and ensure every conversation on Buzzaboo is a positive experience.</p>
       </div>
-      
+
+      <!-- Age-Based Matching -->
       <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
-        <h2>Core Principles</h2>
-        <div style="display: grid; gap: 1.5rem; margin-top: 1rem;">
-          <div>
-            <h3 style="display: flex; align-items: center; gap: 0.5rem;">🛡️ Safety First</h3>
-            <p>We prioritize the safety and well-being of our community. Content or behavior that threatens, harasses, or harms others is not allowed.</p>
+        <h2>Age-Based Matching</h2>
+        <p style="margin-bottom: 1rem;">Buzzaboo uses age-based matching to protect all users, especially minors:</p>
+        <ul>
+          <li><strong>Users under 13:</strong> Not permitted on Buzzaboo. Accounts belonging to users under 13 will be terminated immediately.</li>
+          <li><strong>Users aged 13&ndash;17:</strong> Matched exclusively with other users aged 13&ndash;17. Minors will never be paired with adult users.</li>
+          <li><strong>Users aged 18+:</strong> Matched exclusively with other adult users (18 and older).</li>
+        </ul>
+        <p style="margin-top: 1rem;">Age verification is required at signup. Misrepresenting your age is a violation of these guidelines and our <a href="terms.html">Terms of Service</a>.</p>
+      </div>
+
+      <!-- Private Mode -->
+      <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
+        <h2>Private Mode</h2>
+        <p style="margin-bottom: 1rem;">Buzzaboo gives you control over your privacy with Private Mode:</p>
+        <ul>
+          <li><strong>Enable at any time:</strong> You can toggle Private Mode on or off during any chat session.</li>
+          <li><strong>No recording or clipping:</strong> When Private Mode is active, your chat will not be recorded, clipped, or shared in any way.</li>
+          <li><strong>Private by default:</strong> You can set Private Mode as your default in your account preferences, so every chat starts private.</li>
+          <li><strong>Visible indicator:</strong> Both you and your chat partner will see a clear indicator when Private Mode is active.</li>
+        </ul>
+      </div>
+
+      <!-- Auto-Clipping -->
+      <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
+        <h2>Auto-Clipping</h2>
+        <p style="margin-bottom: 1rem;">When neither participant has Private Mode enabled, chats may be automatically clipped and shared publicly on Buzzaboo:</p>
+        <ul>
+          <li><strong>What gets clipped:</strong> Our system captures highlights such as genuine laughter, extended engaging conversations, and other memorable moments.</li>
+          <li><strong>Both users must be non-private:</strong> Auto-clipping only occurs when both participants have Private Mode turned off. If either user enables Private Mode, clipping stops immediately.</li>
+          <li><strong>Consent through usage:</strong> By using Buzzaboo without Private Mode enabled, you consent to the possibility that portions of your chat may be clipped and shared publicly on the platform.</li>
+          <li><strong>Clip management:</strong> You can request removal of any clip featuring you through your account settings.</li>
+        </ul>
+      </div>
+
+      <!-- Prohibited Behavior -->
+      <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
+        <h2>Prohibited Behavior</h2>
+        <p style="margin-bottom: 1rem;">The following behaviors are strictly prohibited on Buzzaboo:</p>
+
+        <h3 style="margin-top: 1.5rem;">Indecent Exposure &amp; Sexual Content</h3>
+        <ul>
+          <li>Nudity, sexual acts, or sexually explicit behavior on camera</li>
+          <li>Sexually suggestive behavior directed at other users</li>
+          <li>AI-powered content detection automatically monitors for this and will issue immediate suspensions</li>
+        </ul>
+
+        <h3 style="margin-top: 1.5rem;">Harassment, Threats &amp; Hate Speech</h3>
+        <ul>
+          <li>Verbal abuse, threats, intimidation, or bullying</li>
+          <li>Hate speech targeting race, ethnicity, religion, gender, sexual orientation, disability, or any protected characteristic</li>
+          <li>Stalking or repeated unwanted contact</li>
+        </ul>
+
+        <h3 style="margin-top: 1.5rem;">Exploitation of Minors</h3>
+        <ul>
+          <li><strong>ZERO TOLERANCE.</strong> Any form of child exploitation, grooming, or inappropriate behavior involving minors will result in an immediate permanent ban and a report to law enforcement authorities.</li>
+        </ul>
+
+        <h3 style="margin-top: 1.5rem;">Spam, Advertising &amp; Solicitation</h3>
+        <ul>
+          <li>Unsolicited advertising, promotion, or commercial solicitation</li>
+          <li>Repeatedly skipping users to spam promotional messages</li>
+          <li>Directing users to external websites, services, or products</li>
+        </ul>
+
+        <h3 style="margin-top: 1.5rem;">Impersonation</h3>
+        <ul>
+          <li>Pretending to be another person, a Buzzaboo staff member, or a public figure</li>
+          <li>Using fake profile information to misrepresent your identity or age</li>
+        </ul>
+
+        <h3 style="margin-top: 1.5rem;">Sharing Personal Information</h3>
+        <ul>
+          <li>Sharing another person's personal information (name, address, phone number, etc.) without their explicit consent</li>
+          <li>Doxxing or threatening to reveal private details about your chat partner</li>
+        </ul>
+
+        <h3 style="margin-top: 1.5rem;">External Recording &amp; Redistribution</h3>
+        <ul>
+          <li>Using screen recording software or external cameras to capture Buzzaboo chats for redistribution outside the platform</li>
+          <li>Uploading Buzzaboo conversations to other websites or social media without the consent of all participants</li>
+        </ul>
+      </div>
+
+      <!-- Automated Safety -->
+      <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
+        <h2>Automated Safety</h2>
+        <p style="margin-bottom: 1rem;">Buzzaboo uses AI-powered content detection to keep the platform safe:</p>
+        <ul>
+          <li><strong>In-browser detection:</strong> AI content analysis runs directly in your browser to detect inappropriate content in real time.</li>
+          <li><strong>Protecting minors:</strong> Automated safety systems are especially focused on protecting users under 18 from harmful content and behavior.</li>
+          <li><strong>Automatic enforcement:</strong> Indecent exposure and other visually detectable violations trigger automatic suspensions without requiring a manual report.</li>
+          <li><strong>Privacy-conscious:</strong> Detection is designed to identify policy violations only. It does not store or transmit the content of your conversations beyond what is needed for safety enforcement.</li>
+        </ul>
+      </div>
+
+      <!-- Suspension System -->
+      <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
+        <h2>Suspension System</h2>
+        <p style="margin-bottom: 1rem;">Violations of these guidelines result in escalating suspensions:</p>
+
+        <div style="display: grid; gap: 1rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: var(--radius-md); background: var(--bg-glass);">
+            <strong style="white-space: nowrap;">1st Offense:</strong>
+            <span>30-minute suspension</span>
           </div>
-          <div>
-            <h3 style="display: flex; align-items: center; gap: 0.5rem;">🌈 Respect & Inclusion</h3>
-            <p>We celebrate diversity and require all users to treat each other with respect, regardless of background, identity, or beliefs.</p>
+          <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: var(--radius-md); background: var(--bg-glass);">
+            <strong style="white-space: nowrap;">2nd Offense:</strong>
+            <span>2-hour suspension</span>
           </div>
-          <div>
-            <h3 style="display: flex; align-items: center; gap: 0.5rem;">🎭 Authenticity</h3>
-            <p>Be yourself. Impersonation, deception, and misleading behavior undermine trust in our community.</p>
+          <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: var(--radius-md); background: var(--bg-glass);">
+            <strong style="white-space: nowrap;">3rd Offense:</strong>
+            <span>24-hour suspension</span>
           </div>
-          <div>
-            <h3 style="display: flex; align-items: center; gap: 0.5rem;">⚖️ Integrity</h3>
-            <p>Follow the law, respect intellectual property, and play fair. Manipulation, fraud, and exploitation have no place here.</p>
+          <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: var(--radius-md); background: var(--bg-glass);">
+            <strong style="white-space: nowrap;">4th+ Offense:</strong>
+            <span>Permanent ban</span>
           </div>
         </div>
+
+        <h3>How Violations Are Detected</h3>
+        <ul>
+          <li><strong>AI-detected violations:</strong> Indecent exposure suspensions are issued automatically by our AI content detection system. These take effect immediately.</li>
+          <li><strong>User-reported violations:</strong> Other violations (harassment, spam, hate speech, etc.) can be reported by your chat partner and are reviewed by our moderation team before action is taken.</li>
+        </ul>
+
+        <p style="margin-top: 1rem;"><strong>Exceptions:</strong> Exploitation of minors results in an immediate permanent ban regardless of prior offense history, along with a report to law enforcement.</p>
       </div>
-      
+
+      <!-- Reporting -->
       <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
-        <h2>❌ Prohibited Content & Behavior</h2>
-        
-        <h3>1. Violence & Threats</h3>
-        <p><strong>Not Allowed:</strong></p>
+        <h2>Reporting</h2>
+        <p>If your chat partner violates any of these guidelines, you can report them using the report button available during and after every chat session. Reports are reviewed by our moderation team and appropriate action will be taken. You may also contact us at <strong>safety@buzzaboo.tv</strong> for urgent safety concerns.</p>
+      </div>
+
+      <!-- Positive Behavior -->
+      <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
+        <h2>Be a Great Chat Partner</h2>
+        <p style="margin-bottom: 1rem;">Beyond following the rules, we encourage everyone on Buzzaboo to:</p>
         <ul>
-          <li>Threats of violence against individuals or groups</li>
-          <li>Incitement to violence or self-harm</li>
-          <li>Glorification of violence or violent extremism</li>
-          <li>Graphic depictions of violence or gore (outside of newsworthy or educational contexts)</li>
-          <li>Content depicting animal cruelty or abuse</li>
-        </ul>
-        
-        <h3 style="margin-top: 2rem;">2. Hate Speech & Harassment</h3>
-        <p><strong>Not Allowed:</strong></p>
-        <ul>
-          <li>Hate speech targeting race, ethnicity, religion, gender, sexual orientation, disability, or other protected characteristics</li>
-          <li>Harassment, bullying, or coordinated attacks against individuals</li>
-          <li>Doxxing (sharing private information without consent)</li>
-          <li>Stalking or unwanted sexual attention</li>
-          <li>Content promoting hate groups or ideologies</li>
-        </ul>
-        <p><strong>Note:</strong> Criticism and debate are allowed, but personal attacks are not.</p>
-        
-        <h3 style="margin-top: 2rem;">3. Sexual Content</h3>
-        <p><strong>Not Allowed:</strong></p>
-        <ul>
-          <li>Pornography or sexually explicit content</li>
-          <li>Sexual exploitation, including of minors (zero tolerance)</li>
-          <li>Non-consensual intimate images</li>
-          <li>Sexual solicitation</li>
-        </ul>
-        <p><strong>Context Matters:</strong> Educational, artistic, or medical content with sexual themes may be allowed if properly labeled and not gratuitous.</p>
-        
-        <h3 style="margin-top: 2rem;">4. Illegal Activities</h3>
-        <p><strong>Not Allowed:</strong></p>
-        <ul>
-          <li>Promotion or facilitation of illegal activities</li>
-          <li>Sale or promotion of illegal drugs</li>
-          <li>Sale of firearms, explosives, or regulated goods</li>
-          <li>Hacking, phishing, or distribution of malware</li>
-          <li>Copyright infringement or piracy</li>
-          <li>Fraud, scams, or financial exploitation</li>
-        </ul>
-        
-        <h3 style="margin-top: 2rem;">5. Spam & Manipulation</h3>
-        <p><strong>Not Allowed:</strong></p>
-        <ul>
-          <li>Spam, including repetitive messages or unsolicited advertising</li>
-          <li>View botting or artificial inflation of metrics</li>
-          <li>Fake accounts or impersonation</li>
-          <li>Phishing or attempts to steal credentials</li>
-          <li>Manipulation of platform features or algorithms</li>
-        </ul>
-        
-        <h3 style="margin-top: 2rem;">6. Self-Harm & Dangerous Behavior</h3>
-        <p><strong>Not Allowed:</strong></p>
-        <ul>
-          <li>Content promoting suicide or self-harm</li>
-          <li>Dangerous stunts or challenges that risk serious injury</li>
-          <li>Promotion of eating disorders</li>
-        </ul>
-        <p><strong>Resources:</strong> If you or someone you know is struggling, please reach out to crisis helplines such as the National Suicide Prevention Lifeline: 988 (US).</p>
-        
-        <h3 style="margin-top: 2rem;">7. Misinformation</h3>
-        <p><strong>Not Allowed:</strong></p>
-        <ul>
-          <li>Medical misinformation that could cause harm (e.g., fake cures)</li>
-          <li>Election misinformation designed to suppress voting</li>
-          <li>Conspiracy theories that incite harm or panic</li>
-          <li>Manipulated media (deepfakes) presented as real without disclosure</li>
+          <li><strong>Be kind:</strong> A friendly greeting goes a long way. Treat every stranger the way you would like to be treated.</li>
+          <li><strong>Respect boundaries:</strong> If someone is uncomfortable with a topic, change the subject. If they want to end the chat, let them go gracefully.</li>
+          <li><strong>Use Private Mode when desired:</strong> There is no shame in wanting a private conversation. Use Private Mode whenever you prefer not to be clipped.</li>
+          <li><strong>Have fun:</strong> Buzzaboo is about meeting new people and having great conversations. Enjoy the experience!</li>
         </ul>
       </div>
-      
+
+      <!-- Additional Policies -->
       <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
-        <h2>✅ Streamer-Specific Guidelines</h2>
-        
-        <h3>Content Standards</h3>
-        <ul>
-          <li><strong>Age-Appropriate Content:</strong> If your content is intended for mature audiences, use appropriate content labels</li>
-          <li><strong>Copyright Compliance:</strong> Only stream content you have the rights to, including music, videos, and games</li>
-          <li><strong>Sponsorships & Ads:</strong> Clearly disclose sponsored content and paid promotions</li>
-          <li><strong>Guest Behavior:</strong> You are responsible for the behavior of guests on your stream</li>
-        </ul>
-        
-        <h3>Chat Moderation</h3>
-        <ul>
-          <li>Streamers are expected to moderate their chat and take action against rule violations</li>
-          <li>Use Buzzaboo's moderation tools (bans, timeouts, filters) to maintain a healthy chat environment</li>
-          <li>Assign moderators to help manage your community</li>
-        </ul>
-        
-        <h3>Prohibited Streaming Practices</h3>
-        <ul>
-          <li><strong>Swatting or dangerous pranks</strong> that could harm individuals or waste emergency resources</li>
-          <li><strong>Stream sniping</strong> or other forms of targeted harassment</li>
-          <li><strong>Encouraging chat to brigade</strong> or harass other channels</li>
-          <li><strong>Botting or viewcount manipulation</strong></li>
-        </ul>
-      </div>
-      
-      <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
-        <h2>⚠️ Enforcement & Consequences</h2>
-        
-        <h3>Reporting</h3>
-        <p>If you see content that violates these guidelines, please report it using the report button. Our moderation team reviews reports 24/7.</p>
-        
-        <h3>Penalties</h3>
-        <p>Violations may result in:</p>
-        <ul>
-          <li><strong>Warning:</strong> First-time minor violations</li>
-          <li><strong>Content Removal:</strong> Offending content deleted</li>
-          <li><strong>Temporary Suspension:</strong> 1-30 days, depending on severity</li>
-          <li><strong>Permanent Ban:</strong> For severe or repeated violations</li>
-          <li><strong>Loss of Monetization:</strong> Removal from partner program</li>
-          <li><strong>Legal Action:</strong> For criminal activity, child exploitation, or serious threats</li>
-        </ul>
-        
-        <h3>Strikes System</h3>
-        <p>Most violations result in strikes against your account:</p>
-        <ul>
-          <li><strong>Strike 1:</strong> Warning + content removal</li>
-          <li><strong>Strike 2:</strong> 7-day suspension</li>
-          <li><strong>Strike 3:</strong> 30-day suspension</li>
-          <li><strong>Strike 4:</strong> Permanent ban</li>
-        </ul>
-        <p>Strikes expire after 90 days of good standing.</p>
-        
-        <h3>Appeals</h3>
-        <p>If you believe an enforcement action was made in error, you may appeal through your account dashboard within 14 days.</p>
-      </div>
-      
-      <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
-        <h2>🌟 Positive Community Practices</h2>
-        <p>Beyond following the rules, we encourage:</p>
-        <ul>
-          <li><strong>Support Creators:</strong> Engage positively, provide constructive feedback</li>
-          <li><strong>Welcome Newcomers:</strong> Help new users feel welcome</li>
-          <li><strong>Celebrate Diversity:</strong> Embrace different perspectives and backgrounds</li>
-          <li><strong>Share Knowledge:</strong> Help others learn and grow</li>
-          <li><strong>Give Back:</strong> Support causes you care about through charity streams</li>
-          <li><strong>Collaborate:</strong> Work with other creators to build something great</li>
-        </ul>
-      </div>
-      
-      <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
-        <h2>📋 Additional Policies</h2>
-        <p>These guidelines work in conjunction with our:</p>
+        <h2>Additional Policies</h2>
+        <p>These guidelines work in conjunction with our other policies:</p>
         <ul>
           <li><a href="terms.html">Terms of Service</a></li>
           <li><a href="privacy.html">Privacy Policy</a></li>
-          <li><a href="dmca.html">DMCA Policy</a></li>
         </ul>
       </div>
-      
+
+      <!-- Questions -->
       <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
-        <h2>❓ Questions or Concerns?</h2>
-        <p>If you have questions about these guidelines or need clarification, please contact us:</p>
+        <h2>Questions or Concerns?</h2>
+        <p>If you have questions about these guidelines or need to report a safety issue, please contact us:</p>
         <p style="margin-top: 1rem;">
           <strong>Email:</strong> community@buzzaboo.tv<br>
-          <strong>Report Content:</strong> Use the report button on any stream or content<br>
-          <strong>Trust & Safety:</strong> safety@buzzaboo.tv
+          <strong>Trust &amp; Safety:</strong> safety@buzzaboo.tv
         </p>
       </div>
-      
+
       <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: var(--bg-glass); border-radius: var(--radius-lg);">
-        <h2 style="margin-bottom: 1rem;">Together, We Build a Better Community</h2>
-        <p class="text-secondary">These guidelines are a living document. We'll update them as our community grows and evolves. Thank you for being part of Buzzaboo.</p>
+        <h2 style="margin-bottom: 1rem;">Chat Safe. Chat Happy.</h2>
+        <p class="text-secondary">These guidelines are a living document and will be updated as Buzzaboo grows. Thank you for helping us build a safe and welcoming community.</p>
       </div>
     </div>
   </main>
-  
+
   <!-- Footer -->
-  <footer style="padding: 2rem; border-top: 1px solid var(--glass-border); background: var(--bg-secondary);">
-    <div class="container" style="max-width: 1400px; margin: 0 auto;">
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
-        <div>
-          <div class="logo" style="margin-bottom: 1rem;">
-            <span class="logo-icon">🐝</span>
-            <span>Buzzaboo</span>
-          </div>
-          <p style="font-size: 0.85rem; color: var(--text-secondary);">The next generation of live streaming.</p>
-        </div>
-        <div>
-          <h4 style="font-size: 0.85rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-secondary);">Platform</h4>
-          <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <a href="browse.html" style="font-size: 0.9rem; color: var(--text-primary);">Browse</a>
-            <a href="shorts.html" style="font-size: 0.9rem; color: var(--text-primary);">Shorts</a>
-            <a href="dashboard.html" style="font-size: 0.9rem; color: var(--text-primary);">Dashboard</a>
-          </nav>
-        </div>
-        <div>
-          <h4 style="font-size: 0.85rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-secondary);">Legal</h4>
-          <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <a href="terms.html" style="font-size: 0.9rem; color: var(--text-primary);">Terms of Service</a>
-            <a href="privacy.html" style="font-size: 0.9rem; color: var(--text-primary);">Privacy Policy</a>
-            <a href="community-guidelines.html" style="font-size: 0.9rem; color: var(--text-primary);">Community Guidelines</a>
-            <a href="dmca.html" style="font-size: 0.9rem; color: var(--text-primary);">DMCA</a>
-            <a href="cookies.html" style="font-size: 0.9rem; color: var(--text-primary);">Cookie Policy</a>
-          </nav>
-        </div>
+  <footer class="footer">
+    <div class="footer-inner">
+      <div style="display:flex; align-items:center; gap:0.5rem;">
+        <span class="logo-icon">🐝</span>
+        <span class="footer-copy">&copy; 2026 Buzzaboo. All rights reserved.</span>
       </div>
-      <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 1.5rem; border-top: 1px solid var(--glass-border);">
-        <p style="font-size: 0.8rem; color: var(--text-muted);">© 2026 Buzzaboo. All rights reserved.</p>
-      </div>
+      <nav class="footer-links">
+        <a href="terms.html">Terms</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="community-guidelines.html">Guidelines</a>
+      </nav>
     </div>
   </footer>
-  
-  <script src="js/app.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth-service.js"></script>
 </body>
 </html>

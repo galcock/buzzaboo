@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up | Buzzaboo</title>
-  <meta name="description" content="Create your Buzzaboo account - Join the next-gen live streaming platform">
+  <meta name="description" content="Create your Buzzaboo account - Random video chat with strangers">
   
   <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
@@ -43,7 +43,7 @@
     <div class="auth-card glass-card">
       <div class="auth-header">
         <h1 class="auth-title">Create your account</h1>
-        <p class="auth-subtitle">Join millions of creators and viewers on Buzzaboo</p>
+        <p class="auth-subtitle">Join Buzzaboo and start meeting new people</p>
       </div>
 
       <!-- Success Messages -->
@@ -128,7 +128,7 @@
           <label class="form-checkbox">
             <input type="checkbox" id="terms" name="terms" required>
             <span class="checkbox-custom"></span>
-            <span class="checkbox-label">I agree to the <a href="#" class="form-link-inline">Terms of Service</a> and <a href="#" class="form-link-inline">Privacy Policy</a></span>
+            <span class="checkbox-label">I agree to the <a href="terms.html" class="form-link-inline">Terms of Service</a> and <a href="privacy.html" class="form-link-inline">Privacy Policy</a></span>
           </label>
         </div>
 
@@ -147,7 +147,7 @@
 
     <!-- Terms -->
     <p class="auth-terms">
-      By creating an account, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+      By creating an account, you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>
     </p>
   </main>
 
@@ -249,7 +249,7 @@
         setLoading(false, 'google');
         
         if (result.success) {
-          window.location.href = '/index.html';
+          window.location.href = '/chat.html';
         } else if (result.error !== 'Sign in cancelled') {
           showError(result.error);
         }
@@ -265,7 +265,7 @@
         setLoading(false, 'apple');
         
         if (result.success) {
-          window.location.href = '/index.html';
+          window.location.href = '/chat.html';
         } else if (result.error !== 'Sign in cancelled') {
           showError(result.error);
         }
@@ -274,7 +274,7 @@
       // Redirect if already logged in
       window.addEventListener('buzzaboo-auth-ready', () => {
         if (buzzabooAuth.isAuthenticated()) {
-          window.location.href = '/index.html';
+          window.location.href = '/chat.html';
         }
       });
     });

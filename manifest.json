@@ -1,7 +1,7 @@
 {
-  "name": "Buzzaboo - Next-Gen Live Streaming",
+  "name": "Buzzaboo - Random Video Chat",
   "short_name": "Buzzaboo",
-  "description": "The future of live streaming. AI highlights, multiview, watch parties, and more.",
+  "description": "Meet new people instantly via random video chat. AI-powered safety, auto-clips, and private mode.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f0f0f",
@@ -9,7 +9,7 @@
   "orientation": "any",
   "scope": "/",
   "lang": "en-US",
-  "categories": ["entertainment", "social", "video"],
+  "categories": ["social", "communication"],
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",
@@ -66,36 +66,29 @@
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Buzzaboo Home Screen"
+      "label": "Buzzaboo Video Chat"
     },
     {
       "src": "assets/images/screenshot-narrow.png",
       "sizes": "750x1334",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Buzzaboo Mobile View"
+      "label": "Buzzaboo Mobile"
     }
   ],
   "shortcuts": [
     {
-      "name": "Browse Streams",
-      "short_name": "Browse",
-      "description": "Browse all live streams",
-      "url": "/browse.html",
+      "name": "Start Chatting",
+      "short_name": "Chat",
+      "description": "Jump into a random video chat",
+      "url": "/chat.html",
       "icons": [{ "src": "assets/icons/shortcut-browse.png", "sizes": "96x96" }]
     },
     {
-      "name": "Go Live",
-      "short_name": "Stream",
-      "description": "Start streaming",
-      "url": "/dashboard.html",
-      "icons": [{ "src": "assets/icons/shortcut-live.png", "sizes": "96x96" }]
-    },
-    {
-      "name": "Shorts",
-      "short_name": "Shorts",
-      "description": "Watch short clips",
-      "url": "/shorts.html",
+      "name": "Browse Clips",
+      "short_name": "Clips",
+      "description": "Watch the best auto-clipped moments",
+      "url": "/clips.html",
       "icons": [{ "src": "assets/icons/shortcut-shorts.png", "sizes": "96x96" }]
     }
   ],

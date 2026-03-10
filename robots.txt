@@ -6,20 +6,22 @@ Allow: /
 
 # Main pages
 Allow: /index.html
-Allow: /browse.html
-Allow: /shorts.html
-Allow: /multiview.html
-Allow: /profile.html
-Allow: /stream.html
+Allow: /chat.html
+Allow: /clips.html
+Allow: /login.html
+Allow: /signup.html
+
+# Legal pages
+Allow: /terms.html
+Allow: /privacy.html
+Allow: /community-guidelines.html
 
 # Assets
 Allow: /styles.css
-Allow: /app.js
 Allow: /manifest.json
 Allow: /assets/
 
-# Disallow admin/private areas
-Disallow: /dashboard.html
+# Disallow private areas
 Disallow: /api/
 Disallow: /admin/
 Disallow: /_internal/

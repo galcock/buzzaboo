@@ -1563,6 +1563,55 @@ input, select, textarea { font-family: inherit; font-size: inherit; }
 }
 
 /* ============================================
+   BOT AVATAR PLACEHOLDER
+   ============================================ */
+.bot-avatar-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 0.75rem;
+}
+
+.bot-avatar-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: botAvatarPulse 2s ease-in-out infinite;
+}
+
+.bot-avatar-emoji {
+  font-size: 3.5rem;
+}
+
+.bot-avatar-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.bot-avatar-hint {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  animation: botHintFade 2s ease-in-out infinite;
+}
+
+@keyframes botAvatarPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 190, 11, 0.3); }
+  50% { transform: scale(1.05); box-shadow: 0 0 20px 5px rgba(255, 190, 11, 0.15); }
+}
+
+@keyframes botHintFade {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* ============================================
    LEADERBOARD
    ============================================ */
 .leaderboard-section {

@@ -667,9 +667,26 @@ class ChatController {
       return;
     }
 
-    // Show remote video
-    if (this.dom.remoteVideo) this.dom.remoteVideo.style.display = '';
-    if (this.dom.remotePlaceholder) this.dom.remotePlaceholder.style.display = 'none';
+    // Show remote video or bot avatar
+    if (session.bot.videoUrl) {
+      if (this.dom.remoteVideo) this.dom.remoteVideo.style.display = '';
+      if (this.dom.remotePlaceholder) this.dom.remotePlaceholder.style.display = 'none';
+    } else {
+      // No bot video — show an animated avatar placeholder
+      if (this.dom.remoteVideo) this.dom.remoteVideo.style.display = 'none';
+      if (this.dom.remotePlaceholder) {
+        this.dom.remotePlaceholder.style.display = '';
+        this.dom.remotePlaceholder.innerHTML = `
+          <div class="bot-avatar-placeholder">
+            <div class="bot-avatar-circle">
+              <span class="bot-avatar-emoji">🙂</span>
+            </div>
+            <p class="bot-avatar-name">${session.bot.name || 'Stranger'}</p>
+            <p class="bot-avatar-hint">Say hi!</p>
+          </div>`;
+      }
+      if (this.dom.searchingIndicator) this.dom.searchingIndicator.style.display = 'none';
+    }
 
     // Show local video with filter engine
     if (this.filterEngine && this.dom.localVideo) {
@@ -682,6 +699,11 @@ class ChatController {
     this.aiBotService.on('botTyping', (typing) => {
       // Could show typing indicator in text chat
     });
+
+    // Auto-open text chat for text-only bots (no video)
+    if (!session.bot.videoUrl && this.dom.textChatPanel) {
+      this.dom.textChatPanel.classList.add('open');
+    }
 
     // Start face reveal countdown if auto-blur enabled
     if (this.autoBlurEnabled) {

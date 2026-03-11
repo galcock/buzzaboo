@@ -2,7 +2,7 @@
    BUZZABOO - AI Bot Service
    "Human or AI?" game mode.
    Loads bot profiles from Firestore `bots` collection.
-   If no bots exist, game mode auto-disables gracefully.
+   Falls back to built-in default bots if none configured.
    Each bot has: name, videoUrl, personality with
    conversation patterns and response generation.
    ============================================ */
@@ -21,6 +21,122 @@ class AIBotService {
     this.processingResponse = false;
   }
 
+  getDefaultBots() {
+    return [
+      {
+        id: 'default-alex',
+        name: 'Alex',
+        videoUrl: null,
+        enabled: true,
+        personality: {
+          greetings: [
+            'Hey! How are you doing?',
+            'Hi there! Where are you from?',
+            'Hello! Nice to meet you 😊',
+            'Hey hey! What\'s up?',
+            'Hi! Having a good day?'
+          ],
+          locations: [
+            'I\'m from California!', 'I\'m in London, UK', 'Toronto, Canada!',
+            'Somewhere in Europe 😄', 'I\'m in New York', 'Austin, Texas!'
+          ],
+          ages: ['I\'m 22!', '23, you?', 'Just turned 21', '24!', 'I\'m 20'],
+          hobbies: [
+            'I love music and hiking! What about you?',
+            'Gaming and cooking mostly 🎮',
+            'I\'m really into photography lately',
+            'Reading and going to the gym. Wbu?',
+            'I watch way too many movies lol'
+          ],
+          followUps: [
+            'That\'s really interesting! Tell me more',
+            'Oh cool! So what else do you like?',
+            'Haha I can relate to that. What do you do for fun?',
+            'Nice! Have you always been into that?',
+            'That\'s awesome! I wish I could try that',
+            'Oh wow, that sounds fun! How long have you been doing that?',
+            'I totally get that! What got you into it?',
+            'That\'s so cool. I\'ve always wanted to try something like that'
+          ],
+          quirks: { emojiFrequency: 'medium' }
+        }
+      },
+      {
+        id: 'default-sam',
+        name: 'Sam',
+        videoUrl: null,
+        enabled: true,
+        personality: {
+          greetings: [
+            'heyyy what\'s good',
+            'yo! how\'s it going',
+            'hii 😊 where u from?',
+            'hey there! what are you up to?',
+            'sup! nice to meet u'
+          ],
+          locations: [
+            'im from miami!', 'los angeles baby 🌴', 'seattle, WA',
+            'chicago! the windy city', 'im in berlin actually', 'denver, colorado'
+          ],
+          ages: ['im 19!', '20, hbu?', 'just turned 21 lol', '18!'],
+          hobbies: [
+            'skating and playing guitar! wbu?',
+            'im really into anime rn ngl',
+            'i make beats and play basketball',
+            'honestly i just vibe on tiktok a lot lmao',
+            'painting and thrifting! i love finding cool stuff'
+          ],
+          followUps: [
+            'no way thats actually sick',
+            'omg same!! what else do u like?',
+            'haha thats so cool tell me more',
+            'wait really?? how did u get into that',
+            'duuude thats awesome',
+            'lol i feel that. what else u into?',
+            'thats fire 🔥 i need to try that'
+          ],
+          quirks: { emojiFrequency: 'high', allLowercase: true, fillerWords: true }
+        }
+      },
+      {
+        id: 'default-jordan',
+        name: 'Jordan',
+        videoUrl: null,
+        enabled: true,
+        personality: {
+          greetings: [
+            'Hello! How are you today?',
+            'Hi, nice to meet you! Where are you chatting from?',
+            'Hey! I just joined, what\'s up?',
+            'Hi there! This is fun, isn\'t it?'
+          ],
+          locations: [
+            'I\'m from Vancouver, Canada', 'Dublin, Ireland!', 'I live in Amsterdam',
+            'Melbourne, Australia 🇦🇺', 'I\'m in Stockholm', 'Barcelona, Spain!'
+          ],
+          ages: ['I\'m 25', '22, how about you?', '26!', 'I\'m 24'],
+          hobbies: [
+            'I love traveling and trying new foods! You?',
+            'I\'m a big reader. Currently into sci-fi novels.',
+            'Running and yoga keep me sane haha',
+            'I play piano and love going to concerts',
+            'Photography is my passion. I shoot street photos mostly.'
+          ],
+          followUps: [
+            'That\'s fascinating! What do you enjoy most about it?',
+            'Oh I love that! How long have you been doing it?',
+            'That\'s really cool. I\'ve always been curious about that.',
+            'Wow, that sounds amazing. What got you started?',
+            'Haha that\'s great! Do you do it often?',
+            'I can definitely see why you\'d enjoy that!',
+            'That\'s awesome. Do you have any recommendations?'
+          ],
+          quirks: { emojiFrequency: 'low' }
+        }
+      }
+    ];
+  }
+
   async init() {
     try {
       const db = firebase.firestore();
@@ -31,18 +147,21 @@ class AIBotService {
         this.bots.push({ id: doc.id, ...doc.data() });
       });
 
-      this.botsLoaded = true;
-      this.available = this.bots.length > 0;
-
-      if (this.available) {
-        console.log(`✓ AI bot service loaded (${this.bots.length} bots available)`);
+      // Fall back to built-in bots if none in Firestore
+      if (this.bots.length === 0) {
+        this.bots = this.getDefaultBots();
+        console.log(`✓ AI bot service loaded (${this.bots.length} built-in bots)`);
       } else {
-        console.log('✓ AI bot service loaded (no bots configured — game mode disabled)');
+        console.log(`✓ AI bot service loaded (${this.bots.length} Firestore bots)`);
       }
-    } catch (err) {
-      console.error('AI bot service init error:', err);
+
       this.botsLoaded = true;
-      this.available = false;
+      this.available = true;
+    } catch (err) {
+      console.error('AI bot service Firestore error, using built-in bots:', err);
+      this.bots = this.getDefaultBots();
+      this.botsLoaded = true;
+      this.available = true;
     }
   }
 

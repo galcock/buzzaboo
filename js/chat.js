@@ -75,6 +75,14 @@ class ChatController {
     const isAuth = auth.isAuthenticated();
     await this.scoringService.init(userId, isAuth);
 
+    // Bind scoring events now that service is ready
+    this.scoringService.on('scoreChanged', (data) => {
+      this.updateScoreDisplay();
+      if (data.reason) {
+        this.showScoreAnimation(data.delta, data.reason);
+      }
+    });
+
     // Show game mode toggle if bots are available
     if (this.aiBotService.isAvailable() && this.dom.gameModeToggle) {
       this.dom.gameModeToggle.style.display = '';
@@ -113,7 +121,7 @@ class ChatController {
       'chatStatusBar', 'chatStatus', 'chatTimer', 'recordingIndicator', 'privacyBadge',
       'toggleCameraBtn', 'toggleMicBtn', 'privacyBtn', 'textChatBtn', 'nextBtn', 'stopBtn',
       'textChatPanel', 'textChatMessages', 'textChatInput', 'sendMessageBtn',
-      'suspensionOverlay', 'suspensionCountdown', 'offenseCount',
+      'suspensionOverlay', 'suspensionCountdown', 'offenseCount', 'closeChatPanelBtn',
       // New elements
       'filterBtn', 'filterTray', 'filterTrayClose', 'filterGrid',
       'faceRevealOverlay', 'faceRevealNumber',
@@ -178,6 +186,7 @@ class ChatController {
     if (this.dom.toggleMicBtn) this.dom.toggleMicBtn.addEventListener('click', () => this.toggleMic());
     if (this.dom.privacyBtn) this.dom.privacyBtn.addEventListener('click', () => this.togglePrivacy());
     if (this.dom.textChatBtn) this.dom.textChatBtn.addEventListener('click', () => this.toggleTextChat());
+    if (this.dom.closeChatPanelBtn) this.dom.closeChatPanelBtn.addEventListener('click', () => this.toggleTextChat());
     if (this.dom.nextBtn) this.dom.nextBtn.addEventListener('click', () => this.handleNext());
     if (this.dom.stopBtn) this.dom.stopBtn.addEventListener('click', () => this.handleStop());
 
@@ -215,14 +224,6 @@ class ChatController {
 
     // Service events
     this.bindServiceEvents();
-
-    // Scoring events
-    this.scoringService.on('scoreChanged', (data) => {
-      this.updateScoreDisplay();
-      if (data.reason) {
-        this.showScoreAnimation(data.delta, data.reason);
-      }
-    });
   }
 
   bindServiceEvents() {

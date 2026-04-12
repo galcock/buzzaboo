@@ -146,7 +146,29 @@ class ChatController {
   }
 
   bindEvents() {
-    // Age gate
+    // One-click age buttons
+    const ageAdultBtn = document.getElementById('ageAdultBtn');
+    const ageTeenBtn = document.getElementById('ageTeenBtn');
+    if (ageAdultBtn) {
+      ageAdultBtn.addEventListener('click', () => {
+        localStorage.setItem('buzzaboo-age', '18');
+        localStorage.setItem('buzzaboo-consent', 'true');
+        this.agePool = 'adult';
+        if (this.dom.ageGate) this.dom.ageGate.style.display = 'none';
+        this.autoStartMatching();
+      });
+    }
+    if (ageTeenBtn) {
+      ageTeenBtn.addEventListener('click', () => {
+        localStorage.setItem('buzzaboo-age', '15');
+        localStorage.setItem('buzzaboo-consent', 'true');
+        this.agePool = 'minor';
+        if (this.dom.ageGate) this.dom.ageGate.style.display = 'none';
+        this.autoStartMatching();
+      });
+    }
+
+    // Legacy age gate (kept for backwards compat)
     if (this.dom.ageSubmitBtn) {
       this.dom.ageSubmitBtn.addEventListener('click', () => this.handleAgeSubmit());
     }

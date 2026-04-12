@@ -96,27 +96,34 @@
   <!-- Main Chat Area -->
   <main class="main-content full-width chat-page">
 
-    <!-- Age Gate -->
+    <!-- Age Gate — single click -->
     <div id="ageGate" class="age-gate" style="display:none;">
-      <div class="glass-card age-gate-card">
-        <h2>How old are you?</h2>
-        <p>We use age-based matching to keep everyone safe.</p>
-        <div class="age-input-group">
-          <input type="number" id="ageInput" class="form-input" placeholder="Age" min="1" max="120" autocomplete="off">
-          <button id="ageSubmitBtn" class="btn btn-primary btn-lg">Continue</button>
-        </div>
-        <div id="ageError" class="age-error" style="display:none;"></div>
-        <div id="ageBlockedMsg" style="display:none; margin-top:1.5rem;">
+      <div class="glass-card age-gate-card" style="text-align:center;">
+        <div style="font-size:3rem;margin-bottom:0.5rem;">🐝</div>
+        <h2 style="margin-bottom:0.5rem;">Welcome to Buzzaboo</h2>
+        <p style="color:var(--text-secondary);margin-bottom:1.5rem;">The fastest random video chat. No bots. No signup. Just real people.</p>
+        <button id="ageAdultBtn" class="btn btn-primary btn-xl btn-block" style="margin-bottom:0.75rem;font-size:1.1rem;">
+          I'm 18+ — Start Chatting
+        </button>
+        <button id="ageTeenBtn" class="btn btn-secondary btn-lg btn-block" style="margin-bottom:1rem;">
+          I'm 13-17
+        </button>
+        <p style="font-size:0.7rem;color:var(--text-muted);">
+          By continuing, you agree to our <a href="terms.html" style="color:var(--primary)">Terms</a> and <a href="privacy.html" style="color:var(--primary)">Privacy Policy</a>.
+          You must be 13 or older.
+        </p>
+        <div id="ageBlockedMsg" style="display:none; margin-top:1rem;">
           <p style="color:var(--accent-red); font-weight:600;">You must be 13 or older to use Buzzaboo.</p>
         </div>
       </div>
     </div>
 
-    <!-- Consent Banner -->
-    <div id="consentBanner" class="consent-banner" style="display:none;">
-      <p><strong>Heads up:</strong> Your video chats may be automatically clipped and shared publicly by AI. You can <strong>Go Private</strong> anytime to opt out of clipping.</p>
-      <button id="consentAcceptBtn" class="btn btn-primary btn-sm">I Understand</button>
-    </div>
+    <!-- Hidden elements kept for backwards compat -->
+    <input type="hidden" id="ageInput">
+    <button id="ageSubmitBtn" style="display:none;"></button>
+    <div id="ageError" style="display:none;"></div>
+    <div id="consentBanner" style="display:none;"></div>
+    <button id="consentAcceptBtn" style="display:none;"></button>
 
     <!-- Suspension Overlay -->
     <div id="suspensionOverlay" class="suspension-overlay" style="display:none;">

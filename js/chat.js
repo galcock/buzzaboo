@@ -101,8 +101,17 @@ class ChatController {
       return;
     }
 
-    // Age gate / consent flow
+    // Fast path: returning user with age + consent → skip everything, go straight to matching
     const storedAge = localStorage.getItem('buzzaboo-age');
+    const hasConsent = localStorage.getItem('buzzaboo-consent') === 'true';
+
+    if (storedAge && hasConsent) {
+      this.agePool = parseInt(storedAge, 10) >= 18 ? 'adult' : 'minor';
+      this.autoStartMatching();
+      return;
+    }
+
+    // First-time user: age gate → consent → setup
     if (storedAge) {
       this.agePool = parseInt(storedAge, 10) >= 18 ? 'adult' : 'minor';
       this.checkConsent();
@@ -313,6 +322,36 @@ class ChatController {
   // ============================================
   // SETUP PHASE
   // ============================================
+
+  async autoStartMatching() {
+    // Instant path: request camera and start matching in one step
+    // No setup panel, no preview, no "Start Chatting" button — just go
+    this.state = CHAT_STATES.SETUP;
+
+    try {
+      this.previewStream = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
+        audio: true
+      });
+
+      // Initialize filter engine
+      this.filterEngine = new FilterEngine();
+      this.filterEngine.init(this.previewStream);
+      if (!this.faceDetector) this.faceDetector = new FaceDetectionService();
+      this.filterEngine.setFaceDetector(this.faceDetector);
+
+      // Load privacy preference
+      const savedPrivacy = localStorage.getItem('buzzaboo-private');
+      if (savedPrivacy !== null) this.isPrivate = savedPrivacy === 'true';
+
+      // Skip setup panel entirely → go straight to searching
+      await this.startSearching();
+    } catch (err) {
+      // Camera denied → fall back to normal setup flow
+      console.warn('Camera auto-start failed, falling back to setup:', err);
+      this.enterSetup();
+    }
+  }
 
   async enterSetup() {
     this.state = CHAT_STATES.SETUP;
@@ -565,9 +604,8 @@ class ChatController {
     this.updateStatus('Searching...');
     this.updatePrivacyUI();
 
-    // Check if we should match with a bot (game mode or no humans available)
-    if (this.aiBotService.shouldMatchWithBot(this.gameModeEnabled)) {
-      // Short fake search delay for realism
+    // Only use bots if game mode is explicitly enabled by user
+    if (this.gameModeEnabled && this.aiBotService.shouldMatchWithBot(true)) {
       setTimeout(() => this.startBotMatch(), 1500 + Math.random() * 2000);
       return;
     }
@@ -597,25 +635,22 @@ class ChatController {
     try {
       await window.matchingService.enterQueue(this.interests, this.agePool);
 
-      // Set timeout: if no match found in 15 seconds, fall back to bot if available
+      // Keep searching — show user count and keep retrying
       this.matchTimeoutId = setTimeout(() => {
-        if (this.state === CHAT_STATES.SEARCHING && this.aiBotService.shouldFallbackToBot()) {
-          console.log('No humans available, matching with AI bot');
-          window.matchingService.leaveQueue();
-          this.startBotMatch();
+        if (this.state === CHAT_STATES.SEARCHING) {
+          this.updateStatus('Waiting for someone to connect...');
+          // Don't fall back to bot — keep searching for real humans
+          // Matching service has its own retry loop
         }
       }, 15000);
     } catch (error) {
       console.error('Failed to enter queue:', error);
-
-      // Try bot fallback on queue error
-      if (this.aiBotService.shouldFallbackToBot()) {
-        setTimeout(() => this.startBotMatch(), 1000);
-      } else {
-        this.updateStatus('Connection error. Try again.');
-        this.state = CHAT_STATES.SETUP;
-        this.enterSetup();
-      }
+      this.updateStatus('Connecting... retrying');
+      // Retry after 3 seconds instead of falling back to bot
+      setTimeout(() => {
+        this.state = CHAT_STATES.IDLE;
+        this.startSearching();
+      }, 3000);
     }
   }
 

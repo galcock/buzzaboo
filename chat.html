@@ -165,12 +165,9 @@
           <span>Go Private (no clipping)</span>
         </div>
 
-        <div id="gameModeToggle" class="game-mode-toggle" style="display:none;">
-          <label class="game-mode-label">
-            <input type="checkbox" id="gameModeCheckbox">
-            <span class="game-mode-icon">🤖</span>
-            <span>Human or AI? — guess who you're talking to</span>
-          </label>
+        <!-- Game mode removed — no bots, real people only -->
+        <div id="gameModeToggle" style="display:none;">
+          <input type="checkbox" id="gameModeCheckbox" style="display:none;">
         </div>
 
         <button id="startBtn" class="btn btn-primary btn-xl btn-block" style="margin-top:1rem;">
@@ -257,10 +254,7 @@
         <button id="textChatBtn" class="chat-control-btn" title="Text Chat">
           💬
         </button>
-        <button id="guessBtn" class="chat-control-btn guess-btn" title="Guess: Human or AI?" style="display:none;">
-          <span class="guess-btn-icon">?</span>
-          <span>Guess</span>
-        </button>
+        <button id="guessBtn" style="display:none;"></button>
         <button id="nextBtn" class="chat-control-btn chat-next-btn" title="Next Person">
           Next →
         </button>

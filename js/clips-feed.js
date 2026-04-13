@@ -252,7 +252,10 @@ class ClipsFeed {
     thumbnail.className = 'clip-card-thumbnail';
     thumbnail.alt = 'Clip thumbnail';
     thumbnail.loading = 'lazy';
-    if (clip.thumbnailDataUrl) {
+    // Prefer cloud thumbnail URL, fall back to local data URL
+    if (clip.thumbnailUrl) {
+      thumbnail.src = clip.thumbnailUrl;
+    } else if (clip.thumbnailDataUrl) {
       thumbnail.src = clip.thumbnailDataUrl;
     }
     mediaContainer.appendChild(thumbnail);
@@ -293,22 +296,25 @@ class ClipsFeed {
     card.addEventListener('mouseenter', () => {
       hoverTimeout = setTimeout(async () => {
         try {
-          const blob = await window.clipService.getClipBlob(clip.id);
-          if (!blob) return;
-
-          const url = URL.createObjectURL(blob);
-          this.blobUrls.set('hover-' + clip.id, url);
-
           hoverVideo = document.createElement('video');
           hoverVideo.className = 'clip-card-preview';
-          hoverVideo.src = url;
           hoverVideo.muted = true;
           hoverVideo.loop = true;
           hoverVideo.playsInline = true;
 
+          // Prefer cloud URL, fall back to local IndexedDB blob
+          if (clip.videoUrl) {
+            hoverVideo.src = clip.videoUrl;
+          } else {
+            const blob = await window.clipService.getClipBlob(clip.id);
+            if (!blob) return;
+            const url = URL.createObjectURL(blob);
+            this.blobUrls.set('hover-' + clip.id, url);
+            hoverVideo.src = url;
+          }
+
           mediaContainer.appendChild(hoverVideo);
           hoverVideo.play().catch(() => {});
-
           thumbnail.style.opacity = '0';
         } catch (err) {
           console.error('Failed to load hover preview:', err);
@@ -443,12 +449,20 @@ class ClipsFeed {
     }
 
     try {
-      const blob = await window.clipService.getClipBlob(clipId);
-      if (!blob) return;
+      // Find clip data for cloud URL
+      const clip = this.clips.find(c => c.id === clipId);
 
-      const url = URL.createObjectURL(blob);
-      this.blobUrls.set('reel-' + clipId, url);
-      video.src = url;
+      if (clip && clip.videoUrl) {
+        // Use cloud URL
+        video.src = clip.videoUrl;
+      } else {
+        // Fall back to local IndexedDB
+        const blob = await window.clipService.getClipBlob(clipId);
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        this.blobUrls.set('reel-' + clipId, url);
+        video.src = url;
+      }
       video.play().catch(() => {});
     } catch (err) {
       console.error('Failed to load reel video:', err);
@@ -467,16 +481,20 @@ class ClipsFeed {
     document.body.style.overflow = 'hidden';
 
     try {
-      const blob = await window.clipService.getClipBlob(clip.id);
-      if (!blob) {
-        console.warn('No video blob found for clip:', clip.id);
-        return;
+      if (clip.videoUrl) {
+        // Use cloud URL directly
+        this.clipModalVideo.src = clip.videoUrl;
+      } else {
+        // Fall back to local IndexedDB
+        const blob = await window.clipService.getClipBlob(clip.id);
+        if (!blob) {
+          console.warn('No video found for clip:', clip.id);
+          return;
+        }
+        const url = URL.createObjectURL(blob);
+        this.blobUrls.set('modal-' + clip.id, url);
+        this.clipModalVideo.src = url;
       }
-
-      const url = URL.createObjectURL(blob);
-      this.blobUrls.set('modal-' + clip.id, url);
-
-      this.clipModalVideo.src = url;
       this.clipModalVideo.play().catch(() => {});
     } catch (err) {
       console.error('Failed to load modal video:', err);

@@ -416,16 +416,39 @@ class ClipService {
         agePool: this.getAgePool()
       };
 
-      // Store video blob in IndexedDB
+      // Store video blob locally as backup
       await this.saveToIndexedDB(clipId, videoBlob);
 
-      // Store metadata in Firestore
+      // Upload video to Firebase Storage for cloud access
+      let videoUrl = null;
+      let thumbnailUrl = null;
+      try {
+        const storage = firebase.storage();
+        const videoRef = storage.ref(`clips/${clipId}.webm`);
+        const videoSnap = await videoRef.put(videoBlob, { contentType: mimeType });
+        videoUrl = await videoSnap.ref.getDownloadURL();
+
+        // Upload thumbnail too
+        if (thumbnailDataUrl) {
+          const thumbBlob = await (await fetch(thumbnailDataUrl)).blob();
+          const thumbRef = storage.ref(`clips/${clipId}-thumb.jpg`);
+          const thumbSnap = await thumbRef.put(thumbBlob, { contentType: 'image/jpeg' });
+          thumbnailUrl = await thumbSnap.ref.getDownloadURL();
+        }
+        console.log('Clip uploaded to cloud:', videoUrl);
+      } catch (uploadErr) {
+        console.warn('Cloud upload failed, clip saved locally only:', uploadErr);
+      }
+
+      // Store metadata in Firestore (with cloud URLs if available)
       if (this.db) {
         await this.db
           .collection(CLIP_CONFIG.firestoreCollection)
           .doc(clipId)
           .set({
             ...metadata,
+            videoUrl: videoUrl || null,
+            thumbnailUrl: thumbnailUrl || null,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });
       }

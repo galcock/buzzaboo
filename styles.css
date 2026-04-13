@@ -606,16 +606,27 @@ input, select, textarea { font-family: inherit; font-size: inherit; }
   position: relative;
   background: #000;
   min-height: 0;
+  overflow: hidden;
 }
 .chat-video-remote-container {
   flex: 1;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .chat-video-remote {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* Prevent stretching on mobile — maintain natural video aspect ratio */
+}
+@media (max-width: 768px) {
+  .chat-video-remote {
+    object-fit: contain;
+    background: #000;
+  }
 }
 .chat-remote-placeholder {
   position: absolute;

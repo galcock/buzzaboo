@@ -678,8 +678,11 @@ input, select, textarea { font-family: inherit; font-size: inherit; }
 }
 @media (max-width: 768px) {
   .chat-video-local-container {
-    aspect-ratio: 9/16;
-    width: 80px;
+    aspect-ratio: 4/3;
+    width: 110px;
+  }
+  .chat-video-local {
+    object-fit: cover;
   }
 }
 

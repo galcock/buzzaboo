@@ -94,9 +94,7 @@ class MatchingService {
    * @param {'minor'|'adult'} agePool
    */
   startMatchLoop(interests, agePool) {
-    let attempts = 0;
-    const maxAttempts = 60;
-
+    // Poll every 1.5s indefinitely — users should stay findable until they leave
     this.matchRetryTimer = setInterval(async () => {
       if (!this.isSearching) {
         clearInterval(this.matchRetryTimer);
@@ -104,19 +102,19 @@ class MatchingService {
         return;
       }
 
-      attempts++;
-      if (attempts > maxAttempts) {
-        clearInterval(this.matchRetryTimer);
-        this.matchRetryTimer = null;
-        return;
-      }
-
       try {
         await this.attemptMatch(interests, agePool);
+
+        // Heartbeat: refresh our updatedAt so we don't look stale
+        if (this.queueDocRef && this.isSearching) {
+          await this.queueDocRef.update({
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          }).catch(() => {});
+        }
       } catch (error) {
         console.error('Match attempt failed:', error);
       }
-    }, 1000);
+    }, 1500);
   }
 
   /**

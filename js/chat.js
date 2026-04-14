@@ -281,7 +281,20 @@ class ChatController {
   }
 
   bindBeforeUnload() {
-    window.addEventListener('beforeunload', () => this.cleanup());
+    // Use 'pagehide' with persisted check — only cleanup on REAL unload,
+    // not when mobile Safari backgrounds the tab or locks the screen.
+    window.addEventListener('pagehide', (e) => {
+      if (!e.persisted) {
+        this.cleanup();
+      }
+    });
+    // Desktop: also listen to beforeunload for explicit page closes
+    window.addEventListener('beforeunload', () => {
+      // Only cleanup if we're in a terminal state — don't abandon queue on focus loss
+      if (this.state === CHAT_STATES.CONNECTED || this.state === CHAT_STATES.DISCONNECTED) {
+        this.cleanup();
+      }
+    });
   }
 
   // ============================================

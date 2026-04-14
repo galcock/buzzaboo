@@ -364,13 +364,13 @@ class ChatController {
 
     try {
       window.buzzabooDebugLog && window.buzzabooDebugLog('Requesting camera...');
-      // Request HD when available; browser picks best match for device
+      // Request HD with minimums but let the device pick its natural aspect ratio
+      // (forcing aspectRatio causes iOS to crop/zoom the sensor)
       this.previewStream = await navigator.mediaDevices.getUserMedia({
         video: {
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
-          facingMode: 'user',
-          aspectRatio: { ideal: 16/9 }
+          width: { ideal: 1280, min: 640 },
+          height: { ideal: 720, min: 480 },
+          facingMode: 'user'
         },
         audio: true
       });
@@ -427,10 +427,9 @@ class ChatController {
     try {
       this.previewStream = await navigator.mediaDevices.getUserMedia({
         video: {
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
-          facingMode: 'user',
-          aspectRatio: { ideal: 16/9 }
+          width: { ideal: 1280, min: 640 },
+          height: { ideal: 720, min: 480 },
+          facingMode: 'user'
         },
         audio: false
       });

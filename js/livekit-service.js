@@ -97,10 +97,17 @@ class LiveKitService {
       });
 
       this.room = new LivekitClient.Room({
-        adaptiveStream: true,
+        adaptiveStream: false,  // Don't downgrade quality based on display element size
         dynacast: true,
         videoCaptureDefaults: {
-          resolution: LivekitClient.VideoPresets.h540
+          resolution: LivekitClient.VideoPresets.h720  // 1280x720 HD
+        },
+        publishDefaults: {
+          videoSimulcastLayers: [
+            LivekitClient.VideoPresets.h360,
+            LivekitClient.VideoPresets.h720
+          ],
+          videoCodec: 'vp8'  // Broad compatibility across iOS/web
         }
       });
 
@@ -188,6 +195,14 @@ class LiveKitService {
   }
 
   handleTrackSubscribed(track, publication, participant) {
+    // Force highest quality layer for remote video
+    if (track.kind === 'video' && publication.setVideoQuality) {
+      try {
+        publication.setVideoQuality(LivekitClient.VideoQuality.HIGH);
+      } catch (e) {
+        console.warn('setVideoQuality failed:', e);
+      }
+    }
     this.emit('trackSubscribed', { track, publication, participant });
   }
 

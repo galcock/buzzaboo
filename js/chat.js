@@ -647,17 +647,13 @@ class ChatController {
     if (this.dom.guessBtn) this.dom.guessBtn.style.display = 'none';
 
     // Show local video preview while waiting so user can see themselves
+    // Use RAW camera stream (not filter engine) to preserve natural aspect ratio
     try {
-      if (this.dom.localVideo) {
-        const localStream = (this.filterEngine && this.filterEngine.getProcessedStream)
-          ? this.filterEngine.getProcessedStream()
-          : this.previewStream;
-        if (localStream) {
-          this.dom.localVideo.srcObject = localStream;
-          this.dom.localVideo.muted = true;
-          this.dom.localVideo.play().catch(() => {});
-          window.buzzabooDebugLog && window.buzzabooDebugLog('Local preview shown');
-        }
+      if (this.dom.localVideo && this.previewStream) {
+        this.dom.localVideo.srcObject = this.previewStream;
+        this.dom.localVideo.muted = true;
+        this.dom.localVideo.play().catch(() => {});
+        window.buzzabooDebugLog && window.buzzabooDebugLog('Local preview shown (raw)');
       }
     } catch (previewErr) {
       window.buzzabooDebugLog && window.buzzabooDebugLog('Local preview failed: ' + previewErr.message);

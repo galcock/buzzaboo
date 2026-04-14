@@ -346,31 +346,41 @@ class ChatController {
   // ============================================
 
   async autoStartMatching() {
-    // Instant path: request camera and start matching in one step
-    // No setup panel, no preview, no "Start Chatting" button — just go
+    window.buzzabooDebugLog && window.buzzabooDebugLog('autoStartMatching begin');
     this.state = CHAT_STATES.SETUP;
 
     try {
+      window.buzzabooDebugLog && window.buzzabooDebugLog('Requesting camera...');
       this.previewStream = await navigator.mediaDevices.getUserMedia({
         video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
         audio: true
       });
+      window.buzzabooDebugLog && window.buzzabooDebugLog('Camera OK');
 
       // Initialize filter engine
-      this.filterEngine = new FilterEngine();
-      this.filterEngine.init(this.previewStream);
-      if (!this.faceDetector) this.faceDetector = new FaceDetectionService();
-      this.filterEngine.setFaceDetector(this.faceDetector);
+      try {
+        this.filterEngine = new FilterEngine();
+        this.filterEngine.init(this.previewStream);
+        window.buzzabooDebugLog && window.buzzabooDebugLog('FilterEngine OK');
+      } catch (feErr) {
+        window.buzzabooDebugLog && window.buzzabooDebugLog('FilterEngine FAILED: ' + feErr.message);
+        this.filterEngine = null;
+      }
 
-      // Load privacy preference
+      try {
+        if (!this.faceDetector) this.faceDetector = new FaceDetectionService();
+        if (this.filterEngine) this.filterEngine.setFaceDetector(this.faceDetector);
+      } catch (fdErr) {
+        window.buzzabooDebugLog && window.buzzabooDebugLog('FaceDetector skipped: ' + fdErr.message);
+      }
+
       const savedPrivacy = localStorage.getItem('buzzaboo-private');
       if (savedPrivacy !== null) this.isPrivate = savedPrivacy === 'true';
 
-      // Skip setup panel entirely → go straight to searching
+      window.buzzabooDebugLog && window.buzzabooDebugLog('Calling startSearching...');
       await this.startSearching();
     } catch (err) {
-      // Camera denied → fall back to normal setup flow
-      console.warn('Camera auto-start failed, falling back to setup:', err);
+      window.buzzabooDebugLog && window.buzzabooDebugLog('autoStartMatching FAILED: ' + err.message);
       this.enterSetup();
     }
   }
@@ -624,13 +634,20 @@ class ChatController {
     if (this.dom.guessBtn) this.dom.guessBtn.style.display = 'none';
 
     // Show local video preview while waiting so user can see themselves
-    if (this.dom.localVideo) {
-      const localStream = this.filterEngine ? this.filterEngine.getProcessedStream() : this.previewStream;
-      if (localStream) {
-        this.dom.localVideo.srcObject = localStream;
-        this.dom.localVideo.muted = true;
-        this.dom.localVideo.play().catch(() => {});
+    try {
+      if (this.dom.localVideo) {
+        const localStream = (this.filterEngine && this.filterEngine.getProcessedStream)
+          ? this.filterEngine.getProcessedStream()
+          : this.previewStream;
+        if (localStream) {
+          this.dom.localVideo.srcObject = localStream;
+          this.dom.localVideo.muted = true;
+          this.dom.localVideo.play().catch(() => {});
+          window.buzzabooDebugLog && window.buzzabooDebugLog('Local preview shown');
+        }
       }
+    } catch (previewErr) {
+      window.buzzabooDebugLog && window.buzzabooDebugLog('Local preview failed: ' + previewErr.message);
     }
 
     this.updateStatus('Searching...');
@@ -648,19 +665,23 @@ class ChatController {
     // Initialize LiveKit
     try {
       await window.livekitService.init();
-      console.log('[Buzzaboo] LiveKit initialized');
+      window.buzzabooDebugLog && window.buzzabooDebugLog('LiveKit OK');
     } catch (err) {
-      console.error('[Buzzaboo] LiveKit init failed:', err);
+      window.buzzabooDebugLog && window.buzzabooDebugLog('LiveKit FAILED: ' + err.message);
     }
 
     // Set filter engine on LiveKit so it publishes processed track
     if (this.filterEngine) {
-      try { window.livekitService.setFilterEngine(this.filterEngine); } catch (e) { console.error('setFilterEngine (livekit):', e); }
+      try { window.livekitService.setFilterEngine(this.filterEngine); } catch (e) {
+        window.buzzabooDebugLog && window.buzzabooDebugLog('setFilterEngine(livekit) FAILED: ' + e.message);
+      }
     }
 
     // Set filter engine on clip service
     if (this.filterEngine) {
-      try { window.clipService.setFilterEngine(this.filterEngine); } catch (e) { console.error('setFilterEngine (clip):', e); }
+      try { window.clipService.setFilterEngine(this.filterEngine); } catch (e) {
+        window.buzzabooDebugLog && window.buzzabooDebugLog('setFilterEngine(clip) FAILED: ' + e.message);
+      }
     }
 
     // Initialize matching
@@ -668,18 +689,18 @@ class ChatController {
     const db = (typeof firebase !== 'undefined' && firebase.apps.length) ? firebase.firestore() : null;
 
     if (!db) {
-      console.error('[Buzzaboo] Firestore not available! Check firebase-config.js');
+      window.buzzabooDebugLog && window.buzzabooDebugLog('FIRESTORE UNAVAILABLE — firebase-config.js broken');
       this.updateStatus('Connection error — refresh the page');
       return;
     }
 
     const userId = auth.getUserId();
-    console.log('[Buzzaboo] Entering queue as:', userId, 'agePool:', this.agePool);
+    window.buzzabooDebugLog && window.buzzabooDebugLog('Entering queue as ' + userId.slice(0, 20) + ' pool=' + this.agePool);
     window.matchingService.init(db, userId);
 
     try {
       await window.matchingService.enterQueue(this.interests, this.agePool);
-      console.log('[Buzzaboo] Successfully entered matchmaking queue');
+      window.buzzabooDebugLog && window.buzzabooDebugLog('QUEUE ENTERED OK');
 
       // Keep searching — show user count and keep retrying
       this.matchTimeoutId = setTimeout(() => {
@@ -1447,12 +1468,37 @@ class ChatController {
 const chatController = new ChatController();
 window.chatController = chatController;
 
+// Visible on-screen debug overlay — shown by default while diagnosing
+// Disable by adding ?debug=0 to URL
+const DEBUG_ENABLED = new URLSearchParams(location.search).get('debug') !== '0';
+const debugOverlay = document.createElement('div');
+debugOverlay.id = 'buzzaboo-debug';
+debugOverlay.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,0.9);color:#0f0;padding:8px;font-family:monospace;font-size:11px;z-index:99999;max-height:35vh;overflow-y:auto;white-space:pre-wrap;line-height:1.3;border-top:2px solid #0f0;' + (DEBUG_ENABLED ? '' : 'display:none;');
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.appendChild(debugOverlay);
+  // Add dismiss button
+  const dismissBtn = document.createElement('button');
+  dismissBtn.textContent = '✕ hide';
+  dismissBtn.style.cssText = 'position:absolute;top:4px;right:4px;background:#333;color:#fff;border:1px solid #555;padding:2px 8px;font-size:10px;cursor:pointer;';
+  dismissBtn.onclick = () => debugOverlay.style.display = 'none';
+  debugOverlay.appendChild(dismissBtn);
+});
+
+function debugLog(msg) {
+  console.log('[Buzzaboo]', msg);
+  const line = document.createElement('div');
+  line.textContent = new Date().toISOString().slice(11, 19) + ' ' + msg;
+  debugOverlay.appendChild(line);
+  debugOverlay.scrollTop = debugOverlay.scrollHeight;
+}
+window.buzzabooDebugLog = debugLog;
+
 // Global error handlers — surface silent errors so we can debug
 window.addEventListener('error', (e) => {
-  console.error('[Buzzaboo GLOBAL ERROR]', e.message, e.filename, 'line', e.lineno);
+  debugLog('GLOBAL ERROR: ' + e.message + ' @ ' + (e.filename || '?') + ':' + (e.lineno || '?'));
 });
 window.addEventListener('unhandledrejection', (e) => {
-  console.error('[Buzzaboo UNHANDLED PROMISE]', e.reason);
+  debugLog('UNHANDLED PROMISE: ' + (e.reason?.message || e.reason));
 });
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -177,7 +177,13 @@ class FilterEngine {
       this.lastFrameTime = now - (elapsed % this.frameInterval);
 
       if (this.rawVideo.readyState >= 2) {
-        // Draw raw video
+        // Lazily resize canvas to match actual video dimensions — prevents stretching
+        const vw = this.rawVideo.videoWidth;
+        const vh = this.rawVideo.videoHeight;
+        if (vw && vh && (vw !== this.width || vh !== this.height)) {
+          this.resizeCanvases(vw, vh);
+        }
+        // Draw raw video at native 1:1 ratio — no stretching
         this.ctx.drawImage(this.rawVideo, 0, 0, this.width, this.height);
 
         // Detect face if needed

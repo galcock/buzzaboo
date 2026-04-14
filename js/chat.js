@@ -358,22 +358,82 @@ class ChatController {
   // SETUP PHASE
   // ============================================
 
+  showCameraBlockedMessage() {
+    const existing = document.getElementById('camBlockedMsg');
+    if (existing) return;
+
+    // Detect browser to show the right instructions
+    const ua = navigator.userAgent;
+    const isIOS = /iPhone|iPad|iPod/.test(ua);
+    const isChromeIOS = isIOS && /CriOS/.test(ua);
+    const isSafariIOS = isIOS && !isChromeIOS;
+
+    let instructions = '';
+    if (isChromeIOS) {
+      instructions = `
+        <strong>On Chrome (iPhone):</strong><br>
+        1. Open <strong>iPhone Settings</strong> → scroll to <strong>Chrome</strong><br>
+        2. Tap <strong>Camera</strong> → turn it ON<br>
+        3. Also turn ON <strong>Microphone</strong><br>
+        4. Return to Chrome, tap the <strong>⋮</strong> menu → Settings → Site Settings → buzzaboo.com → set Camera to <strong>Allow</strong><br>
+        5. Reload this page
+      `;
+    } else if (isSafariIOS) {
+      instructions = `
+        <strong>On iPhone Safari:</strong><br>
+        1. Tap the <strong>"aA"</strong> icon in the URL bar<br>
+        2. Tap <strong>Website Settings</strong><br>
+        3. Set <strong>Camera</strong> to <strong>Allow</strong><br>
+        4. Reload this page
+      `;
+    } else {
+      instructions = `
+        <strong>Allow camera access:</strong><br>
+        1. Click the camera/lock icon near the URL<br>
+        2. Allow camera and microphone<br>
+        3. Reload this page
+      `;
+    }
+
+    const msg = document.createElement('div');
+    msg.id = 'camBlockedMsg';
+    msg.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);z-index:99998;display:flex;align-items:center;justify-content:center;padding:2rem;';
+    msg.innerHTML = `
+      <div style="max-width:480px;background:#18181b;color:#fff;padding:2rem;border-radius:16px;text-align:center;border:1px solid #444">
+        <div style="font-size:3rem;margin-bottom:0.75rem">📹</div>
+        <h2 style="margin:0 0 0.75rem;font-size:1.3rem">Camera access blocked</h2>
+        <p style="color:#aaa;margin-bottom:1.25rem;line-height:1.5">Buzzaboo needs camera access to video chat.</p>
+        <div style="text-align:left;background:#27272a;padding:1rem;border-radius:8px;margin-bottom:1.25rem;font-size:0.9rem;line-height:1.6">${instructions}</div>
+        <button onclick="location.reload()" style="margin-top:0.5rem;padding:0.75rem 2rem;background:#FFBE0B;color:#000;border:0;border-radius:8px;font-weight:600;cursor:pointer;font-size:1rem">Reload</button>
+      </div>
+    `;
+    document.body.appendChild(msg);
+  }
+
   async autoStartMatching() {
     window.buzzabooDebugLog && window.buzzabooDebugLog('autoStartMatching begin');
     this.state = CHAT_STATES.SETUP;
 
     try {
       window.buzzabooDebugLog && window.buzzabooDebugLog('Requesting camera...');
-      // Request HD with minimums but let the device pick its natural aspect ratio
-      // (forcing aspectRatio causes iOS to crop/zoom the sensor)
+      // Request HD; let the device pick its natural aspect ratio.
+      // No min constraint so we don't fail on older devices.
       this.previewStream = await navigator.mediaDevices.getUserMedia({
         video: {
-          width: { ideal: 1280, min: 640 },
-          height: { ideal: 720, min: 480 },
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
           facingMode: 'user'
         },
         audio: true
       });
+
+      // Verify we got a video track — if not, iOS silently dropped camera access
+      const videoTracks = this.previewStream.getVideoTracks();
+      if (videoTracks.length === 0) {
+        window.buzzabooDebugLog && window.buzzabooDebugLog('NO VIDEO TRACK — camera blocked');
+        this.showCameraBlockedMessage();
+        throw new Error('No camera access — check iPhone Settings → Safari → Camera, or tap "aA" in URL bar → Website Settings → Camera → Allow');
+      }
       const s = this.previewStream.getVideoTracks()[0]?.getSettings();
       window.buzzabooDebugLog && window.buzzabooDebugLog('Camera OK ' + (s?.width || '?') + 'x' + (s?.height || '?'));
 

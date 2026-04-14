@@ -646,26 +646,40 @@ class ChatController {
     window.nsfwDetector.loadModel().catch(err => console.error('NSFW model load failed:', err));
 
     // Initialize LiveKit
-    await window.livekitService.init();
+    try {
+      await window.livekitService.init();
+      console.log('[Buzzaboo] LiveKit initialized');
+    } catch (err) {
+      console.error('[Buzzaboo] LiveKit init failed:', err);
+    }
 
     // Set filter engine on LiveKit so it publishes processed track
     if (this.filterEngine) {
-      window.livekitService.setFilterEngine(this.filterEngine);
+      try { window.livekitService.setFilterEngine(this.filterEngine); } catch (e) { console.error('setFilterEngine (livekit):', e); }
     }
 
     // Set filter engine on clip service
     if (this.filterEngine) {
-      window.clipService.setFilterEngine(this.filterEngine);
+      try { window.clipService.setFilterEngine(this.filterEngine); } catch (e) { console.error('setFilterEngine (clip):', e); }
     }
 
     // Initialize matching
     const auth = window.buzzabooAuth;
     const db = (typeof firebase !== 'undefined' && firebase.apps.length) ? firebase.firestore() : null;
+
+    if (!db) {
+      console.error('[Buzzaboo] Firestore not available! Check firebase-config.js');
+      this.updateStatus('Connection error — refresh the page');
+      return;
+    }
+
     const userId = auth.getUserId();
+    console.log('[Buzzaboo] Entering queue as:', userId, 'agePool:', this.agePool);
     window.matchingService.init(db, userId);
 
     try {
       await window.matchingService.enterQueue(this.interests, this.agePool);
+      console.log('[Buzzaboo] Successfully entered matchmaking queue');
 
       // Keep searching — show user count and keep retrying
       this.matchTimeoutId = setTimeout(() => {

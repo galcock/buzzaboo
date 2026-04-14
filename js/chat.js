@@ -1447,12 +1447,23 @@ class ChatController {
 const chatController = new ChatController();
 window.chatController = chatController;
 
+// Global error handlers — surface silent errors so we can debug
+window.addEventListener('error', (e) => {
+  console.error('[Buzzaboo GLOBAL ERROR]', e.message, e.filename, 'line', e.lineno);
+});
+window.addEventListener('unhandledrejection', (e) => {
+  console.error('[Buzzaboo UNHANDLED PROMISE]', e.reason);
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   let initialized = false;
   const doInit = () => {
     if (initialized) return;
     initialized = true;
-    chatController.init();
+    console.log('[Buzzaboo] Initializing chat controller...');
+    chatController.init().catch(err => {
+      console.error('[Buzzaboo] chatController.init failed:', err);
+    });
   };
   window.addEventListener('buzzaboo-auth-ready', doInit);
   setTimeout(doInit, 2000);

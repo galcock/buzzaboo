@@ -416,23 +416,45 @@ class ChatController {
 
     try {
       window.buzzabooDebugLog && window.buzzabooDebugLog('Requesting camera...');
-      // Request HD; let the device pick its natural aspect ratio.
-      // No min constraint so we don't fail on older devices.
-      this.previewStream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
-          facingMode: 'user'
-        },
-        audio: true
-      });
 
-      // Verify we got a video track — if not, iOS silently dropped camera access
-      const videoTracks = this.previewStream.getVideoTracks();
-      if (videoTracks.length === 0) {
-        window.buzzabooDebugLog && window.buzzabooDebugLog('NO VIDEO TRACK — camera blocked');
+      // Request VIDEO first, separately — this forces iOS Chrome to show a clear camera prompt
+      // (combined audio+video requests sometimes only trigger mic prompt on iOS Chrome)
+      let videoStream;
+      try {
+        videoStream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+            facingMode: 'user'
+          },
+          audio: false
+        });
+      } catch (camErr) {
+        window.buzzabooDebugLog && window.buzzabooDebugLog('CAMERA DENIED: ' + camErr.name + ' ' + camErr.message);
         this.showCameraBlockedMessage();
-        throw new Error('No camera access — check iPhone Settings → Safari → Camera, or tap "aA" in URL bar → Website Settings → Camera → Allow');
+        throw camErr;
+      }
+
+      if (videoStream.getVideoTracks().length === 0) {
+        window.buzzabooDebugLog && window.buzzabooDebugLog('NO VIDEO TRACK returned');
+        videoStream.getTracks().forEach(t => t.stop());
+        this.showCameraBlockedMessage();
+        throw new Error('Camera access blocked');
+      }
+
+      // Now request audio separately and merge
+      let audioStream;
+      try {
+        audioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      } catch (micErr) {
+        window.buzzabooDebugLog && window.buzzabooDebugLog('Mic denied (continuing video-only): ' + micErr.name);
+      }
+
+      // Combine video + audio into a single stream
+      this.previewStream = new MediaStream();
+      videoStream.getVideoTracks().forEach(t => this.previewStream.addTrack(t));
+      if (audioStream) {
+        audioStream.getAudioTracks().forEach(t => this.previewStream.addTrack(t));
       }
       const s = this.previewStream.getVideoTracks()[0]?.getSettings();
       window.buzzabooDebugLog && window.buzzabooDebugLog('Camera OK ' + (s?.width || '?') + 'x' + (s?.height || '?'));

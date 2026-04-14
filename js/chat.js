@@ -63,6 +63,7 @@ class ChatController {
     this.bindDOM();
     this.bindEvents();
     this.bindBeforeUnload();
+    this.setupPipDrag();
 
     // Initialize AI bot service
     this.aiBotService = new AIBotService();
@@ -294,6 +295,97 @@ class ChatController {
       if (this.state === CHAT_STATES.CONNECTED || this.state === CHAT_STATES.DISCONNECTED) {
         this.cleanup();
       }
+    });
+  }
+
+  // ============================================
+  // DRAGGABLE PIP
+  // ============================================
+  setupPipDrag() {
+    const pip = document.querySelector('.chat-video-local-container');
+    if (!pip) {
+      // chat view may not be in DOM yet — retry shortly
+      setTimeout(() => this.setupPipDrag(), 500);
+      return;
+    }
+    if (pip._dragBound) return;
+    pip._dragBound = true;
+
+    let dragging = false;
+    let startX = 0, startY = 0;
+    let originLeft = 0, originTop = 0;
+    let pointerId = null;
+
+    const clampToViewport = (left, top) => {
+      const parent = pip.parentElement || document.body;
+      const parentRect = parent.getBoundingClientRect();
+      const rect = pip.getBoundingClientRect();
+      const maxLeft = parentRect.width - rect.width;
+      const maxTop = parentRect.height - rect.height;
+      return {
+        left: Math.max(0, Math.min(maxLeft, left)),
+        top: Math.max(0, Math.min(maxTop, top))
+      };
+    };
+
+    const onDown = (e) => {
+      // Ignore drags that start on child interactive elements (buttons inside PiP, if any)
+      if (e.target.closest('button, a, input, select, textarea')) return;
+      const parent = pip.parentElement;
+      if (!parent) return;
+      const parentRect = parent.getBoundingClientRect();
+      const rect = pip.getBoundingClientRect();
+
+      // Convert to absolute left/top within parent
+      originLeft = rect.left - parentRect.left;
+      originTop = rect.top - parentRect.top;
+      startX = e.clientX;
+      startY = e.clientY;
+      dragging = true;
+      pointerId = e.pointerId;
+      pip.classList.add('dragging');
+
+      // Switch from bottom/right anchoring to left/top for dragging
+      pip.style.left = `${originLeft}px`;
+      pip.style.top = `${originTop}px`;
+      pip.style.right = 'auto';
+      pip.style.bottom = 'auto';
+
+      try { pip.setPointerCapture(pointerId); } catch (_) {}
+      e.preventDefault();
+    };
+
+    const onMove = (e) => {
+      if (!dragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      const { left, top } = clampToViewport(originLeft + dx, originTop + dy);
+      pip.style.left = `${left}px`;
+      pip.style.top = `${top}px`;
+      e.preventDefault();
+    };
+
+    const onUp = (e) => {
+      if (!dragging) return;
+      dragging = false;
+      pip.classList.remove('dragging');
+      try { if (pointerId !== null) pip.releasePointerCapture(pointerId); } catch (_) {}
+      pointerId = null;
+    };
+
+    pip.addEventListener('pointerdown', onDown);
+    pip.addEventListener('pointermove', onMove);
+    pip.addEventListener('pointerup', onUp);
+    pip.addEventListener('pointercancel', onUp);
+
+    // Reposition on resize so it doesn't end up off-screen
+    window.addEventListener('resize', () => {
+      if (!pip.style.left) return;
+      const left = parseFloat(pip.style.left) || 0;
+      const top = parseFloat(pip.style.top) || 0;
+      const clamped = clampToViewport(left, top);
+      pip.style.left = `${clamped.left}px`;
+      pip.style.top = `${clamped.top}px`;
     });
   }
 
@@ -746,10 +838,11 @@ class ChatController {
     if (this.dom.guessBtn) this.dom.guessBtn.style.display = 'none';
 
     // Show local video preview while waiting so user can see themselves
-    // Use RAW camera stream (not filter engine) to preserve natural aspect ratio
+    // Prefer the filter engine output so any active filter/emoji/blur is visible
     try {
       if (this.dom.localVideo && this.previewStream) {
-        this.dom.localVideo.srcObject = this.previewStream;
+        const processed = this.filterEngine && this.filterEngine.getProcessedStream();
+        this.dom.localVideo.srcObject = processed || this.previewStream;
         this.dom.localVideo.muted = true;
         this.dom.localVideo.play().catch(() => {});
 
@@ -1006,10 +1099,11 @@ class ChatController {
     this.isMicMuted = false;
     this.updateToggleButtons();
 
-    // Attach local video — use RAW camera stream for preview
-    // (Filter engine is still what's published to LiveKit for the remote user)
-    if (this.dom.localVideo && this.previewStream) {
-      this.dom.localVideo.srcObject = this.previewStream;
+    // Attach local video — prefer the filter engine's processed stream so the user
+    // sees filters/emoji/blur in their own PiP (what they send is what they see)
+    if (this.dom.localVideo) {
+      const processed = this.filterEngine && this.filterEngine.getProcessedStream();
+      this.dom.localVideo.srcObject = processed || this.previewStream;
       this.dom.localVideo.muted = true;
       this.dom.localVideo.play().catch(() => {});
     }
@@ -1063,31 +1157,67 @@ class ChatController {
       this.faceDetector.init();
     }
 
-    this.filterEngine.setFaceBlur(true);
-    this.faceRevealCountdown = 10;
+    // Use funny emoji instead of blur for more obvious effect
+    const emojis = ['🎃', '🤖', '👽', '🐻', '🦊', '🐼', '🦄', '🐸', '🐵', '🐱'];
+    const chosenEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+    if (this.filterEngine.setFaceEmoji) {
+      this.filterEngine.setFaceEmoji(chosenEmoji);
+    } else {
+      this.filterEngine.setFaceBlur(true);
+    }
 
-    if (this.dom.faceRevealOverlay) this.dom.faceRevealOverlay.style.display = '';
-    if (this.dom.faceRevealNumber) this.dom.faceRevealNumber.textContent = '10';
+    const DURATION_MS = 15000;
+    const startTime = performance.now();
+    this.faceRevealCountdown = 15;
 
-    this.faceRevealInterval = setInterval(() => {
-      this.faceRevealCountdown--;
+    // Create countdown overlay on the REMOTE (big) view instead of the PiP
+    let bigOverlay = document.getElementById('bigFaceRevealOverlay');
+    if (!bigOverlay) {
+      bigOverlay = document.createElement('div');
+      bigOverlay.id = 'bigFaceRevealOverlay';
+      bigOverlay.className = 'big-face-reveal-overlay';
+      bigOverlay.innerHTML = `
+        <div class="big-face-reveal-emoji">${chosenEmoji}</div>
+        <div class="big-face-reveal-label">Revealing in</div>
+        <div class="big-face-reveal-number">15</div>
+      `;
+      const remoteContainer = document.querySelector('.chat-video-remote-container');
+      if (remoteContainer) remoteContainer.appendChild(bigOverlay);
+    } else {
+      bigOverlay.style.display = '';
+      bigOverlay.querySelector('.big-face-reveal-emoji').textContent = chosenEmoji;
+    }
+    const bigNumEl = bigOverlay.querySelector('.big-face-reveal-number');
 
-      if (this.dom.faceRevealNumber) {
-        this.dom.faceRevealNumber.textContent = this.faceRevealCountdown;
-        // Pulse animation
-        this.dom.faceRevealNumber.classList.remove('pulse');
-        void this.dom.faceRevealNumber.offsetWidth; // Force reflow
-        this.dom.faceRevealNumber.classList.add('pulse');
+    // Hide old PiP overlay (countdown no longer shown there)
+    if (this.dom.faceRevealOverlay) this.dom.faceRevealOverlay.style.display = 'none';
+
+    // Use rAF for smooth accurate countdown instead of 1s setInterval (which drifts)
+    const tick = () => {
+      const elapsed = performance.now() - startTime;
+      const remaining = Math.max(0, DURATION_MS - elapsed);
+      const secondsLeft = Math.ceil(remaining / 1000);
+
+      if (secondsLeft !== this.faceRevealCountdown) {
+        this.faceRevealCountdown = secondsLeft;
+        if (bigNumEl) {
+          bigNumEl.textContent = secondsLeft;
+          bigNumEl.classList.remove('pulse');
+          void bigNumEl.offsetWidth;
+          bigNumEl.classList.add('pulse');
+        }
       }
 
-      if (this.faceRevealCountdown <= 0) {
-        clearInterval(this.faceRevealInterval);
-        this.faceRevealInterval = null;
-
-        // Smooth blur dissolve
+      if (remaining <= 0) {
+        if (bigOverlay) bigOverlay.style.display = 'none';
+        if (this.filterEngine.setFaceEmoji) this.filterEngine.setFaceEmoji(null);
         this.animateBlurReveal();
+        this.faceRevealInterval = null;
+        return;
       }
-    }, 1000);
+      this.faceRevealInterval = requestAnimationFrame(tick);
+    };
+    this.faceRevealInterval = requestAnimationFrame(tick);
   }
 
   animateBlurReveal() {
@@ -1119,10 +1249,14 @@ class ChatController {
 
   stopFaceReveal() {
     if (this.faceRevealInterval) {
-      clearInterval(this.faceRevealInterval);
+      cancelAnimationFrame(this.faceRevealInterval);
+      clearInterval(this.faceRevealInterval); // belt-and-suspenders for any legacy setInterval handle
       this.faceRevealInterval = null;
     }
     if (this.dom.faceRevealOverlay) this.dom.faceRevealOverlay.style.display = 'none';
+    const bigOverlay = document.getElementById('bigFaceRevealOverlay');
+    if (bigOverlay) bigOverlay.style.display = 'none';
+    if (this.filterEngine?.setFaceEmoji) this.filterEngine.setFaceEmoji(null);
   }
 
   // ============================================

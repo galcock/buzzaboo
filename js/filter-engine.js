@@ -16,6 +16,7 @@ class FilterEngine {
 
     this.activeFilter = null;
     this.faceBlurEnabled = false;
+    this.faceEmoji = null;
     this.blurRadius = 20;
     this.faceDetector = null;
     this.cachedLandmarks = null;
@@ -154,6 +155,10 @@ class FilterEngine {
     }
   }
 
+  setFaceEmoji(emoji) {
+    this.faceEmoji = emoji;
+  }
+
   setBlurRadius(radius) {
     this.blurRadius = radius;
   }
@@ -164,7 +169,7 @@ class FilterEngine {
 
   needsFaceDetection() {
     const faceFilters = ['sunglasses', 'devilhorns', 'angelhalo', 'neonoutline', 'cartooneyes', 'pixelretro'];
-    return this.faceBlurEnabled || (this.activeFilter && faceFilters.includes(this.activeFilter));
+    return this.faceBlurEnabled || !!this.faceEmoji || (this.activeFilter && faceFilters.includes(this.activeFilter));
   }
 
   async drawFrame() {
@@ -202,6 +207,11 @@ class FilterEngine {
         // Apply face blur
         if (this.faceBlurEnabled && this.blurRadius > 0) {
           this.applyFaceBlur();
+        }
+
+        // Apply face emoji (covers face with a fun emoji)
+        if (this.faceEmoji) {
+          this.drawFaceEmoji(this.faceEmoji);
         }
 
         // Apply active filter
@@ -991,6 +1001,30 @@ class FilterEngine {
     }
 
     ctx.putImageData(imageData, x, y);
+  }
+
+  // ── Emoji Face Cover ───────────────────────────────────
+
+  drawFaceEmoji(emoji) {
+    let cx, cy, size;
+    if (this.cachedLandmarks) {
+      const bbox = this.getFaceBBox(this.cachedLandmarks);
+      cx = bbox.x + bbox.width / 2;
+      cy = bbox.y + bbox.height / 2;
+      size = Math.max(bbox.width, bbox.height) * 1.6;
+    } else {
+      // Fallback: center of screen
+      cx = this.width / 2;
+      cy = this.height / 2;
+      size = Math.min(this.width, this.height) * 0.5;
+    }
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.font = `${Math.floor(size)}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(emoji, cx, cy);
+    ctx.restore();
   }
 
   // ── Face Landmark Helpers ──────────────────────────────

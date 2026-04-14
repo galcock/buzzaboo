@@ -382,6 +382,12 @@ class LiveKitService {
   attachTrack(track, element) {
     if (track && element) {
       track.attach(element);
+      // Force object-fit: contain inline so no LiveKit or other styles override it
+      // This prevents zoom/crop when sender's aspect ratio differs from display container
+      element.style.setProperty('object-fit', 'contain', 'important');
+      element.style.setProperty('width', '100%', 'important');
+      element.style.setProperty('height', '100%', 'important');
+      element.style.setProperty('background', '#000', 'important');
       return true;
     }
     return false;

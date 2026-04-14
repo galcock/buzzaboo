@@ -364,11 +364,18 @@ class ChatController {
 
     try {
       window.buzzabooDebugLog && window.buzzabooDebugLog('Requesting camera...');
+      // Request HD when available; browser picks best match for device
       this.previewStream = await navigator.mediaDevices.getUserMedia({
-        video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
+        video: {
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+          facingMode: 'user',
+          aspectRatio: { ideal: 16/9 }
+        },
         audio: true
       });
-      window.buzzabooDebugLog && window.buzzabooDebugLog('Camera OK');
+      const s = this.previewStream.getVideoTracks()[0]?.getSettings();
+      window.buzzabooDebugLog && window.buzzabooDebugLog('Camera OK ' + (s?.width || '?') + 'x' + (s?.height || '?'));
 
       // Initialize filter engine
       try {
@@ -419,7 +426,12 @@ class ChatController {
   async startPreview() {
     try {
       this.previewStream = await navigator.mediaDevices.getUserMedia({
-        video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
+        video: {
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+          facingMode: 'user',
+          aspectRatio: { ideal: 16/9 }
+        },
         audio: false
       });
 
@@ -891,9 +903,10 @@ class ChatController {
     this.isMicMuted = false;
     this.updateToggleButtons();
 
-    // Attach local video — show filter engine output
-    if (this.filterEngine && this.dom.localVideo) {
-      this.dom.localVideo.srcObject = this.filterEngine.getProcessedStream();
+    // Attach local video — use RAW camera stream for preview
+    // (Filter engine is still what's published to LiveKit for the remote user)
+    if (this.dom.localVideo && this.previewStream) {
+      this.dom.localVideo.srcObject = this.previewStream;
       this.dom.localVideo.muted = true;
       this.dom.localVideo.play().catch(() => {});
     }

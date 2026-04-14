@@ -22,9 +22,11 @@ class FilterEngine {
     this.landmarkCacheFrames = 0;
     this.maxLandmarkCacheFrames = 2;
 
+    // Will be set dynamically from source video once loaded (preserves native resolution + aspect ratio)
     this.width = 640;
     this.height = 480;
     this.targetFps = 30;
+    this.dimensionsLocked = false;
     this.lastFrameTime = 0;
     this.frameInterval = 1000 / this.targetFps;
 
@@ -50,6 +52,17 @@ class FilterEngine {
   }
 
   init(rawStream) {
+    // Try to read the actual track settings first — preserves native camera aspect ratio
+    const videoTrack = rawStream.getVideoTracks()[0];
+    if (videoTrack) {
+      const settings = videoTrack.getSettings();
+      if (settings.width && settings.height) {
+        this.width = settings.width;
+        this.height = settings.height;
+        this.dimensionsLocked = true;
+      }
+    }
+
     this.canvas = document.createElement('canvas');
     this.canvas.width = this.width;
     this.canvas.height = this.height;
@@ -71,6 +84,14 @@ class FilterEngine {
     this.rawVideo.playsInline = true;
     this.rawVideo.play();
 
+    // Re-sync dimensions once video metadata loads (fallback in case track settings were incomplete)
+    this.rawVideo.addEventListener('loadedmetadata', () => {
+      if (!this.dimensionsLocked && this.rawVideo.videoWidth && this.rawVideo.videoHeight) {
+        this.resizeCanvases(this.rawVideo.videoWidth, this.rawVideo.videoHeight);
+        this.dimensionsLocked = true;
+      }
+    });
+
     this.processedStream = this.canvas.captureStream(this.targetFps);
 
     // Copy audio tracks from raw stream
@@ -90,6 +111,14 @@ class FilterEngine {
     this.drawFrame();
 
     return this.processedStream;
+  }
+
+  resizeCanvases(w, h) {
+    this.width = w;
+    this.height = h;
+    if (this.canvas) { this.canvas.width = w; this.canvas.height = h; }
+    if (this.tempCanvas) { this.tempCanvas.width = w; this.tempCanvas.height = h; }
+    if (this.blurCanvas) { this.blurCanvas.width = w; this.blurCanvas.height = h; }
   }
 
   getProcessedStream() {

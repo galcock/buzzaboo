@@ -1489,9 +1489,8 @@ class ChatController {
 const chatController = new ChatController();
 window.chatController = chatController;
 
-// Visible on-screen debug overlay — shown by default while diagnosing
-// Disable by adding ?debug=0 to URL
-const DEBUG_ENABLED = new URLSearchParams(location.search).get('debug') !== '0';
+// Visible on-screen debug overlay — opt-in via ?debug=1 query param
+const DEBUG_ENABLED = new URLSearchParams(location.search).get('debug') === '1';
 const debugOverlay = document.createElement('div');
 debugOverlay.id = 'buzzaboo-debug';
 debugOverlay.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,0.9);color:#0f0;padding:8px;font-family:monospace;font-size:11px;z-index:99999;max-height:35vh;overflow-y:auto;white-space:pre-wrap;line-height:1.3;border-top:2px solid #0f0;' + (DEBUG_ENABLED ? '' : 'display:none;');

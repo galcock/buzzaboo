@@ -623,6 +623,16 @@ class ChatController {
     if (this.dom.remoteVideo) this.dom.remoteVideo.style.display = 'none';
     if (this.dom.guessBtn) this.dom.guessBtn.style.display = 'none';
 
+    // Show local video preview while waiting so user can see themselves
+    if (this.dom.localVideo) {
+      const localStream = this.filterEngine ? this.filterEngine.getProcessedStream() : this.previewStream;
+      if (localStream) {
+        this.dom.localVideo.srcObject = localStream;
+        this.dom.localVideo.muted = true;
+        this.dom.localVideo.play().catch(() => {});
+      }
+    }
+
     this.updateStatus('Searching...');
     this.updatePrivacyUI();
 

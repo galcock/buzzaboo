@@ -514,14 +514,19 @@ input, select, textarea { font-family: inherit; font-size: inherit; }
   aspect-ratio: 4/3;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background: var(--bg-tertiary);
+  background: #000;
   margin: 1.5rem 0;
 }
 .chat-preview video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   transform: scaleX(-1);
+}
+@media (min-width: 769px) {
+  .chat-preview video {
+    object-fit: cover;
+  }
 }
 .chat-preview-placeholder {
   position: absolute;
@@ -655,6 +660,13 @@ input, select, textarea { font-family: inherit; font-size: inherit; }
   height: 100%;
   object-fit: cover;
   transform: scaleX(-1);
+  background: #000;
+}
+@media (max-width: 768px) {
+  .chat-video-local-container {
+    aspect-ratio: 9/16;
+    width: 80px;
+  }
 }
 
 /* Searching Animation */

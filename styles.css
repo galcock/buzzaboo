@@ -676,14 +676,15 @@ input, select, textarea { font-family: inherit; font-size: inherit; }
 }
 @media (max-width: 768px) {
   .chat-video-local-container {
-    aspect-ratio: 4/3;
-    width: 120px;
+    /* aspect-ratio dynamically set via JS based on actual video dimensions */
+    aspect-ratio: 9/16;  /* Default to portrait on mobile — updated by JS */
+    width: 100px;
     height: auto;
     bottom: 6rem;
     right: 0.75rem;
   }
   .chat-video-local {
-    object-fit: contain;
+    object-fit: cover;  /* Fill naturally since container now matches video aspect */
     width: 100%;
     height: 100%;
     background: #000;

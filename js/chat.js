@@ -664,6 +664,22 @@ class ChatController {
         this.dom.localVideo.srcObject = this.previewStream;
         this.dom.localVideo.muted = true;
         this.dom.localVideo.play().catch(() => {});
+
+        // Dynamically set PiP container aspect ratio to match actual camera dimensions
+        // Portrait iPhone cam → 9:16 box, landscape webcam → 16:9 box, etc.
+        const syncAspect = () => {
+          const vw = this.dom.localVideo.videoWidth;
+          const vh = this.dom.localVideo.videoHeight;
+          if (vw && vh) {
+            const container = this.dom.localVideo.parentElement;
+            if (container) {
+              container.style.aspectRatio = `${vw} / ${vh}`;
+            }
+          }
+        };
+        if (this.dom.localVideo.readyState >= 1) syncAspect();
+        this.dom.localVideo.addEventListener('loadedmetadata', syncAspect, { once: true });
+
         window.buzzabooDebugLog && window.buzzabooDebugLog('Local preview shown (raw)');
       }
     } catch (previewErr) {

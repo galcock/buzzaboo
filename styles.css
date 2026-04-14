@@ -267,6 +267,14 @@ input, select, textarea { font-family: inherit; font-size: inherit; }
   margin-left: 0;
   padding: 0;
 }
+/* Chat page = fixed viewport; don't let min-height overflow */
+body:has(.chat-page) .main-content,
+.main-content:has(.chat-page) {
+  min-height: 0;
+  height: calc(100vh - 64px);
+  height: calc(100dvh - 64px);
+  overflow: hidden;
+}
 .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
 .section { margin-bottom: var(--spacing-2xl); }
 .section-header {
@@ -419,8 +427,13 @@ input, select, textarea { font-family: inherit; font-size: inherit; }
 .chat-page {
   display: flex;
   flex-direction: column;
+  /* Use dvh (dynamic viewport height) so iOS Safari's address bar doesn't push controls off-screen */
   height: calc(100vh - 64px);
+  height: calc(100dvh - 64px);
+  max-height: calc(100vh - 64px);
+  max-height: calc(100dvh - 64px);
   position: relative;
+  overflow: hidden;
 }
 
 /* Age Gate */
@@ -618,14 +631,20 @@ input, select, textarea { font-family: inherit; font-size: inherit; }
   display: flex;
   flex-direction: column;
   position: relative;
+  min-height: 0;  /* Allow flex children to shrink below content size */
+  overflow: hidden;
 }
 .chat-videos {
-  flex: 1;
+  flex: 1 1 0;
   display: flex;
   position: relative;
   background: #000;
   min-height: 0;
   overflow: hidden;
+}
+/* Controls always visible at bottom */
+.chat-controls {
+  flex: 0 0 auto;
 }
 .chat-video-remote-container {
   flex: 1;

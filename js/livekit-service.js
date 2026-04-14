@@ -100,7 +100,7 @@ class LiveKitService {
         adaptiveStream: true,
         dynacast: true,
         videoCaptureDefaults: {
-          resolution: LivekitClient.VideoPresets.h480.resolution
+          resolution: LivekitClient.VideoPresets.h540
         }
       });
 

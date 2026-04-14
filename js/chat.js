@@ -461,7 +461,13 @@ class ChatController {
       await this.startSearching();
     } catch (err) {
       window.buzzabooDebugLog && window.buzzabooDebugLog('autoStartMatching FAILED: ' + err.message);
-      this.enterSetup();
+      // Any camera/permission-related error → show the blocked overlay
+      const msg = (err.name || '') + ' ' + (err.message || '');
+      if (/NotAllowedError|NotFoundError|OverconstrainedError|NotReadableError|camera|permission/i.test(msg)) {
+        this.showCameraBlockedMessage();
+      } else {
+        this.enterSetup();
+      }
     }
   }
 
